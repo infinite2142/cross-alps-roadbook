@@ -203,6 +203,8 @@
   .gbtn{display:inline-flex;align-items:center;gap:7px;margin:14px 0 0;font-family:'IBM Plex Mono',monospace;font-size:11.5px;
     letter-spacing:.05em;text-decoration:none;border:1px solid var(--ink);background:var(--ink);color:var(--snow);padding:7px 12px;transition:opacity .15s}
   .gbtn:hover{opacity:.82}
+  .leglinks{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:14px}
+  .leglinks .gbtn{margin:0}
   .gbtn.ghost{background:transparent;color:var(--ink)}
   body.dark .gbtn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
   .grat{stroke:var(--line);stroke-width:.5}
@@ -881,6 +883,32 @@ function pickWaypoints(mid, origin, dest, MAX){
     chosen.push(best); chosen.sort((a,b)=>a.km-b.km);
   }
   return chosen;
+}
+
+/* Google caps a route at nine intermediate stops — the app does too, so this
+   is not a URL limitation we can route around. Splitting the day into legs of
+   eleven points each does route around it: every waypoint is then included,
+   and Google has to follow the road we planned rather than cutting the corner.
+   Navigate leg 1, then start leg 2 where it ended. */
+function gdirLegs(day){
+  const pts=day.pts.filter(p=>GEO[p[2]]);
+  if(pts.length<2) return [];
+  const c=p=>GEO[p[2]][0].toFixed(5)+','+GEO[p[2]][1].toFixed(5);
+  const MAXPTS=11;                       /* origin + 9 intermediate + destination */
+  const legs=[];
+  for(let i=0;i<pts.length-1;i+=MAXPTS-1){
+    const chunk=pts.slice(i, i+MAXPTS);
+    if(chunk.length<2) break;
+    const mid=chunk.slice(1,-1);
+    legs.push({
+      from:chunk[0][2], to:chunk[chunk.length-1][2],
+      km:chunk[chunk.length-1][0]-chunk[0][0],
+      url:'https://www.google.com/maps/dir/?api=1&origin='+c(chunk[0])
+        +'&destination='+c(chunk[chunk.length-1])
+        +(mid.length?'&waypoints='+mid.map(c).join('%7C'):'')+'&travelmode=driving'
+    });
+  }
+  return legs;
 }
 
 function gdir(day){
@@ -1795,13 +1823,19 @@ function bindTips(){
   };
   const idOf=el=>{ const g=el.closest?el.closest('.pin'):null; if(g) return g.id;
                    return el.getAttribute && el.getAttribute('data-pin'); };
+  const hide=()=>{ tip.style.display='none';
+    host.querySelectorAll('.pin.hot').forEach(g=>g.classList.remove('hot')); };
+  /* tap-to-show stays useful on touch, but it has to be dismissible */
+  addEventListener('scroll',hide,{passive:true});
+  document.addEventListener('pointerdown',e=>{ if(!host.contains(e.target)) hide(); },{passive:true});
+  document.addEventListener('visibilitychange',hide);
   host.addEventListener('mouseover',e=>{const id=idOf(e.target); if(id){show(id,e);
     const g=document.getElementById(id); if(g) g.classList.add('hot');}});
   host.addEventListener('mousemove',e=>{ if(tip.style.display==='block') move(e); });
   host.addEventListener('mouseout',e=>{const id=idOf(e.target);
     if(id){const g=document.getElementById(id); if(g) g.classList.remove('hot');}
     tip.style.display='none';});
-  host.addEventListener('click',e=>{const id=idOf(e.target); if(id) show(id,e);});
+  host.addEventListener('click',e=>{const id=idOf(e.target); if(id) show(id,e); else hide();});
 }
 
 
@@ -1911,8 +1945,12 @@ function renderDays(s){
       <div class="ridge-box"><div class="ridge-cap"><span>Altitude profile</span><span>${day.km} km · ${day.passes} ${day.passes===1?'pass':'passes'}</span></div>
         <div id="ridge-d${day.n}"></div></div>
       <div class="cols" style="margin-top:20px"><div class="rb"><h4 class="rbhead">Roadbook · day ${day.n}</h4>${rows}
-        <a class="gbtn" href="${gdir(day)}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-map"/></svg>Open Day ${day.n} in Google Maps ↗</a>
-        <p class="mnote" style="margin:8px 0 0">Passes are pinned as waypoints so Google routes over them rather than round them. Check that “avoid tolls” is off, or it will send you down the valley.</p>
+        ${(()=>{const L=gdirLegs(day);
+          if(L.length<2) return `<a class="gbtn" href="${gdir(day)}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-map"/></svg>Open Day ${day.n} in Google Maps ↗</a>`;
+          return `<div class="leglinks">`+L.map((g,i)=>
+            `<a class="gbtn" href="${g.url}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-map"/></svg>Day ${day.n} · leg ${i+1} of ${L.length} · ${esc(g.from.split(' / ')[0])} → ${esc(g.to.split(' / ')[0])}</a>`
+          ).join('')+`</div>`;})()}
+        <p class="mnote" style="margin:8px 0 0">Google takes nine stops per route and the app is no different, so a long day is split into legs — every waypoint is in there, which is what stops it cutting a corner. Navigate one leg, then start the next where it ended. Check that “avoid tolls” is off, or it will send you down the valley.</p>
       </div>${stays}</div></div></section>`;
   }).join('');
 }
@@ -2281,6 +2319,16 @@ document.addEventListener('click',e=>{
 (function profTip(){
   const tip=document.createElement('div'); tip.id='profTip'; document.body.appendChild(tip);
   const KIND={pass:'Pass',stop:'Stop'};
+  /* A tap fires mouseover but often no mouseout and never a mousemove, so on a
+     touch screen this would appear unpositioned and then stay there. */
+  const hoverable=matchMedia('(hover:hover) and (pointer:fine)').matches;
+  const hide=()=>{ tip.style.display='none'; };
+  addEventListener('scroll',hide,{passive:true});
+  addEventListener('pointerdown',hide,{passive:true});
+  addEventListener('touchstart',hide,{passive:true});
+  addEventListener('blur',hide);
+  document.addEventListener('visibilitychange',hide);
+  if(!hoverable) return;
   document.addEventListener('mouseover',e=>{
     const h=e.target.closest && e.target.closest('.p-hit'); if(!h) return;
     const d=h.dataset, kind=KIND[d.k]||'Waypoint';
