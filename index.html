@@ -1898,6 +1898,17 @@ function applyIsolate(){
 
 /* Rough clock time at a waypoint: the day's whole window spread across its
    distance, so the slack for coffee and photographs is already baked in. */
+/* Total ascent: the positive steps between consecutive waypoints. It is a
+   floor, not the true figure — the road rises and falls between the points we
+   hold, and none of that is counted. */
+function ascent(day){
+  let up=0;
+  for(let i=1;i<day.pts.length;i++){
+    const d=day.pts[i][1]-day.pts[i-1][1];
+    if(d>0) up+=d;
+  }
+  return Math.round(up/10)*10;
+}
 function eta(day,km){
   const mins=t=>{const [h,m]=t.replace('≈','').split(':').map(Number); return h*60+m;};
   const a=mins(day.depart), b=mins(day.arrive), total=day.pts[day.pts.length-1][0]||1;
@@ -1955,7 +1966,8 @@ function renderDays(s){
         <span><svg class="ic"><use href="#i-road"/></svg> <b>${day.km} km</b> distance</span>
         <span><svg class="ic"><use href="#i-clock"/></svg> <b>${day.time}</b> moving</span>
         <span><svg class="ic"><use href="#i-peak"/></svg> <b>${day.passes}</b> ${day.passes===1?'pass':'passes'}</span>
-        <span><svg class="ic"><use href="#i-gauge"/></svg> <b>${Math.max(...day.pts.map(p=>p[1]))} m</b> high point</span></div>
+        <span><svg class="ic"><use href="#i-gauge"/></svg> <b>${Math.max(...day.pts.map(p=>p[1]))} m</b> high point</span>
+        <span title="Summed between waypoints, so the real figure is higher"><svg class="ic"><use href="#i-peak"/></svg> <b>${ascent(day).toLocaleString()} m</b> climbed</span></div>
       <div class="day-note">${day.note}</div>
       <div class="ridge-box"><div class="ridge-cap"><span>Altitude profile</span><span>${day.km} km · ${day.passes} ${day.passes===1?'pass':'passes'}</span></div>
         <div id="ridge-d${day.n}"></div></div>
