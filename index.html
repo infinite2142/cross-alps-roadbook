@@ -540,8 +540,6 @@
     .day-head .when{flex-direction:column;align-items:flex-end;gap:0;margin-left:auto;flex:0 0 auto;
       font-size:9px;letter-spacing:.07em;line-height:1.35}
     .daydot{width:8px;height:8px;margin-right:6px}
-    /* the option strip has done its job once you are inside a day */
-    header.compact.inday .switch{display:none}
   }
   @media (max-height:560px){
     .day-head h3{font-size:14.5px}
@@ -2082,15 +2080,6 @@ function syncHeader(){
   const hdr=document.getElementById('hdr');
   const banner=document.querySelector('.banner');
   hdr.classList.toggle('compact', window.scrollY > (banner?banner.offsetHeight*0.55:80));
-  /* inside a day section the day heading is the label that matters, so the
-     option strip can stand down and give the room back */
-  let inDay=false;
-  const probe=hdr.offsetHeight+8;
-  document.querySelectorAll('section.sec.day').forEach(sec=>{
-    const r=sec.getBoundingClientRect();
-    if(r.top<=probe && r.bottom>probe) inDay=true;
-  });
-  hdr.classList.toggle('inday', inDay);
   document.documentElement.style.setProperty('--hdrH', hdr.offsetHeight+'px');
   const h=hdr.offsetHeight+8; let active=null;
   document.querySelectorAll('#secnav a').forEach(a=>{
