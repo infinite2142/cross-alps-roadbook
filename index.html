@@ -114,6 +114,20 @@
   @keyframes sunC{0%,100%{transform:scale(.95);opacity:.60}50%{transform:scale(1.09);opacity:.26}}
   @keyframes sunD{0%,100%{transform:scale(1);opacity:.90}50%{transform:scale(1.06);opacity:1}}
   @media (prefers-reduced-motion: reduce){ .sun circle{animation:none} }
+  /* an ibex that turns up on a ridge now and then, one at a time */
+  .goat{fill:#E4D3C4;color:#E4D3C4;opacity:0;transform-box:fill-box;transform-origin:50% 100%}
+  .goat>*{transform-box:view-box}
+  @keyframes goatPop{
+    0%,2%   {opacity:0}
+    5%      {opacity:.95}
+    18%     {opacity:.95}
+    22%,100%{opacity:0}
+  }
+  .goat.g1{animation:goatPop 33s ease-in-out infinite 4s}
+  .goat.g2{animation:goatPop 33s ease-in-out infinite 15s}
+  .goat.g3{animation:goatPop 33s ease-in-out infinite 26s}
+  @media (prefers-reduced-motion: reduce){ .goat{display:none} }
+
   /* the pano is cropped from the sides on a phone, and the sun sits at 79% across */
   @media (max-width:820px){ .sun{transform:translateX(-250px)} }
   @media (max-width:520px){ .sun{transform:translateX(-330px)} }
@@ -165,10 +179,10 @@
   .wx-t{font-family:'IBM Plex Mono',monospace;font-size:12.5px;white-space:nowrap}
   .wx-t b{font-weight:600;color:var(--ink)}
   .wx-t span{color:var(--slate)}
-  .wx-pop{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--slate);letter-spacing:.03em;
-    margin-top:2px;opacity:.6}
-  .wx-pop.hi{color:var(--signal);font-weight:600;opacity:1}
-  body.dark .wx-pop.hi{color:#8FB8E0}
+  .wx-pop{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.03em;margin-top:2px;
+    color:hsl(var(--ph,210) 68% 30%)}
+  .wx-pop.hi{font-weight:600}
+  body.dark .wx-pop{color:hsl(var(--ph,210) 70% 68%)}
   .wx-skel{color:var(--slate);font-size:13px;padding:18px 0}
   @media(max-width:520px){
     .wx-grid th,.wx-grid td{padding:8px 4px}
@@ -191,6 +205,7 @@
   .pin.hot polygon{transform:scale(1.45);transform-origin:center;transform-box:fill-box}
   .lbl{font-family:'IBM Plex Mono',monospace;font-size:var(--fl,8.4px);fill:var(--ink)}
   .lbl.stay{font-weight:600}
+  .lbl.pass{font-weight:700}
   .lbl.way{fill:var(--slate);font-style:italic;opacity:.9}
   .lead{stroke:var(--slate);stroke-width:.5;opacity:.7}
   .scale-txt{font-family:'IBM Plex Mono',monospace;font-size:var(--fs,7px);fill:var(--slate);letter-spacing:.1em}
@@ -198,7 +213,8 @@
     font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
 
   .rbhead{font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:600;
-    text-transform:uppercase;letter-spacing:.12em;color:var(--slate);margin:0 0 10px}
+    text-transform:uppercase;letter-spacing:.12em;color:var(--slate);margin:0 0 0;
+    padding-bottom:9px;border-bottom:1px solid var(--line)}
   .legend h4,.aside h4{font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:600;
     letter-spacing:.16em;text-transform:uppercase;margin:0 0 10px;color:var(--slate)}
   .legchip{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;background:none;
@@ -233,6 +249,9 @@
     fill:var(--slate);font-style:italic}
   .peak-label.stacked{font-size:calc(var(--fl,10px)*.92);fill:var(--ink)}
   .peak-alt-in{fill:var(--glow);font-family:'IBM Plex Mono',monospace;font-size:calc(var(--fa,8px)*.92)}
+  .peak-label.stacked{paint-order:stroke;stroke:var(--panel);stroke-width:2.6px;stroke-linejoin:round}
+  .peak-alt-in.stacked,.way-label.stacked{paint-order:stroke;stroke:var(--panel);stroke-width:2.2px;stroke-linejoin:round}
+  body.dark .peak-label.stacked,body.dark .peak-alt-in.stacked,body.dark .way-label.stacked{stroke:#1C1F24}
   .km-axis{font-family:'IBM Plex Mono',monospace;fill:var(--slate)}
   .km-axis.mark{fill:var(--glow)}
   .km-lead{stroke:var(--glow);stroke-width:.7;stroke-dasharray:2 2;opacity:.45}
@@ -269,11 +288,13 @@
   .cols{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
   @media(max-width:860px){.cols{grid-template-columns:1fr}}
 
-  .rb{border-top:1px solid var(--line)}
-  .rb-row{display:grid;grid-template-columns:52px 1fr 60px;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);
+  .rb{border-top:0}
+  .rb-row{display:grid;grid-template-columns:40px 56px 1fr 60px;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);
     align-items:baseline;transition:background .15s}
   .rb-row:hover{background:rgba(25,26,24,.045)}
-  .rb-km{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);text-align:right;font-variant-numeric:tabular-nums}
+  .rb-km{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  .rb-leg{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--slate);text-align:right;font-variant-numeric:tabular-nums}
+  .rb-km .lg.unit{color:#9A968D;font-size:9.5px;margin-top:1px}
   .rb-name{font-size:14.5px;line-height:1.35}
   .rb-name em{font-style:normal;display:block;font-size:12.5px;color:var(--slate);margin-top:1px}
   .rb-alt{font-family:'IBM Plex Mono',monospace;font-size:12px;text-align:right;color:var(--slate);font-variant-numeric:tabular-nums}
@@ -551,6 +572,36 @@
 
 <div class="banner">
   <svg class="pano" viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Stylised alpine ridgelines with a switchback road"><use href="#pano"/>
+    <g class="goat g1" transform="translate(580.7 160.6) scale(1.55)" aria-hidden="true">
+      <ellipse cx="6" cy="6.5" rx="3.5" ry="2.05"/>
+      <rect x="3.3" y="8.1" width=".78" height="3.5" rx=".38"/>
+      <rect x="5.1" y="8.1" width=".78" height="3.5" rx=".38"/>
+      <rect x="6.9" y="8.1" width=".78" height="3.5" rx=".38"/>
+      <rect x="8.5" y="8.1" width=".78" height="3.5" rx=".38"/>
+      <path d="M9.1 5.5 L11.5 4.5 L12 5.4 L11.2 6.6 L9.4 6.9 Z"/>
+      <path d="M10.7 4.2 C11.8 3.3 12.1 2 11.2 1.2" fill="none" stroke="currentColor" stroke-width=".85" stroke-linecap="round"/>
+      <path d="M2.6 5.3 L1.2 3.4" fill="none" stroke="currentColor" stroke-width=".8" stroke-linecap="round"/>
+    </g>
+    <g class="goat g2" transform="translate(735.7 168.6) scale(1.55)" aria-hidden="true">
+      <ellipse cx="6" cy="6.5" rx="3.5" ry="2.05"/>
+      <rect x="3.3" y="8.1" width=".78" height="3.5" rx=".38"/>
+      <rect x="5.1" y="8.1" width=".78" height="3.5" rx=".38"/>
+      <rect x="6.9" y="8.1" width=".78" height="3.5" rx=".38"/>
+      <rect x="8.5" y="8.1" width=".78" height="3.5" rx=".38"/>
+      <path d="M9.1 5.5 L11.5 4.5 L12 5.4 L11.2 6.6 L9.4 6.9 Z"/>
+      <path d="M10.7 4.2 C11.8 3.3 12.1 2 11.2 1.2" fill="none" stroke="currentColor" stroke-width=".85" stroke-linecap="round"/>
+      <path d="M2.6 5.3 L1.2 3.4" fill="none" stroke="currentColor" stroke-width=".8" stroke-linecap="round"/>
+    </g>
+    <g class="goat g3" transform="translate(890.7 144.6) scale(1.55)" aria-hidden="true">
+      <ellipse cx="6" cy="6.5" rx="3.5" ry="2.05"/>
+      <rect x="3.3" y="8.1" width=".78" height="3.5" rx=".38"/>
+      <rect x="5.1" y="8.1" width=".78" height="3.5" rx=".38"/>
+      <rect x="6.9" y="8.1" width=".78" height="3.5" rx=".38"/>
+      <rect x="8.5" y="8.1" width=".78" height="3.5" rx=".38"/>
+      <path d="M9.1 5.5 L11.5 4.5 L12 5.4 L11.2 6.6 L9.4 6.9 Z"/>
+      <path d="M10.7 4.2 C11.8 3.3 12.1 2 11.2 1.2" fill="none" stroke="currentColor" stroke-width=".85" stroke-linecap="round"/>
+      <path d="M2.6 5.3 L1.2 3.4" fill="none" stroke="currentColor" stroke-width=".8" stroke-linecap="round"/>
+    </g>
   <g class="sun">
     <circle class="s-halo" cx="1108" cy="112" r="66" fill="#C2496A"/>
     <circle class="s-r2" cx="1108" cy="112" r="46" fill="none" stroke="#D98F7E" stroke-width="1.6"/>
@@ -635,7 +686,7 @@
     </div>
 
     <div class="ridge-box">
-      <div class="ridge-cap"><span>Altitude profile · whole route</span><span>${ALT_MIN} m – 2,850 m</span></div>
+      <div class="ridge-cap"><span>Altitude profile · whole route</span><span>40 m – 2,850 m</span></div>
       <div id="heroRidge"></div>
     </div>
   </div>
@@ -767,14 +818,28 @@ function gdir(day){
   const pts = day.pts.filter(p=>GEO[p[2]]);
   if(pts.length<2) return null;
   const o=pts[0], d=pts[pts.length-1], mid=pts.slice(1,-1);
-  let picks = mid.filter(p=>p[3]==='pass');
-  if(picks.length>9){
-    const keep = new Set(picks.slice().sort((a,b)=>b[1]-a[1]).slice(0,9));
-    picks = picks.filter(p=>keep.has(p));
-  } else {
-    for(const s of mid.filter(p=>p[3]==='stop')){ if(picks.length>=9) break; if(!picks.includes(s)) picks.push(s); }
-    picks.sort((a,b)=>a[0]-b[0]);
+  /* The URL API takes 9 intermediate stops. Picking only the passes loses the
+     shape of a loop — Google then routes straight back the way you came — so
+     choose 9 spread evenly along the day, preferring a pass when one is near. */
+  const MAX=9;
+  let picks;
+  if(mid.length<=MAX){ picks=mid.slice(); }
+  else{
+    const total=mid[mid.length-1][0]||1;
+    picks=[];
+    for(let i=0;i<MAX;i++){
+      const target=((i+0.5)/MAX)*total;
+      let best=null,bd=Infinity;
+      for(const q of mid){
+        if(picks.indexOf(q)>-1) continue;
+        const bias=q[3]==='pass'?0.55:(q[3]==='stop'?0.8:1);
+        const dist=Math.abs(q[0]-target)*bias;
+        if(dist<bd){bd=dist;best=q;}
+      }
+      if(best) picks.push(best);
+    }
   }
+  picks.sort((a,b)=>a[0]-b[0]);
   const c = p => GEO[p[2]][0].toFixed(5)+','+GEO[p[2]][1].toFixed(5);
   return 'https://www.google.com/maps/dir/?api=1&origin='+c(o)+'&destination='+c(d)
        + (picks.length?'&waypoints='+picks.map(c).join('%7C'):'') + '&travelmode=driving';
@@ -1284,7 +1349,7 @@ function buildMap(s,PX){
       taken.push(r);
       const far=Math.abs(dy)>6||Math.abs(dx)>9;
       if(far) labels+=`<line class="lead" x1="${o.x.toFixed(1)}" y1="${o.y.toFixed(1)}" x2="${(dx<0?lx+1:(dx>0?lx-1:lx)).toFixed(1)}" y2="${(ly-lineH*.3).toFixed(1)}"/>`;
-      labels+=`<text class="lbl ${o.stay?'stay':''}${o.way?' way':''}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}" data-day="${o.di}" data-pin="${o.pid}">${esc(o.t)}</text>`;
+      labels+=`<text class="lbl ${o.stay?'stay':''}${o.way?' way':''}${(!o.stay&&!o.way)?' pass':''}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}" data-day="${o.di}" data-pin="${o.pid}">${esc(o.t)}</text>`;
       if(showAlt && !o.way) labels+=`<text class="lbl maplbl-alt" x="${lx.toFixed(1)}" y="${(ly+fA*1.05).toFixed(1)}" text-anchor="${anchor}" data-day="${o.di}" data-pin="${o.pid}" style="font-size:${fA.toFixed(2)}px">${o.alt} m</text>`;
       done=true; break;
     }
@@ -1468,6 +1533,7 @@ function ridgeSVG(segments,opts){
   const px=Math.max(200,opts.px||W), k=Math.min(3.2,Math.max(.72,W/px));
   const fL=(10*k), fA=(8.4*k), fG=(8.6*k), fT=(9.4*k);
   const padT=opts.tall?(fT*3.4):(opts.axis?fT*2.1:22), padB=fG*2.4, padL=Math.max(24,fG*3.4), padR=8;
+  if(opts.tall||opts.axis) H=Math.max(H,opts.tall?300:240);
   const plotH=H-padT-padB,plotW=W-padL-padR;
   let total=0;const segs=segments.map(s=>{const len=s.pts[s.pts.length-1][0];const o={...s,offset:total,len};total+=len;return o;});
   const x=km=>padL+(km/total)*plotW, y=a=>padT+plotH-((Math.max(ALT_MIN,Math.min(ALT_MAX,a))-ALT_MIN)/(ALT_MAX-ALT_MIN))*plotH;
@@ -1499,37 +1565,42 @@ function ridgeSVG(segments,opts){
     marks+=`<circle class="way-dot" cx="${o.x.toFixed(1)}" cy="${o.y.toFixed(1)}" r="${(1.5*Math.min(k,1.7)).toFixed(1)}"><title>${esc(o.p[2])} — ${o.p[1]} m</title></circle>`;
   });
   /* staggered stack under the plot: leader down to its own row, then the name */
-  /* Names go under the plot, packed greedily into rows so nothing collides.
-     Passes claim their row first; waypoints fill what is left.               */
+  /* Labels sit on the chart, just above their own marker, and only climb when
+     something is already there. Passes go first so they keep the best spots. */
   let stackH=0;
   {
-    const rowH=fL*1.42, top=padT+plotH+fG*1.0, gap=fL*1.0;
     const seenN=new Set();
     const cand=[...peaks.map(o=>({o,pass:true})), ...ways.map(o=>({o,pass:false}))]
       .filter(q=>{const n=q.o.p[2]; if(seenN.has(n))return false; seenN.add(n); return true;});
-    cand.sort((a,b)=>(b.pass-a.pass)||(a.o.x-b.o.x));
-    const rowEnd=[];
-    const placed=[];
+    cand.sort((a,b)=>(b.pass-a.pass)||(b.o.p[1]-a.o.p[1]));
+    const taken=[];
+    const hit=r=>taken.some(q=>r.x0<q.x1+1&&q.x0<r.x1+1&&r.y0<q.y1+1&&q.y0<r.y1+1);
+    const lineH=fL*1.06, top=padT-fL*.2, floor=padT+plotH-2;
     cand.forEach(q=>{
       const label=shortName(q.o.p[2]);
-      const chW=(q.pass?fL*.52:fL*.46);
-      const w=(label.length+(q.pass?5:0))*chW;
-      let anchor='middle', x0=q.o.x-w/2, x1=q.o.x+w/2;
-      if(x1>W-2){ anchor='end'; x0=q.o.x-w; x1=q.o.x; }
-      if(x0<2){ anchor='start'; x0=q.o.x; x1=q.o.x+w; }
-      let r=0; while(r<8 && rowEnd[r]!==undefined && x0<rowEnd[r]+gap) r++;
-      if(r>=8) return;                       /* no room: drop it rather than overlap */
-      rowEnd[r]=x1;
-      placed.push({...q,label,r,anchor});
-    });
-    const rows=placed.length?Math.max(...placed.map(q=>q.r))+1:0;
-    stackH=rows*rowH+fL*.7;
-    placed.forEach(q=>{
-      const ly=top+q.r*rowH+fL*.82;
-      marks+=`<line class="peak-lead${q.pass?'':' faint'}" x1="${q.o.x.toFixed(1)}" y1="${(padT+plotH).toFixed(1)}" x2="${q.o.x.toFixed(1)}" y2="${(ly-fL*.68).toFixed(1)}"/>`;
-      marks+= q.pass
-        ? `<text class="peak-label stacked" x="${q.o.x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${q.anchor}">${esc(q.label)} <tspan class="peak-alt-in">${q.o.p[1]}m</tspan></text>`
-        : `<text class="way-label stacked" x="${q.o.x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${q.anchor}">${esc(q.label)}</text>`;
+      const chW=q.pass?fL*.53:fL*.47;
+      const w=Math.max(label.length*chW, q.pass?(String(q.o.p[1]).length+1)*fA*.6:0);
+      const h=lineH*(q.pass?2:1);
+      /* straight up from the marker, then nudged sideways if still blocked */
+      for(let step=0;step<26;step++){
+        const dy=-(fL*1.0)-step*(lineH*0.92);
+        const side=step%3;                       /* centre, then right, then left */
+        const anchor=side===0?'middle':(side===1?'start':'end');
+        const lx=q.o.x+(side===1?3:(side===2?-3:0));
+        const ly=q.o.y+dy;
+        const x0=anchor==='middle'?lx-w/2:(anchor==='start'?lx:lx-w);
+        const r={x0,x1:x0+w,y0:ly-lineH*.85,y1:ly-lineH*.85+h};
+        if(r.x0<padL-14||r.x1>W-2||r.y0<top||r.y1>floor) continue;
+        if(hit(r)) continue;
+        taken.push(r);
+        const far=Math.abs(dy)>fL*2.3;
+        if(far) marks+=`<line class="peak-lead${q.pass?'':' faint'}" x1="${q.o.x.toFixed(1)}" y1="${(q.o.y-2).toFixed(1)}" x2="${q.o.x.toFixed(1)}" y2="${(ly+lineH*.25).toFixed(1)}"/>`;
+        marks+= q.pass
+          ? `<text class="peak-label stacked" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}</text>`
+            +`<text class="peak-alt-in stacked" x="${lx.toFixed(1)}" y="${(ly+fA*1.02).toFixed(1)}" text-anchor="${anchor}">${q.o.p[1]}m</text>`
+          : `<text class="way-label stacked" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}</text>`;
+        break;
+      }
     });
   }
   /* one invisible target per point so the whole profile is hoverable, not just the passes */
@@ -1683,17 +1754,18 @@ function renderDays(s){
     const rows=day.pts.map((p,pi)=>{
       const leg = pi>0 ? p[0]-day.pts[pi-1][0] : 0;
       return `<div class="rb-row ${p[3]==='pass'?'is-pass':''}" data-pin="pin-${di}-${pi}">
-        <div class="rb-km">${p[0]}${leg>0?`<span class="lg">+${leg}</span>`:''}<span class="lg eta">${eta(day,p[0])}</span></div>
+        <div class="rb-km">${p[0]}<span class="lg unit">km</span></div>
+        <div class="rb-leg">${leg>0?`+${leg}`:'—'}<span class="lg eta">${eta(day,p[0])}</span></div>
         <div class="rb-name"><span class="flag f-${p[4]}">${p[4]}</span>${esc(p[2])}${p[5]?`<em>${esc(p[5])}</em>`:''}</div>
         <div class="rb-alt">${p[1]} m</div></div>`;}).join('');
     const stays=day.stays.length?`
       <div class="aside"><h4>Segment map · day ${day.n}</h4>
         <div class="viewtog segtog" role="group" aria-label="Segment map view">
           <button data-seg="s" data-day="${day.n}" aria-pressed="true">Schematic</button>
-          <button data-seg="m" data-day="${day.n}" aria-pressed="false">Map</button>
+          <button data-seg="m" data-day="${day.n}" aria-pressed="false">Map (area only)</button>
         </div>
         <div class="segwrap" id="segwrap-${day.n}" data-bbox="${osmBox(day)}" data-marks="${osmMarks(day)}">${dayMapSVG(day,di)}</div>
-        <a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} on OpenStreetMap ↗</a>
+        <a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} in OSM (area only) ↗</a>
         <h4 style="margin-top:20px">Where to sleep · ${esc(day.to)}</h4>
         ${day.stays.map(h=>`<div class="stay ${h.pick?'pick':''}">
             <div class="nm"><span><svg class="ic"><use href="#i-bed"/></svg>${esc(h.n)}</span>${h.pick?`<span class="pk">${h.pick.toUpperCase()}</span>`:''}</div>
@@ -1709,10 +1781,10 @@ function renderDays(s){
       <div class="aside"><h4>Segment map · day ${day.n}</h4>
         <div class="viewtog segtog" role="group" aria-label="Segment map view">
           <button data-seg="s" data-day="${day.n}" aria-pressed="true">Schematic</button>
-          <button data-seg="m" data-day="${day.n}" aria-pressed="false">Map</button>
+          <button data-seg="m" data-day="${day.n}" aria-pressed="false">Map (area only)</button>
         </div>
         <div class="segwrap" id="segwrap-${day.n}" data-bbox="${osmBox(day)}" data-marks="${osmMarks(day)}">${dayMapSVG(day,di)}</div>
-        <a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} on OpenStreetMap ↗</a>
+        <a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} in OSM (area only) ↗</a>
         <h4 style="margin-top:20px">Where to sleep · ${esc(day.to)}</h4>
         <div class="stay"><div class="nm"><span><svg class="ic"><use href="#i-bed"/></svg>Not chosen yet</span></div>
           <div class="why">${esc(day.staysNote||'No hotels researched for this stop.')}</div></div>
@@ -1932,7 +2004,7 @@ function wxPaint(data){
       const [ic,lab]=wxIcon(c.code);
       h+='<td class="wx-cell'+wxHeat(c.hi)+'"><svg class="ic" role="img" aria-label="'+esc(lab)+'"><use href="#'+ic+'"/></svg>'+
          '<div class="wx-t"><b>'+c.hi+'°</b> <span>'+c.lo+'°</span></div>'+
-         '<div class="wx-pop'+(c.pop>=20?' hi':'')+'">'+(c.pop==null?'–':c.pop+'%')+'</div></td>';
+         '<div class="wx-pop'+(c.pop>=55?' hi':'')+'"'+(c.pop==null?'':' style="--ph:'+Math.round(140-1.4*c.pop)+'"')+'>'+(c.pop==null?'–':c.pop+'%')+'</div></td>';
     });
     h+='</tr>';
   });
