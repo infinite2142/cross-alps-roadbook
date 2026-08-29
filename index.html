@@ -113,9 +113,10 @@
   .wx-t{font-family:'IBM Plex Mono',monospace;font-size:12.5px;white-space:nowrap}
   .wx-t b{font-weight:600;color:var(--ink)}
   .wx-t span{color:var(--slate)}
-  .wx-pop{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--signal);letter-spacing:.03em;margin-top:2px}
-  body.dark .wx-pop{color:#8FB8E0}
-  .wx-pop:empty{display:none}
+  .wx-pop{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--slate);letter-spacing:.03em;
+    margin-top:2px;opacity:.6}
+  .wx-pop.hi{color:var(--signal);font-weight:600;opacity:1}
+  body.dark .wx-pop.hi{color:#8FB8E0}
   .wx-skel{color:var(--slate);font-size:13px;padding:18px 0}
   @media(max-width:520px){
     .wx-grid th,.wx-grid td{padding:8px 4px}
@@ -386,6 +387,15 @@
     .tab .k{font-size:9.5px} .tab .t{font-size:12.5px;display:inline}
     .secnav a{padding:6px 11px;font-size:10px}
   }
+  /* portrait phones: four options will not fit one row legibly — use two */
+  @media (max-width:720px) and (orientation:portrait){
+    .switch{flex-wrap:wrap;overflow-x:hidden}
+    .tab{flex:0 0 50%;min-width:0;border-bottom:1px solid var(--line)}
+    .tab:nth-child(2n){border-right:0}
+    .tab:nth-last-child(-n+2){border-bottom:0}
+    .tab .s{display:none}
+    .tab .t{font-size:13.5px}
+  }
   @media (max-width:560px){
     header.compact .tab .k{display:none}
     .mast h1{font-size:15px}
@@ -531,6 +541,20 @@
 
   <div id="days"></div>
 
+  <section class="sec t-rock" id="sec-weather"><div class="wrap">
+    <div class="sechead"><svg class="ic"><use href="#i-w-part"/></svg><h3>Seven-day outlook</h3></div>
+    <p class="lede">Read off the option selected above, alternating valley and pass, so every high crossing sits next
+      to the valley you would retreat to. If the pass is cold and grey while the valley below it is mild, that is the
+      day to stay low. Anything past three days out is a hint, not a plan.</p>
+    <div class="wx-bar">
+      <button class="wx-btn" id="wxBtn" type="button"><svg class="ic"><use href="#i-clock"/></svg><span id="wxBtnTxt">Refresh</span></button>
+      <span class="wx-stamp mono" id="wxStamp">Loading…</span>
+    </div>
+    <div class="wx-scroll"><div id="wxWrap"><p class="wx-skel">Fetching the forecast…</p></div></div>
+    <div class="tileWarn" id="wxWarn"></div>
+    <p class="wx-stamp" style="margin-top:14px">Data: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · free, no account, no tracking.</p>
+  </div></section>
+
   <section class="sec t-cool" id="sec-tolls"><div class="wrap">
     <div class="sechead"><svg class="ic"><use href="#i-ticket"/></svg><h3>Tolls and access</h3></div>
     <p class="lede">Per car, current rates, for the option selected above. Verify at the gate — Alpine road operators change prices and hours at short notice.</p>
@@ -562,20 +586,6 @@
     </div>
   </div></section>
 
-  <section class="sec t-rock" id="sec-weather"><div class="wrap">
-    <div class="sechead"><svg class="ic"><use href="#i-w-part"/></svg><h3>Seven-day outlook</h3></div>
-    <p class="lede">Seven points along the route, alternating valley and pass, so each high crossing sits next to the
-      valley you would retreat to. <b>Hochtor</b> pairs with Zell am See, <b>Stelvio</b> with Prad directly below it —
-      if the pass is cold and grey while the valley is mild, that is the day to stay low. Anything past three days out
-      is a hint, not a plan.</p>
-    <div class="wx-bar">
-      <button class="wx-btn" id="wxBtn" type="button"><svg class="ic"><use href="#i-clock"/></svg><span id="wxBtnTxt">Refresh</span></button>
-      <span class="wx-stamp mono" id="wxStamp">Loading…</span>
-    </div>
-    <div class="wx-scroll"><div id="wxWrap"><p class="wx-skel">Fetching the forecast…</p></div></div>
-    <div class="tileWarn" id="wxWarn"></div>
-    <p class="wx-stamp" style="margin-top:14px">Data: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · free, no account, no tracking.</p>
-  </div></section>
 
 </main>
 
@@ -655,8 +665,8 @@ A:{key:'A',tag:'Option A',title:'Glockner &amp; Dolomites',sub:'Recommended. Bes
  total:'≈ €145',
  days:[
   {n:0,from:'Munich Airport',to:'Zell am See',km:280,time:'4h 00m',passes:1,depart:'16:00',arrive:'≈20:15',
-   note:'<strong>Tight but worth it.</strong> If the flight is late or the Sixt desk is slow, drop the Rossfeld and run straight down the A8 — Zell am See in 2h15. The Rossfeld is a good warm-up loop, not a highlight worth arriving at 22:00 for.',
-   pts:[[0,448,'Munich Airport','stop','DE','Sixt, Terminalstr. Mitte. Allow 45 min for the desk and the paperwork.'],
+   note:'<strong>Tight but worth it.</strong> If the flight is late or the rental desk is slow, drop the Rossfeld and run straight down the A8 — Zell am See in 2h15. The Rossfeld is a good warm-up loop, not a highlight worth arriving at 22:00 for.',
+   pts:[[0,448,'Munich Airport','stop','DE','Car rental, Terminalstr. Mitte. Allow 45 min for the desk and the paperwork.'],
     [20,520,'A8 east toward Salzburg','','DE',''],[150,570,'Berchtesgaden','','DE',''],
     [172,1570,'Rossfeld Panoramastrasse','pass','DE','Loop road on the German–Austrian ridge. Views into the Salzburg basin.'],
     [195,630,'Lofer','','AT',''],[280,750,'Zell am See','stop','AT','Overnight.']],
@@ -697,11 +707,11 @@ A:{key:'A',tag:'Option A',title:'Glockner &amp; Dolomites',sub:'Recommended. Bes
     {n:'Hotel Stern',loc:'Oberlängenfeld 1, Längenfeld',why:'Infinity pool, very good half board, mid-valley so short hops in both directions.',tel:'+43 5253 5226',pid:'ChIJuZN1VIIvnUcRGEO5hkjqzn8'},
     {n:'die berge lifestyle-hotel',loc:'Gemeindestrasse 2, Sölden',why:'If you\'d rather stay in Sölden: rooftop pool, underground garage, central. Twenty minutes closer to the Timmelsjoch.',tel:'+43 5254 2062',pid:'ChIJ0WiufEMynUcRq9M6VKSR-UE'}]},
   {n:3,from:'Längenfeld',to:'Munich Airport',km:245,time:'4h 00m',passes:1,depart:'08:30',arrive:'≈13:15',
-   note:'<strong>Leave by 08:30.</strong> That lands you at the Sixt return around 13:15 with an hour of slack. Drop the Hahntennjoch and go Imst → Fernpass → Garmisch if you are behind — same finish, 40 minutes quicker.',
+   note:'<strong>Leave by 08:30.</strong> That lands you at the rental return around 13:15 with an hour of slack. Drop the Hahntennjoch and go Imst → Fernpass → Garmisch if you are behind — same finish, 40 minutes quicker.',
    pts:[[0,1179,'Längenfeld','stop','AT',''],[55,828,'Imst','','AT','Fuel. Fill up in Austria — cheaper than Bavaria.'],
     [85,1894,'Hahntennjoch','pass','AT','Narrow, empty, technical. The best last road of the trip.'],
     [100,976,'Elmen / Lechtal','','AT',''],[130,854,'Reutte','','AT',''],[150,994,'Ehrwald','','AT','Zugspitze on your right.'],
-    [175,708,'Garmisch-Partenkirchen','','DE',''],[245,448,'Munich Airport','stop','DE','Refuel within 10 km of the return or Sixt charges its own rate.']],
+    [175,708,'Garmisch-Partenkirchen','','DE',''],[245,448,'Munich Airport','stop','DE','Refuel within 10 km of the return or the rental company charges its own rate.']],
    evening:'',stays:[]}
  ]},
 
@@ -716,7 +726,7 @@ B:{key:'B',tag:'Option B',title:'Stelvio &amp; Dolomites',sub:'Take this if Stel
  days:[
   {n:0,from:'Munich Airport',to:'Prad allo Stelvio',km:288,time:'4h 15m',passes:2,depart:'16:00',arrive:'≈20:30',
    note:'<strong>A long first evening.</strong> Two passes on day one, arriving after dark in the Vinschgau. The payoff is waking up 25 minutes from the bottom of the Stelvio.',
-   pts:[[0,448,'Munich Airport','stop','DE','Sixt, Terminalstr. Mitte.'],[95,708,'Garmisch-Partenkirchen','','DE',''],
+   pts:[[0,448,'Munich Airport','stop','DE','Car rental, Terminalstr. Mitte.'],[95,708,'Garmisch-Partenkirchen','','DE',''],
     [140,1216,'Fernpass','pass','AT','Busy but scenic. Fernsteinsee on your left.'],[165,828,'Imst','','AT',''],
     [195,816,'Landeck','','AT','Fuel.'],[245,1504,'Reschenpass','pass','IT','Border into South Tyrol.'],
     [252,1520,'Lago di Resia','stop','IT','The submerged bell tower. Two minutes off the road.'],
@@ -757,7 +767,7 @@ B:{key:'B',tag:'Option B',title:'Stelvio &amp; Dolomites',sub:'Take this if Stel
     {n:'Majestic Unique Spa Resort',loc:'Im Gelände 20, Riscone / Reischach',why:'Bigger and more polished, outdoor pool and multiple saunas. The treat option.',tel:'+39 0474 410993',pid:'ChIJOxdujckheEcR0OiioATWbjs'},
     {n:'K1 Mountain Chalet',loc:'Via Funivia 22, Bruneck',why:'Apartments rather than a hotel. Useful if you want space and don\'t care about dinner.',tel:'+39 0474 862040',pid:'ChIJ3Zyao7kheEcR9x99bUHmw3I'}]},
   {n:3,from:'Bruneck',to:'Munich Airport',km:300,time:'3h 15m',passes:1,depart:'09:00',arrive:'≈12:45',
-   note:'<strong>Pure motorway.</strong> The easiest final day of the three — 300 km but almost all of it at 130 km/h. Leave at 09:00 and you are at the Sixt return before 13:00.',
+   note:'<strong>Pure motorway.</strong> The easiest final day of the three — 300 km but almost all of it at 130 km/h. Leave at 09:00 and you are at the rental return before 13:00.',
    pts:[[0,835,'Bruneck / Brunico','stop','IT',''],[35,559,'Brixen / Bressanone','','IT','Join the A22.'],
     [70,1370,'Brenner Pass','pass','AT','Border. Toll booth on the Austrian side.'],
     [110,574,'Innsbruck','','AT','Fuel here, not in Germany.'],[300,448,'Munich Airport','stop','DE','']],
@@ -775,7 +785,7 @@ C:{key:'C',tag:'Option C',title:'Everything',sub:'Stelvio and Glockner in one go
  days:[
   {n:0,from:'Munich Airport',to:'Prad allo Stelvio',km:288,time:'4h 15m',passes:2,depart:'16:00',arrive:'≈20:30',
    note:'<strong>Identical to Option B.</strong> Fernpass then Reschen, sleeping at the foot of the Stelvio.',
-   pts:[[0,448,'Munich Airport','stop','DE','Sixt, Terminalstr. Mitte.'],[95,708,'Garmisch-Partenkirchen','','DE',''],
+   pts:[[0,448,'Munich Airport','stop','DE','Car rental, Terminalstr. Mitte.'],[95,708,'Garmisch-Partenkirchen','','DE',''],
     [140,1216,'Fernpass','pass','AT',''],[165,828,'Imst','','AT',''],[195,816,'Landeck','','AT','Fuel.'],
     [245,1504,'Reschenpass','pass','IT','Border into South Tyrol.'],[252,1520,'Lago di Resia','stop','IT','The submerged bell tower.'],
     [280,907,'Glurns / Glorenza','','IT',''],[288,915,'Prad allo Stelvio','stop','IT','Overnight.']],
@@ -830,7 +840,7 @@ D:{key:'D',tag:'Option D',title:'Valleys &amp; Lakes',sub:'The wet-weather route
  days:[
   {n:0,from:'Munich Airport',to:'Zell am See',km:230,time:'2h 45m',passes:0,depart:'16:00',arrive:'≈19:00',
    note:'<strong>Straight down the motorway.</strong> No Rossfeld on this version — it is a panorama road and there is no panorama. Buy the vignette at the last German services or the first Austrian petrol station, then run the A8 to Salzburg and drop south.',
-   pts:[[0,448,'Munich Airport','stop','DE','Sixt, Terminalstr. Mitte. Allow 45 min for the desk and the paperwork.'],
+   pts:[[0,448,'Munich Airport','stop','DE','Car rental, Terminalstr. Mitte. Allow 45 min for the desk and the paperwork.'],
     [20,520,'A8 east toward Salzburg','','DE',''],[145,424,'Salzburg','','AT','Vignette here at the latest.'],
     [190,630,'Lofer','','AT',''],[230,750,'Zell am See','stop','AT','Overnight.']],
    evening:'Lake promenade is a five-minute walk from all three hotels, and it is covered most of the way. Kitchens in Zell stop around 21:00 — call ahead if you are running late.',
@@ -869,7 +879,7 @@ D:{key:'D',tag:'Option D',title:'Valleys &amp; Lakes',sub:'The wet-weather route
     [130,1216,'Fernpass','pass','AT','Two lanes, no hairpins. Queues on a summer Sunday, not in the wet.'],
     [150,994,'Ehrwald','','AT','Zugspitze on your right if the cloud lifts.'],
     [175,708,'Garmisch-Partenkirchen','','DE','Partnachklamm gorge is a good hour if you are ahead of schedule, and it is better in the rain.'],
-    [270,448,'Munich Airport','stop','DE','Refuel within 10 km of the return or Sixt charges its own rate.']],
+    [270,448,'Munich Airport','stop','DE','Refuel within 10 km of the return or the rental company charges its own rate.']],
    evening:'',stays:[]}
  ]},
 
@@ -933,7 +943,7 @@ const NOTES={
  'Innsbruck':'Tyrolean capital in a tight valley under the Nordkette — fuel here, it is cheaper than Bavaria.',
  'Hochtor tunnel':'The main Alpine ridge crossing at 2,504 m, cut through the rock in 1935.',
  'Rossfeld Panoramastrasse':'Loop road running along the German–Austrian ridge with the Salzburg basin laid out below.',
- 'Munich Airport':'Sixt is at Terminalstr. Mitte, parking level P20.'
+ 'Munich Airport':'The rental desks are at Terminalstr. Mitte, parking level P20.'
 };
 Object.values(D).forEach(sc=>sc.days.forEach(d=>d.pts.forEach(pt=>{
   const base=NOTES[pt[2]]; if(!base) return;
@@ -1266,9 +1276,9 @@ function renderDays(s){
               <a href="tel:${h.tel.replace(/\s/g,'')}">${h.tel}</a>
             </div></div>`).join('')}
         ${day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:''}</div>`
-      :`<div class="aside"><h4>End of trip</h4><div class="stay"><div class="nm"><span>Sixt return, Munich Airport</span></div>
+      :`<div class="aside"><h4>End of trip</h4><div class="stay"><div class="nm"><span>Car return, Munich Airport</span></div>
          <div class="loc">Terminalstr. Mitte, parking level P20</div>
-         <div class="why">Allow 30 minutes for the return inspection. Refuel within 10 km or Sixt bills its own rate.</div></div></div>`;
+         <div class="why">Allow 30 minutes for the return inspection. Refuel within 10 km or the rental company bills its own rate.</div></div></div>`;
     return `<section class="sec day ${di%2?'alt':''}" id="sec-day${day.n}"><div class="daywrap">
       <div class="day-head"><h3><i class="daydot" style="background:${DAYC[di]}"></i>Day ${day.n} · ${esc(day.from)} → ${esc(day.to)}</h3>
         <span class="when mono">depart ${day.depart} · arrive ${day.arrive}</span></div>
@@ -1328,16 +1338,17 @@ function render(k){
     window.scrollTo({top:0,behavior:'instant'});
   }
   setTimeout(()=>{syncHeader();paintProfiles();paintMap();},40);
+  wxLoad(k);
 }
 
 
 /* ---------- section nav, scrollspy and header compaction ---------- */
 function buildNav(s){
   const items = s.days.map((d,i)=>({id:'sec-day'+d.n, label:'Day '+d.n, dot:DAYC[i]}))
-    .concat([{id:'sec-tolls',label:'Tolls',icon:'i-ticket'},
+    .concat([{id:'sec-weather',label:'Weather',icon:'i-w-part'},
+             {id:'sec-tolls',label:'Tolls',icon:'i-ticket'},
              {id:'sec-book',label:'Book first',icon:'i-check'},
-             {id:'sec-rules',label:'Rules',icon:'i-alert'},
-             {id:'sec-weather',label:'Weather',icon:'i-w-part'}]);
+             {id:'sec-rules',label:'Rules',icon:'i-alert'}]);
   document.getElementById('secnav').innerHTML =
     `<a href="#sec-overview" data-t="sec-overview"><svg class="ic"><use href="#i-map"/></svg>Overview</a>` +
     items.map(i=>`<a href="#${i.id}" data-t="${i.id}">`+
@@ -1377,8 +1388,6 @@ function setTheme(dark){
 setTheme(false);   /* light by default; the button switches it */
 document.getElementById('themeBtn').onclick=()=>setTheme(!document.body.classList.contains('dark'));
 
-render('A');
-syncHeader();
 
 /* ---------- seven-day outlook ──────────────────────────────────────
    Static page, no backend: the browser talks to Open-Meteo directly.
@@ -1386,17 +1395,28 @@ syncHeader();
    so the throttling below is politeness and UX, not a security control.
    It keeps a bot on Refresh from burning the VISITOR's own IP against
    Open-Meteo's per-IP limits, and stops double-taps firing twice.      */
-const WX_SPOTS=[
-  {n:'Munich Airport', alt:448,  cc:'DE', lat:48.354, lon:11.786},
-  {n:'Zell am See',    alt:750,  cc:'AT', lat:47.323, lon:12.797},
-  {n:'Hochtor',        alt:2504, cc:'AT', lat:47.079, lon:12.842},
-  {n:'Prad',           alt:915,  cc:'IT', lat:46.617, lon:10.590},
-  {n:'Stelvio',        alt:2757, cc:'IT', lat:46.529, lon:10.454},
-  {n:'Canazei',        alt:1465, cc:'IT', lat:46.477, lon:11.769},
-  {n:'Garmisch',       alt:708,  cc:'DE', lat:47.492, lon:11.096}
-];
-const WX_KEY='wx-cache-v1', WX_TTL=30*60*1000, WX_COOLDOWN=60*1000;
-let wxBusy=false, wxLast=0, wxTimer=null;
+/* Points are read off the selected route, so switching option switches the
+   forecast: the start, each day's highest pass, each night's base, and a town
+   on the way home rather than the airport a second time. */
+function wxSpots(s){
+  const out=[], seen=new Set(), last=s.days.length-1;
+  const add=p=>{ if(!p||!GEO[p[2]]||seen.has(p[2])) return; seen.add(p[2]);
+    out.push({n:p[2],alt:p[1],cc:p[4],lat:GEO[p[2]][0],lon:GEO[p[2]][1]}); };
+  s.days.forEach((day,di)=>{
+    const pts=day.pts; if(!pts.length) return;
+    if(di===0) add(pts[0]);
+    if(di>0){                                   /* the arrival evening gets no pass */
+      const passes=pts.filter(p=>p[3]==='pass');
+      if(passes.length) add(passes.reduce((a,b)=>b[1]>a[1]?b:a));
+    }
+    if(di<last) add(pts[pts.length-1]);
+    else { const home=pts.slice(0,-1).filter(p=>p[3]!=='pass'); add(home[home.length-1]); }
+  });
+  return out;
+}
+let WX_SPOTS=[];
+const WX_KEY='wx-cache-v2', WX_TTL=30*60*1000, WX_COOLDOWN=60*1000;
+let wxBusy=false, wxLast=0, wxTimer=null, wxOpt=null;
 
 /* WMO code → icon + label. Grouped; anything unknown falls back to cloud. */
 function wxIcon(c){
@@ -1413,8 +1433,9 @@ function wxIcon(c){
   return ['i-w-cloud','—'];
 }
 const wxStore={
-  get(){ try{ const r=localStorage.getItem(WX_KEY); return r?JSON.parse(r):null; }catch(e){ return null; } },
-  set(v){ try{ localStorage.setItem(WX_KEY,JSON.stringify(v)); }catch(e){} }
+  all(){ try{ return JSON.parse(localStorage.getItem(WX_KEY)||'{}'); }catch(e){ return {}; } },
+  get(k){ return this.all()[k]||null; },
+  set(k,v){ try{ const a=this.all(); a[k]=v; localStorage.setItem(WX_KEY,JSON.stringify(a)); }catch(e){} }
 };
 function wxWarn(msg){
   const w=document.getElementById('wxWarn');
@@ -1437,8 +1458,9 @@ function wxRenderCooldown(){
 function wxPaint(data){
   const wrap=document.getElementById('wxWrap'); if(!wrap||!data) return;
   const days=data.days, rows=data.rows;
+  const spots=data.spots||WX_SPOTS;
   let h='<table class="wx-grid"><thead><tr><th>Day</th>';
-  for(const sp of WX_SPOTS) h+='<th><b>'+esc(sp.n)+'</b><span>'+sp.alt+' m · '+sp.cc+'</span></th>';
+  for(const sp of spots) h+='<th><b>'+esc(sp.n)+'</b><span>'+sp.alt+' m · '+sp.cc+'</span></th>';
   h+='</tr></thead><tbody>';
   days.forEach((d,i)=>{
     h+='<tr><th><b>'+esc(d.wd)+'</b>'+esc(d.md)+'</th>';
@@ -1448,7 +1470,7 @@ function wxPaint(data){
       const [ic,lab]=wxIcon(c.code);
       h+='<td class="wx-cell"><svg class="ic" role="img" aria-label="'+esc(lab)+'"><use href="#'+ic+'"/></svg>'+
          '<div class="wx-t"><b>'+c.hi+'°</b> <span>'+c.lo+'°</span></div>'+
-         '<div class="wx-pop">'+(c.pop>=20?c.pop+'%':'')+'</div></td>';
+         '<div class="wx-pop'+(c.pop>=20?' hi':'')+'">'+(c.pop==null?'–':c.pop+'%')+'</div></td>';
     });
     h+='</tr>';
   });
@@ -1464,6 +1486,7 @@ async function wxFetch(manual){
   if(wxBusy) return;
   if(manual && Date.now()-wxLast < WX_COOLDOWN){ wxRenderCooldown(); return; }
   wxBusy=true; wxRenderCooldown(); wxWarn('');
+  const opt=wxOpt;
   const ctl=new AbortController();
   const to=setTimeout(()=>ctl.abort(),12000);
   try{
@@ -1491,10 +1514,10 @@ async function wxFetch(manual){
         pop:dl.precipitation_probability_max?(dl.precipitation_probability_max[i]||0):0
       }));
     });
-    const data={at:Date.now(),days,rows};
-    wxStore.set(data); wxLast=Date.now(); wxPaint(data);
+    const data={at:Date.now(),days,rows,spots:WX_SPOTS};
+    wxStore.set(opt,data); wxLast=Date.now(); if(opt===wxOpt) wxPaint(data);
   }catch(e){
-    const cached=wxStore.get();
+    const cached=wxStore.get(opt);
     if(cached){ cached.stale=true; wxPaint(cached); }
     else { const w=document.getElementById('wxWrap'); if(w) w.innerHTML='<p class="wx-skel">No forecast available.</p>'; }
     wxWarn(e.name==='AbortError'
@@ -1505,17 +1528,26 @@ async function wxFetch(manual){
     clearTimeout(to); wxBusy=false; wxRenderCooldown();
   }
 }
+function wxLoad(k){
+  if(!document.getElementById('wxBtn')) return;
+  wxOpt=k; WX_SPOTS=wxSpots(D[k]);
+  const cached=wxStore.get(k);
+  if(cached && Date.now()-cached.at < WX_TTL){ wxPaint(cached); wxRenderCooldown(); return; }
+  if(cached){ cached.stale=true; wxPaint(cached); }
+  else { const w=document.getElementById('wxWrap');
+         if(w) w.innerHTML='<p class="wx-skel">Fetching the forecast…</p>';
+         const st=document.getElementById('wxStamp'); if(st) st.textContent='Loading…'; }
+  wxFetch(false);
+}
 (function wxInit(){
   const btn=document.getElementById('wxBtn'); if(!btn) return;
   btn.addEventListener('click',()=>wxFetch(true));
-  const cached=wxStore.get();
-  if(cached && Date.now()-cached.at < WX_TTL){
-    wxLast=cached.at; wxPaint(cached); wxRenderCooldown();
-  } else {
-    if(cached){ cached.stale=true; wxPaint(cached); }
-    wxFetch(false);
-  }
 })();
+
+/* boot last: render() calls wxLoad(), which touches let-bound state above */
+render('A');
+syncHeader();
+
 </script>
 </body>
 </html>
