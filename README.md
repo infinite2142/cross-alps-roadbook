@@ -1,6 +1,7 @@
 # Cross-Alps Trip
 
-Single-page roadbook for a four-day drive from Munich Airport across Austria and Italy.
+Single-page roadbook for a three-day drive from Munich Airport across Austria and Italy,
+plus an arrival evening.
 Three switchable route options, per-day roadbooks with altitude
 profiles, a schematic and a terrain map, tolls, hotels and a pre-departure checklist.
 
