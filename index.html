@@ -784,7 +784,7 @@
 <footer>
   <div class="wrap">
     <p>The per-day figure is moving time on the routing shown. The clock times in each roadbook are not — they spread the whole day, departure to arrival, across the distance, so stops, food and toll queues are already in them. That slack runs from about a fifth of moving time on the motorway transfer up to double it on the easy last days, median around two thirds. You will still spend longer at Fuscher Törl than you plan to.</p>
-    <p>Hotel links open Google Maps, where the current photo gallery, opening hours and directions live. Details were correct at time of writing; at this notice, phone rather than book online.</p>
+    <p>Hotel links open Google Maps, where the current photo gallery, opening hours and directions live. Details were correct at time of writing.</p>
   </div>
 </footer>
 
@@ -1046,8 +1046,8 @@ C:{key:'C',tag:'Option C',title:'Stelvio &amp; Dolomites',short:'Stelvio',sub:'T
     [252,1520,'Lago di Resia','stop','IT','The submerged bell tower. Two minutes off the road.'],
     [280,907,'Glurns / Glorenza','','IT','Smallest walled town in the Alps. Worth a slow drive-through.'],
     [288,915,'Prad allo Stelvio','stop','IT','Overnight.']],
-   evening:'Prad is a cycling town — kitchens run late and everywhere does a proper vegetarian plate. Both hotels do a five-course half board that beats eating out.',
-   stays:[{n:'Garden Park Hotel',pick:'Pick',loc:'Via Pineta 35A, Prato allo Stelvio',why:'Big grounds, garage, spa, and a kitchen that handles vegetarian requests properly. Fifteen minutes from hairpin one.',tel:'+39 0473 618228',pid:'ChIJixzz5XIfg0cRHRz497sJXR0'},
+   evening:'Prad is a cycling town, so kitchens run late by Alpine standards. Both hotels do a five-course half board that beats eating out.',
+   stays:[{n:'Garden Park Hotel',pick:'Pick',loc:'Via Pineta 35A, Prato allo Stelvio',why:'Big grounds, garage, spa and a serious kitchen. Fifteen minutes from hairpin one.',tel:'+39 0473 618228',pid:'ChIJixzz5XIfg0cRHRz497sJXR0'},
     {n:'Aktiv- & Wellnesshotel Zentral',loc:'Via Principale 100, Prato allo Stelvio',why:'In the village centre, modern rooms, large spa. Good backup.',tel:'+39 0473 616008',pid:'ChIJFcsAkggfg0cRn2q1S2FwGaw'},
     {n:'Pension & Residence Astoria',loc:'Vicolo Maniscalchi 1, Prato allo Stelvio',why:'Simpler and cheaper, owner-run, early breakfast for the Stelvio crowd.',tel:'+39 0473 616338',pid:'ChIJz8UiYggfg0cRJuauLq7j3V4'}]},
   {n:1,from:'Prad allo Stelvio',to:'Canazei',km:325,time:'8h 00m',passes:6,depart:'09:00',arrive:'≈20:00',
@@ -1185,8 +1185,8 @@ E:{key:'E',tag:'Option E',title:'Valleys &amp; Lakes',short:'Valleys',sub:'The w
     [175,325,'Merano / Meran','','IT','Trauttmansdorff gardens, the thermal baths, and covered promenades along the Passer.'],
     [230,907,'Glurns / Glorenza','','IT','Intact medieval walls. Ten minutes to walk the full circuit.'],
     [240,915,'Prad allo Stelvio','stop','IT','Overnight. The Stelvio starts here if the sky clears.']],
-   evening:'Prad is a cycling town — kitchens run late and everywhere does a proper vegetarian plate. Both hotels do a five-course half board that beats eating out.',
-   stays:[{n:'Garden Park Hotel',pick:'Pick',loc:'Via Pineta 35A, Prato allo Stelvio',why:'Big grounds, garage, spa, and a kitchen that handles vegetarian requests properly. Fifteen minutes from hairpin one.',tel:'+39 0473 618228',pid:'ChIJixzz5XIfg0cRHRz497sJXR0'},
+   evening:'Prad is a cycling town, so kitchens run late by Alpine standards. Both hotels do a five-course half board that beats eating out.',
+   stays:[{n:'Garden Park Hotel',pick:'Pick',loc:'Via Pineta 35A, Prato allo Stelvio',why:'Big grounds, garage, spa and a serious kitchen. Fifteen minutes from hairpin one.',tel:'+39 0473 618228',pid:'ChIJixzz5XIfg0cRHRz497sJXR0'},
     {n:'Aktiv- & Wellnesshotel Zentral',loc:'Via Principale 100, Prato allo Stelvio',why:'In the village centre, modern rooms, large spa. Good backup.',tel:'+39 0473 616008',pid:'ChIJFcsAkggfg0cRn2q1S2FwGaw'},
     {n:'Pension & Residence Astoria',loc:'Vicolo Maniscalchi 1, Prato allo Stelvio',why:'Simpler and cheaper, owner-run, early breakfast.',tel:'+39 0473 616338',pid:'ChIJz8UiYggfg0cRJuauLq7j3V4'}]},
   {n:3,from:'Prad allo Stelvio',to:'Munich',km:245,time:'4h 15m',passes:2,depart:'09:00',arrive:'≈20:00',
@@ -1279,7 +1279,7 @@ const TODO_ALL=[
  {t:'Check the Gavia and the Stelvio are open',d:'Both normally run into October but shut on the first serious snow. The Gavia is single track in places with no barrier — if it is wet or in cloud, drop to the Aprica and rejoin at Bormio.',when:s=>has(s,'Passo Gavia')||has(s,'Passo dello Stelvio')},
  {t:'Check the Swiss passes and skip the vignette',d:'Ofenpass, Forcola and Bernina are high and shut early in a bad autumn. None of them is motorway, so the CHF 40 sticker is not needed unless you divert onto one.',when:s=>country(s,'CH')},
  {t:'Sort a ZTL-safe car park for every Italian night',d:'Garda, Bormio, Corvara, Canazei and most South Tyrol centres are camera-controlled. Book a hotel with its own garage, or note the nearest signed car park before you arrive.',when:s=>country(s,'IT')},
- {t:'Call the hotels',d:'Four days out, phone beats any booking site. Ask for half board and mention vegetarian at the time of booking, not on arrival.',when:s=>s.days.some(d=>d.stays.length)},
+ {t:'Call the hotels',d:'Ask for half board when you book rather than on arrival — several of these kitchens stop serving early out of season.',when:s=>s.days.some(d=>d.stays.length)},
  {t:'Pick the two unbooked nights',d:'This route still has stops with nothing researched. Sort them before anything else — everything downstream depends on where you sleep.',when:s=>s.days.some((d,i)=>i<s.days.length-1&&!d.stays.length)},
  {t:'Download offline maps for the whole corridor',d:'Google Maps offline areas cover a box, not a route — take four overlapping boxes. Signal drops on the north side of most of these passes.',when:()=>true},
  {t:'Check pass status the morning before',d:'alpen-paesse.ch, suedtirol.com/verkehr, grossglockner.at webcams. Roadworks near Umbrail have run alternating closures.',when:()=>true},
@@ -1894,8 +1894,8 @@ function renderDays(s){
           <div class="why">${esc(day.staysNote||'No hotels researched for this stop.')}</div></div>
         ${day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:''}</div>`
       :`<div class="aside"><h4>End of trip</h4><div class="stay"><div class="nm"><span>Munich, city centre</span></div>
-         <div class="loc">Munich by 20:00 · no rush after that</div>
-         <div class="why">Nothing is due back tonight, so 20:00 is a target rather than a deadline. Park in a signed Parkhaus rather than on the street: the Altstadt is resident-permit only in the evening, and the Umweltzone inside the Mittlerer Ring needs a green sticker, which German plates carry as standard. Weekend access is otherwise unrestricted.</div></div></div>`;
+         <div class="loc">Munich by 20:00</div>
+         <div class="why">Park in a signed Parkhaus rather than on the street: the Altstadt is resident-permit only in the evening, and the Umweltzone inside the Mittlerer Ring needs a green sticker, which German plates carry as standard. Access is otherwise unrestricted.</div></div></div>`;
     return `<section class="sec day ${di%2?'alt':''}" id="sec-day${day.n}"><div class="daywrap">
       <div class="day-head"><h3><i class="daydot" style="background:${DAYC[di]}"></i>Day ${day.n} · ${esc(day.from)} → ${esc(day.to)}</h3>
         <span class="when mono">depart ${day.depart} · arrive ${day.arrive}</span></div>
