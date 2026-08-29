@@ -86,6 +86,20 @@
   .leaflet-popup-content .alt{font-family:'IBM Plex Mono',monospace;color:var(--glow);font-weight:600;font-size:12px}
   .leaflet-popup-content .nt{color:var(--slate);display:block;margin-top:4px}
   .stayIcon{background:#191A18;border:1.5px solid #fff;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+
+  /* hero sun: three rings drifting out of phase. transform+opacity only, so it
+     runs on the compositor and needs no SVG geometry-property support. */
+  .sun circle{transform-box:fill-box;transform-origin:50% 50%}
+  .sun .s-halo{opacity:.07;animation:sunA 13s ease-in-out infinite}
+  .sun .s-r2  {opacity:.34;animation:sunB 8.5s ease-in-out infinite}
+  .sun .s-r1  {opacity:.50;animation:sunC 6s ease-in-out infinite}
+  .sun .s-core{opacity:.94;animation:sunD 6s ease-in-out infinite}
+  @keyframes sunA{0%,100%{transform:scale(.94);opacity:.05}50%{transform:scale(1.09);opacity:.11}}
+  @keyframes sunB{0%,100%{transform:scale(.96);opacity:.40}50%{transform:scale(1.09);opacity:.14}}
+  @keyframes sunC{0%,100%{transform:scale(.95);opacity:.60}50%{transform:scale(1.09);opacity:.26}}
+  @keyframes sunD{0%,100%{transform:scale(1);opacity:.90}50%{transform:scale(1.06);opacity:1}}
+  @media (prefers-reduced-motion: reduce){ .sun circle{animation:none} }
+
   .tileWarn{display:none;padding:10px 12px;background:#F7E9EC;border:1px solid #E3BFC8;font-size:13px;margin:6px 0 0}
 
   /* ── seven-day outlook ──────────────────────────────────────────── */
@@ -110,6 +124,19 @@
   .wx-grid tbody tr:hover{background:rgba(0,0,0,.028)}
   body.dark .wx-grid tbody tr:hover{background:rgba(255,255,255,.045)}
   .wx-cell .ic{width:21px;height:21px;color:var(--slate);display:block;margin:0 auto 3px}
+  /* heat shading: cold end borrows the day-1 blue, warm end the accent rose */
+  .wx-cell.h1{background:rgba(38,85,127,.22)}
+  .wx-cell.h2{background:rgba(38,85,127,.12)}
+  .wx-cell.h3{background:rgba(38,85,127,.05)}
+  .wx-cell.h4{background:rgba(194,73,106,.06)}
+  .wx-cell.h5{background:rgba(194,73,106,.13)}
+  .wx-cell.h6{background:rgba(194,73,106,.23)}
+  body.dark .wx-cell.h1{background:rgba(96,156,214,.26)}
+  body.dark .wx-cell.h2{background:rgba(96,156,214,.15)}
+  body.dark .wx-cell.h3{background:rgba(96,156,214,.06)}
+  body.dark .wx-cell.h4{background:rgba(224,110,142,.08)}
+  body.dark .wx-cell.h5{background:rgba(224,110,142,.16)}
+  body.dark .wx-cell.h6{background:rgba(224,110,142,.27)}
   .wx-t{font-family:'IBM Plex Mono',monospace;font-size:12.5px;white-space:nowrap}
   .wx-t b{font-weight:600;color:var(--ink)}
   .wx-t span{color:var(--slate)}
@@ -445,8 +472,6 @@
     <linearGradient id="r4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#16171F"/><stop offset="100%" stop-color="#0E1015"/></linearGradient>
   </defs>
   <rect width="1400" height="420" fill="url(#sky)"/>
-  <circle cx="1108" cy="112" r="27" fill="#F2D9CE" opacity=".92"/>
-  <circle cx="1108" cy="112" r="54" fill="#F2D9CE" opacity=".09"/>
   <path fill="url(#r1)" d="M0 240 L70 205 L140 232 L215 168 L290 216 L360 190 L440 150 L515 205 L590 178 L670 225 L745 186 L820 232 L900 162 L975 214 L1050 192 L1130 158 L1210 208 L1290 182 L1360 220 L1400 238 L1400 420 L0 420Z"/>
   <g fill="#EFE4E7" opacity=".82"><path d="M215.0 168.0 L240.5 184.3 L226.2 181.3 L215.0 189.0 L203.8 183.7 L189.5 189.8Z"/><path d="M440.0 150.0 L465.5 168.7 L450.7 162.8 L439.1 168.1 L427.6 160.5 L412.8 163.6Z"/><path d="M590.0 178.0 L617.2 194.0 L602.4 187.6 L590.9 192.6 L579.3 184.6 L564.5 187.2Z"/><path d="M900.0 162.0 L925.5 179.7 L910.7 176.9 L899.1 184.7 L887.6 179.6 L872.8 185.8Z"/><path d="M1130.0 158.0 L1157.2 175.0 L1142.0 169.0 L1130.0 174.3 L1118.0 166.6 L1102.8 169.6Z"/><path d="M1290.0 182.0 L1313.8 194.9 L1299.5 189.3 L1288.3 194.9 L1277.1 187.5 L1262.8 190.8Z"/></g>
   <path fill="url(#r2)" d="M0 292 L96 252 L170 286 L255 238 L340 290 L420 250 L510 296 L600 244 L690 288 L775 246 L865 300 L950 252 L1040 292 L1125 248 L1215 296 L1300 254 L1400 288 L1400 420 L0 420Z"/>
@@ -463,7 +488,13 @@
 </symbol></defs></svg>
 
 <div class="banner">
-  <svg class="pano" viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Stylised alpine ridgelines with a switchback road"><use href="#pano"/></svg>
+  <svg class="pano" viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Stylised alpine ridgelines with a switchback road"><use href="#pano"/>
+  <g class="sun">
+    <circle class="s-halo" cx="1108" cy="112" r="66" fill="#C2496A"/>
+    <circle class="s-r2" cx="1108" cy="112" r="46" fill="none" stroke="#D98F7E" stroke-width="1.6"/>
+    <circle class="s-r1" cx="1108" cy="112" r="35" fill="none" stroke="#EFC3AC" stroke-width="2"/>
+    <circle class="s-core" cx="1108" cy="112" r="25" fill="#F6E6DA"/>
+  </g></svg>
   <div class="banner-copy"><div class="inner">
     <p class="eyebrow"><svg class="ic"><use href="#i-peak"/></svg> Three days · three options · 12–16 passes</p>
     <h1>Cross-Alps Trip <span style="opacity:.62;font-weight:400">(short&nbsp;version)</span></h1>
@@ -471,7 +502,13 @@
 </div>
 
 <header id="hdr">
-  <div class="hdr-art"><svg viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice"><use href="#pano"/></svg></div>
+  <div class="hdr-art"><svg viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice"><use href="#pano"/>
+  <g class="sun">
+    <circle class="s-halo" cx="1108" cy="112" r="66" fill="#C2496A"/>
+    <circle class="s-r2" cx="1108" cy="112" r="46" fill="none" stroke="#D98F7E" stroke-width="1.6"/>
+    <circle class="s-r1" cx="1108" cy="112" r="35" fill="none" stroke="#EFC3AC" stroke-width="2"/>
+    <circle class="s-core" cx="1108" cy="112" r="25" fill="#F6E6DA"/>
+  </g></svg></div>
   <div class="lift">
   <div class="wrap">
     <div class="mast">
@@ -622,6 +659,8 @@ const GEO = {
  'Ponte di Legno':[46.259,10.510],'Passo del Tonale':[46.259,10.585],'Cles / Val di Non':[46.364,11.034],
  'Passo della Mendola':[46.418,11.198],'Passo di Costalunga':[46.409,11.596],
  'Passo Fedaia':[46.457,11.878],
+ 'St Jakob in Defereggen':[46.918,12.345],'Staller Sattel':[46.917,12.220],
+ 'Anterselva / Antholz':[46.868,12.113],'Passo delle Palade':[46.585,11.132],
  'Mittersill':[47.279,12.484],'Felbertauern tunnel':[47.133,12.510],'Matrei in Osttirol':[46.999,12.539],
  'Sillian':[46.750,12.419],'Merano / Meran':[46.671,11.159],'Caprile':[46.446,12.006],'Passo Giau':[46.482,12.055],
  'Bruneck / Brunico':[46.796,11.936],'Brixen / Bressanone':[46.716,11.657],
@@ -829,10 +868,10 @@ C:{key:'C',tag:'Option C',title:'Everything',sub:'Stelvio and Glockner in one go
    evening:'',stays:[]}
  ]},
 
-D:{key:'D',tag:'Option D',title:'Valleys &amp; Lakes',sub:'The wet-weather route. Nothing exposed, €26 in tolls.',
- heroTitle:'Three valleys, two lakes, and not a hairpin in sight.',
- blurb:'The bad-weather answer. Every high crossing is swapped for a tunnel or a broad low pass — the Felbertauern instead of the Grossglockner, the Reschen instead of the Stelvio. Nothing above 1,650 m, nothing exposed to cloud or ice, and the days are short enough that the afternoons can go indoors: Ötzi in Bolzano, the gardens at Merano, the arcades in Lienz and Bruneck.',
- stats:[['875 km','total distance'],['14h 00m','moving time'],['2','named passes'],['1,632 m','highest point'],['3','countries']],
+D:{key:'D',tag:'Option D',title:'Valleys &amp; Lakes',sub:'The wet-weather route. Five easy passes, nothing exposed, €26 in tolls.',
+ heroTitle:'Five passes you can drive in the rain, and a bell tower standing in a lake.',
+ blurb:'The bad-weather answer. Five passes rather than sixteen, and every one of them wide, two-lane and driveable in rain — the Felbertauern instead of the Grossglockner, the Reschen instead of the Stelvio. Nothing above 1,650 m, nothing exposed to cloud or ice, and the days are short enough that the afternoons can go indoors: Ötzi in Bolzano, the gardens at Merano, the arcades in Lienz and Bruneck.',
+ stats:[['940 km','total distance'],['15h 30m','moving time'],['5','named passes'],['2,052 m','highest point'],['3','countries']],
  costs:[['Austrian 10-day digital vignette','Day 0, buy at a petrol station','€12.80'],
   ['Felbertauern tunnel, single','Day 1','€13.00'],
   ['Reschenpass and Fernpass','Day 3, no toll','free']],
@@ -847,25 +886,30 @@ D:{key:'D',tag:'Option D',title:'Valleys &amp; Lakes',sub:'The wet-weather route
    stays:[{n:'Hotel Berner',pick:'Pick',loc:'Nikolaus-Gassner-Promenade 1, Zell am See',why:'Small, family-run, consistently the best kitchen in town. Quiet end of the lake, five minutes from the centre.',tel:'+43 6542 779',pid:'ChIJu5rn8tgcd0cRDjal7S1ybjU'},
     {n:'Hotel Tirolerhof',loc:'Auerspergstrasse 5, Zell am See',why:'Central, free parking, spa. Easiest arrival if you get in late.',tel:'+43 6542 772',pid:'ChIJ5-E0ziAdd0cRMwodEx5hfh4'},
     {n:'Grand Hotel Zell am See',loc:'Esplanade 4–6, Zell am See',why:'On its own peninsula with a private lake beach. Worth less in the rain, but the spa is the best of the three.',tel:'+43 6542 7880',pid:'ChIJLTewaiAdd0cRlZubVPZ7Tio'}]},
-  {n:1,from:'Zell am See',to:'Bruneck',km:200,time:'3h 45m',passes:0,depart:'08:30',arrive:'≈15:00',
-   note:'<strong>The Felbertauern replaces the Glockner.</strong> Same direction, 1,000 m lower, open in any weather and €33 cheaper. You lose the Pasterze — but on a cloud-base day you would not have seen it anyway. The afternoon is short on purpose.',
+  {n:1,from:'Zell am See',to:'Bruneck',km:200,time:'4h 15m',passes:1,depart:'08:30',arrive:'≈15:30',
+   note:'<strong>The Felbertauern replaces the Glockner.</strong> Same direction, 1,000 m lower, open in any weather and €33 cheaper. After Lienz the Staller Sattel gives you a real pass without the exposure. If the cloud is on the deck or you miss the one-way window, stay on the Pustertal via Sillian and Toblach — same arrival, no climb.',
    pts:[[0,750,'Zell am See','stop','AT',''],[28,789,'Mittersill','','AT','Last fuel before the tunnel toll.'],
     [45,1632,'Felbertauern tunnel','','AT','€13.00 single, 5.3 km. All weather, no gradient worth the name.'],
     [70,975,'Matrei in Osttirol','','AT',''],
     [95,673,'Lienz','stop','AT','Lunch. The arcaded main square stays dry.'],
-    [140,1103,'Sillian','','AT',''],[165,1256,'Toblach / Dobbiaco','','IT','Border into South Tyrol.'],
+    [130,1389,'St Jakob in Defereggen','','AT','Last village before the climb.'],
+    [155,2052,'Staller Sattel','pass','AT','One-way alternating on the Italian side — 30 minutes each way, on the half hour. Border crossing into South Tyrol.'],
+    [172,1050,'Anterselva / Antholz','','IT','Lake at the head of the valley, five minutes off the road.'],
     [200,835,'Bruneck / Brunico','stop','IT','Overnight.']],
    evening:'Bruneck old town is arcaded end to end, so an evening walk works in rain. Messner Mountain Museum Ripa is in the castle above the town if you arrive early.',
    stays:[{n:'Hotel Olympia',pick:'Pick',loc:'Via In der Sandgrube 62, Riscone / Reischach',why:'Just outside Bruneck, easy parking, very good half board and quick to get out of on the last morning.',tel:'+39 0474 410924',pid:'ChIJTTaTKsoheEcRVVt9YXaqj7k'},
     {n:'Majestic Unique Spa Resort',loc:'Im Gelände 20, Riscone / Reischach',why:'Bigger and more polished, outdoor pool and multiple saunas. The treat option, and the one that earns its keep in bad weather.',tel:'+39 0474 410993',pid:'ChIJOxdujckheEcR0OiioATWbjs'},
     {n:'K1 Mountain Chalet',loc:'Via Funivia 22, Bruneck',why:'Apartments rather than a hotel. Useful if you want space and don\'t care about dinner.',tel:'+39 0474 862040',pid:'ChIJ3Zyao7kheEcR9x99bUHmw3I'}]},
-  {n:2,from:'Bruneck',to:'Prad allo Stelvio',km:175,time:'3h 15m',passes:0,depart:'09:00',arrive:'≈16:30',
-   note:'<strong>The indoor day.</strong> Shortest drive of the four and the one to spend out of the car. Bolzano and Merano are both 45 minutes off the clock and both are better wet than dry. If the forecast turns good overnight, you are parked at the bottom of the Stelvio for the morning.',
+  {n:2,from:'Bruneck',to:'Prad allo Stelvio',km:240,time:'4h 15m',passes:2,depart:'09:00',arrive:'≈17:30',
+   note:'<strong>Two passes and a museum.</strong> Mendola and Palade loop you round the Val di Non — both wide, forested and genuinely pleasant in rain, neither above 1,520 m. Bolzano and Merano are still worth the stop. If the forecast turns good overnight, you are parked at the bottom of the Stelvio for the morning.',
    pts:[[0,835,'Bruneck / Brunico','stop','IT',''],[35,559,'Brixen / Bressanone','','IT',''],
     [75,262,'Bolzano','','IT','Ötzi at the South Tyrol Museum of Archaeology. Closed Mondays. The best two hours of a wet day anywhere on this route.'],
-    [105,325,'Merano / Meran','','IT','Trauttmansdorff gardens, the thermal baths, and covered promenades along the Passer.'],
-    [165,907,'Glurns / Glorenza','','IT','Intact medieval walls. Ten minutes to walk the full circuit.'],
-    [175,915,'Prad allo Stelvio','stop','IT','Overnight. The Stelvio starts here if the sky clears.']],
+    [100,1363,'Passo della Mendola','pass','IT','Wide, well surfaced, hairpins in forest rather than on open rock. Fine in rain.'],
+    [125,658,'Cles / Val di Non','','IT','Apple country. The lake below the castle is worth ten minutes.'],
+    [155,1518,'Passo delle Palade','pass','IT','The quiet way back over to the Adige. Two lanes the whole way.'],
+    [175,325,'Merano / Meran','','IT','Trauttmansdorff gardens, the thermal baths, and covered promenades along the Passer.'],
+    [230,907,'Glurns / Glorenza','','IT','Intact medieval walls. Ten minutes to walk the full circuit.'],
+    [240,915,'Prad allo Stelvio','stop','IT','Overnight. The Stelvio starts here if the sky clears.']],
    evening:'Prad is a cycling town — kitchens run late and everywhere does a proper vegetarian plate. Both hotels do a five-course half board that beats eating out.',
    stays:[{n:'Garden Park Hotel',pick:'Pick',loc:'Via Pineta 35A, Prato allo Stelvio',why:'Big grounds, garage, spa, and a kitchen that handles vegetarian requests properly. Fifteen minutes from hairpin one.',tel:'+39 0473 618228',pid:'ChIJixzz5XIfg0cRHRz497sJXR0'},
     {n:'Aktiv- & Wellnesshotel Zentral',loc:'Via Principale 100, Prato allo Stelvio',why:'In the village centre, modern rooms, large spa. Good backup.',tel:'+39 0473 616008',pid:'ChIJFcsAkggfg0cRn2q1S2FwGaw'},
@@ -1455,6 +1499,16 @@ function wxRenderCooldown(){
     if(wxTimer){ clearInterval(wxTimer); wxTimer=null; }
   }
 }
+/* Background tint by daytime high, so a cold pass reads at a glance. */
+function wxHeat(hi){
+  if(hi==null) return '';
+  if(hi<=2)  return ' h1';
+  if(hi<=8)  return ' h2';
+  if(hi<=15) return ' h3';
+  if(hi<=22) return ' h4';
+  if(hi<=28) return ' h5';
+  return ' h6';
+}
 function wxPaint(data){
   const wrap=document.getElementById('wxWrap'); if(!wrap||!data) return;
   const days=data.days, rows=data.rows;
@@ -1468,7 +1522,7 @@ function wxPaint(data){
       const c=r[i];
       if(!c){ h+='<td class="wx-cell">—</td>'; return; }
       const [ic,lab]=wxIcon(c.code);
-      h+='<td class="wx-cell"><svg class="ic" role="img" aria-label="'+esc(lab)+'"><use href="#'+ic+'"/></svg>'+
+      h+='<td class="wx-cell'+wxHeat(c.hi)+'"><svg class="ic" role="img" aria-label="'+esc(lab)+'"><use href="#'+ic+'"/></svg>'+
          '<div class="wx-t"><b>'+c.hi+'°</b> <span>'+c.lo+'°</span></div>'+
          '<div class="wx-pop'+(c.pop>=20?' hi':'')+'">'+(c.pop==null?'–':c.pop+'%')+'</div></td>';
     });
