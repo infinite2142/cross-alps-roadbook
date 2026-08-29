@@ -52,6 +52,7 @@
   .tab .k{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase}
   .tab .k .optw{font-style:normal}
   .tab .t{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:15px;color:var(--ink)}
+  .tab .t .ts{display:none}
   .tab .s{display:block;font-size:12px;line-height:1.35;margin-top:2px}
   .tab[aria-selected="true"]{background:var(--ink);color:#B9B6AE}
   .tab[aria-selected="true"] .t{color:var(--snow)}
@@ -96,6 +97,9 @@
   .dm-halo{fill:var(--glow);opacity:0;transition:opacity .12s}
   .dm-lbl{font-family:'IBM Plex Mono',monospace;font-size:7.4px;fill:var(--slate)}
   .dm-sub{font-family:'IBM Plex Mono',monospace;font-size:6.2px;fill:var(--slate);opacity:.75}
+  .dm-legbg{fill:var(--panel);stroke:var(--line);stroke-width:.5}
+  .dm-leg{font-family:'IBM Plex Mono',monospace;font-size:5.2px;fill:var(--slate)}
+  body.dark .dm-legbg{fill:#1C1F24}
   .dm-sub.end{fill:var(--glow);opacity:1}
   .dm-lbl.pass{fill:var(--ink);font-weight:600}
   .dm-lbl.end{fill:var(--ink);font-weight:600}
@@ -120,8 +124,7 @@
   @keyframes sunD{0%,100%{transform:scale(1);opacity:.90}50%{transform:scale(1.06);opacity:1}}
   @media (prefers-reduced-motion: reduce){ .sun circle{animation:none} }
   /* an ibex that turns up on a ridge now and then, one at a time */
-  .goat{fill:#E4D3C4;color:#E4D3C4;opacity:0;transform-box:fill-box;transform-origin:50% 100%}
-  .goat>*{transform-box:view-box}
+  .goat{fill:#8E8A93;color:#8E8A93;opacity:0}
   @keyframes goatPop{
     0%,2%   {opacity:0}
     5%      {opacity:.95}
@@ -510,7 +513,9 @@
   @media (max-width:720px) and (orientation:portrait){
     .switch,header.compact .switch{flex-wrap:wrap;overflow-x:hidden}
     .tab,header.compact .tab{flex:1 1 30%;min-width:0;border-bottom:1px solid var(--line)}
-    .tab .t{font-size:12px;line-height:1.2}
+    .tab .t{font-size:12.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tab .t .tl{display:none}
+    .tab .t .ts{display:inline}
     .tab .k{font-size:9px}
     .tab .s{display:none}
     .tab .t{font-size:13.5px}
@@ -583,7 +588,7 @@
 
 <div class="banner">
   <svg class="pano" viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Stylised alpine ridgelines with a switchback road"><use href="#pano"/>
-    <g class="goat g1" transform="translate(574.8 155.3) scale(2.20)" aria-hidden="true">
+    <g class="goat g1" transform="translate(577.0 164.3) scale(1.80)" aria-hidden="true">
       <path d="M2.3 7.3 C2.3 6.0 3.4 5.4 4.8 5.4 L7.3 5.4 C8.5 5.4 9.2 6.0 9.3 6.9 C9.4 7.8 8.8 8.3 7.7 8.3 L3.9 8.3 C2.8 8.3 2.3 8.1 2.3 7.3 Z"/>
       <path d="M8.5 6.6 L9.7 4.4 L10.9 4.9 L9.9 7.1 Z"/>
       <path d="M9.8 4.9 C10.2 4.0 11.0 3.6 11.8 3.8 L13.1 4.2 L13.3 5.0 L11.9 5.7 L10.4 5.9 Z"/>
@@ -596,7 +601,7 @@
       <rect x="8.2" y="8.1" width=".72" height="3.4" rx=".34"/>
       <path d="M2.4 5.8 L1.2 4.4" fill="none" stroke="currentColor" stroke-width=".75" stroke-linecap="round"/>
     </g>
-    <g class="goat g2" transform="translate(729.8 163.3) scale(2.20)" aria-hidden="true">
+    <g class="goat g2" transform="translate(732.0 172.3) scale(1.80)" aria-hidden="true">
       <path d="M2.3 7.3 C2.3 6.0 3.4 5.4 4.8 5.4 L7.3 5.4 C8.5 5.4 9.2 6.0 9.3 6.9 C9.4 7.8 8.8 8.3 7.7 8.3 L3.9 8.3 C2.8 8.3 2.3 8.1 2.3 7.3 Z"/>
       <path d="M8.5 6.6 L9.7 4.4 L10.9 4.9 L9.9 7.1 Z"/>
       <path d="M9.8 4.9 C10.2 4.0 11.0 3.6 11.8 3.8 L13.1 4.2 L13.3 5.0 L11.9 5.7 L10.4 5.9 Z"/>
@@ -609,7 +614,7 @@
       <rect x="8.2" y="8.1" width=".72" height="3.4" rx=".34"/>
       <path d="M2.4 5.8 L1.2 4.4" fill="none" stroke="currentColor" stroke-width=".75" stroke-linecap="round"/>
     </g>
-    <g class="goat g3" transform="translate(884.8 139.3) scale(2.20)" aria-hidden="true">
+    <g class="goat g3" transform="translate(887.0 148.3) scale(1.80)" aria-hidden="true">
       <path d="M2.3 7.3 C2.3 6.0 3.4 5.4 4.8 5.4 L7.3 5.4 C8.5 5.4 9.2 6.0 9.3 6.9 C9.4 7.8 8.8 8.3 7.7 8.3 L3.9 8.3 C2.8 8.3 2.3 8.1 2.3 7.3 Z"/>
       <path d="M8.5 6.6 L9.7 4.4 L10.9 4.9 L9.9 7.1 Z"/>
       <path d="M9.8 4.9 C10.2 4.0 11.0 3.6 11.8 3.8 L13.1 4.2 L13.3 5.0 L11.9 5.7 L10.4 5.9 Z"/>
@@ -867,7 +872,7 @@ function gdir(day){
 
 /* ============================================================ DATA =========== */
 const D = {
-A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',sub:'South to the lake, home through Switzerland. Longest drive.',
+A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',short:'Garda',sub:'South to the lake, home through Switzerland. Longest drive.',
  heroTitle:'Down to the water, across the plain, and back over four countries.',
  blurb:'The long way south, with the extra evening built in. Day 0 runs the Brenner to the east shore of Garda, day 1 drops to Mantova on the plain and climbs back into the mountains at Ponte di Legno, day 2 loops the Gavia, Livigno, the Bernina and St Moritz from a thermal spa above Bormio, and day 3 comes home through the Swiss Engadin. Eleven passes, four countries, and the Stelvio driven once, properly, on the last morning.',
  stats:[['1,348 km','total distance'],['21h 45m','moving time'],['11','named passes'],['2,757 m','highest point'],['4','countries']],
@@ -940,7 +945,7 @@ A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',sub:'South to the lake, ho
    evening:'',stays:[]}
  ]},
 
-B:{key:'B',tag:'Option B',title:'Glockner &amp; Dolomites',sub:'Recommended. Best road of the three, balanced days.',
+B:{key:'B',tag:'Option B',title:'Glockner &amp; Dolomites',short:'Glockner',sub:'Recommended. Best road of the three, balanced days.',
  heroTitle:'Twelve crossings, one glacier, and a spa at the end of it.',
  blurb:'Anticlockwise: the Grossglockner on the morning of day one while the light is still low, the Dolomite passes on day two, and the Jaufen–Timmelsjoch sequence as the last real drive before an easy run home over the Hahntennjoch.',
  stats:[['1,075 km','total distance'],['21h 45m','moving time'],['12','named passes'],['2,571 m','highest point'],['3','countries']],
@@ -1000,7 +1005,7 @@ B:{key:'B',tag:'Option B',title:'Glockner &amp; Dolomites',sub:'Recommended. Bes
    evening:'',stays:[]}
  ]},
 
-C:{key:'C',tag:'Option C',title:'Stelvio &amp; Dolomites',sub:'Take this if Stelvio is non-negotiable. Adds Switzerland.',
+C:{key:'C',tag:'Option C',title:'Stelvio &amp; Dolomites',short:'Stelvio',sub:'Take this if Stelvio is non-negotiable. Adds Switzerland.',
  heroTitle:'Forty-eight hairpins, then the Gavia, then everything else.',
  blurb:'Clockwise and further west. Stelvio first thing on day one, a short hop into Switzerland over the Umbrail, the Gavia in the afternoon, and the full Sellaronda plus Giau on day two. Day one is eight hours in the seat.',
  stats:[['1,120 km','total distance'],['21h 00m','moving time'],['16','named passes'],['2,757 m','highest point'],['4','countries']],
@@ -1059,7 +1064,7 @@ C:{key:'C',tag:'Option C',title:'Stelvio &amp; Dolomites',sub:'Take this if Stel
    evening:'',stays:[]}
  ]},
 
-D:{key:'D',tag:'Option D',title:'Stelvio &amp; Glockner',sub:'Stelvio and Glockner in one go. Day two has no slack.',
+D:{key:'D',tag:'Option D',title:'Stelvio &amp; Glockner',short:'Max passes',sub:'Stelvio and Glockner in one go. Day two has no slack.',
  heroTitle:'Both headline roads, and a day two you will remember for the wrong reasons if anything slips.',
  blurb:'Option C for the first two days, then a 345 km day two that runs the Sellaronda, crosses the Dolomites to Lienz and comes over the Grossglockner northbound before the gate shuts. Day three is a two-hour run home. Only take this if you are happy to drop Tre Cime and Giau on the day.',
  stats:[['1,215 km','total distance'],['23h 30m','moving time'],['16','named passes'],['2,757 m','highest point'],['4','countries']],
@@ -1114,7 +1119,7 @@ D:{key:'D',tag:'Option D',title:'Stelvio &amp; Glockner',sub:'Stelvio and Glockn
    evening:'',stays:[]}
  ]},
 
-E:{key:'E',tag:'Option E',title:'Valleys &amp; Lakes',sub:'The wet-weather route. Five easy passes, nothing exposed, €26 in tolls.',
+E:{key:'E',tag:'Option E',title:'Valleys &amp; Lakes',short:'Valleys',sub:'The wet-weather route. Five easy passes, nothing exposed, €26 in tolls.',
  heroTitle:'Five passes you can drive in the rain, and a bell tower standing in a lake.',
  blurb:'The bad-weather answer. Five passes rather than sixteen, and every one of them wide, two-lane and driveable in rain — the Felbertauern instead of the Grossglockner, the Reschen instead of the Stelvio. Nothing above 1,650 m, nothing exposed to cloud or ice, and the days are short enough that the afternoons can go indoors: Ötzi in Bolzano, the gardens at Merano, the arcades in Lienz and Bruneck.',
  stats:[['915 km','total distance'],['15h 30m','moving time'],['5','named passes'],['2,052 m','highest point'],['3','countries']],
@@ -1343,7 +1348,7 @@ function buildMap(s,PX){
      that clears everything already placed. Passes and overnights go first, so a
      crowded corner drops a minor waypoint rather than a summit. A leader line is
      drawn only when the label actually ended up away from its pin.            */
-  const showAlt = (PX||MW) >= 400;
+  const showAlt = true;   /* altitudes matter most on the small screen, not least */
   const chW=fL*.63, lineH=fL*1.06, altH=showAlt?fA*1.1:0;
   const taken=[];
   const hits=(r)=>taken.some(q=>r.x0<q.x1+1.5&&q.x0<r.x1+1.5&&r.y0<q.y1+1.5&&q.y0<r.y1+1.5);
@@ -1528,7 +1533,20 @@ function dayMapSVG(day,di){
            + `<text class="dm-sub${o.end?' end':''}" x="${lx.toFixed(1)}" y="${(ly+5.2).toFixed(1)}" text-anchor="${an}">${esc(sub)}</text>`;
     }).join('');
   };
-  const labels=lab(LS,'L')+lab(RS,'R');
+  /* leg distance at each segment midpoint, skipped where they would collide */
+  let legs='';
+  const usedL=[];
+  for(let i=1;i<pts.length;i++){
+    const a=pts[i-1], b=pts[i];
+    const km=b.p[0]-a.p[0]; if(km<=0) continue;
+    const mx=(X(a.g[1])+X(b.g[1]))/2, my=(Y(a.g[0])+Y(b.g[0]))/2;
+    if(usedL.some(q=>Math.abs(q[0]-mx)<16&&Math.abs(q[1]-my)<8)) continue;
+    usedL.push([mx,my]);
+    const w=String(km).length*3.6+5;
+    legs+=`<g><rect class="dm-legbg" x="${(mx-w/2).toFixed(1)}" y="${(my-3.6).toFixed(1)}" width="${w.toFixed(1)}" height="7.2" rx="3.6"/>`
+        + `<text class="dm-leg" x="${mx.toFixed(1)}" y="${(my+1.9).toFixed(1)}" text-anchor="middle">${km}</text></g>`;
+  }
+  const labels=legs+lab(LS,'L')+lab(RS,'R');
   return `<svg class="daymap" viewBox="0 0 ${W} ${H}" role="img" aria-label="Map of day ${day.n}">`+
     `<path class="rt-case" d="${d}"/><path class="rt" d="${d}" stroke="${DAYC[di]}"/>${marks}${labels}</svg>`;
 }
@@ -1561,6 +1579,7 @@ function ridgeSVG(segments,opts){
   const fL=(10*k), fA=(8.4*k), fG=(8.6*k), fT=(9.4*k);
   const padT=opts.tall?(fT*3.4):(opts.axis?fT*2.1:22), padB=fG*2.4, padL=Math.max(24,fG*3.4), padR=8;
   if(opts.tall||opts.axis) H=Math.max(H,opts.tall?300:240);
+  if(px<620) H=Math.round(H*1.42);        /* portrait: trade width for height */
   const plotH=H-padT-padB,plotW=W-padL-padR;
   let total=0;const segs=segments.map(s=>{const len=s.pts[s.pts.length-1][0];const o={...s,offset:total,len};total+=len;return o;});
   const x=km=>padL+(km/total)*plotW, y=a=>padT+plotH-((Math.max(ALT_MIN,Math.min(ALT_MAX,a))-ALT_MIN)/(ALT_MAX-ALT_MIN))*plotH;
@@ -1630,7 +1649,7 @@ function ridgeSVG(segments,opts){
         marks+= q.pass
           ? `<text class="peak-label stacked" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}</text>`
             +`<text class="peak-alt-in stacked" x="${lx.toFixed(1)}" y="${(ly+fA*1.02).toFixed(1)}" text-anchor="${anchor}">${q.o.p[1]}m</text>`
-          : `<text class="way-label stacked${q.end?' endpt':''}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}${q.end?' <tspan class="endtime">'+(q.o===first?opts.depart||'':opts.arrive||'')+'</tspan>':''}</text>`;
+          : `<text class="way-label stacked${q.end?' endpt':''}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}${(()=>{const t=q.end?(q.o===first?opts.depart:String(opts.arrive||'').replace('≈','')):''; return t?' <tspan class="endtime">'+t+'</tspan>':'';})()}</text>`;
         done=true; break;
       }
       /* an endpoint is worth a slight clash — put it at the edge regardless */
@@ -1669,8 +1688,10 @@ function ridgeSVG(segments,opts){
       const col=CC[r.c]||'var(--slate)';
       let t=`<rect class="cty-band" x="${x0.toFixed(1)}" y="${bandY.toFixed(1)}" width="${w.toFixed(1)}" height="${bandH.toFixed(1)}"/>`;
       t+=`<rect x="${x0.toFixed(1)}" y="${bandY.toFixed(1)}" width="${Math.min(3,w).toFixed(1)}" height="${bandH.toFixed(1)}" fill="${col}"/>`;
-      const nm=CN[r.c]||r.c;
-      if(w>nm.length*fG*.66)
+      const full=CN[r.c]||r.c, cw=fG*.66;
+      let nm=full;
+      if(w<full.length*cw){ const fit=Math.floor(w/cw); nm = fit>=2 ? full.slice(0,fit) : (fit===1?full[0]:''); }
+      if(nm)
         t+=`<text class="cty-lbl" x="${(x0+w/2).toFixed(1)}" y="${(bandY+bandH*.74).toFixed(1)}" text-anchor="middle" style="font-size:${(fG*.82).toFixed(2)}px">${esc(nm)}</text>`;
       return t;
     }
@@ -1687,6 +1708,7 @@ function ridgeSVG(segments,opts){
     const ticks=[]; for(let km=0;km<=total+.01;km+=step) ticks.push(km);
     const marked=[];
     all.forEach(o=>{
+      if(opts.tall) return;                 /* whole-route view: plain axis only */
       const isNamed = o.p[3]==='pass' || o.p[3]==='stop';
       if(!isNamed) return;
       if(ticks.some(t=>Math.abs(t-o.p[0])<step*.42)) return;
@@ -1751,7 +1773,7 @@ function paintProfiles(){
     +' · '+CURRENT.stats[2][0]+' passes · '+CURRENT.stats[4][0]+' countries</span>';
   if(hero) hero.innerHTML=ridgeSVG(CURRENT.days.map(d=>({pts:d.pts,label:'DAY '+d.n})),
                                    {w:900,h:200,tall:true,axis:true,px:hero.clientWidth,
-                                    depart:CURRENT.days[0].depart,arrive:CURRENT.days[CURRENT.days.length-1].arrive});
+                                    });
   CURRENT.days.forEach(d=>{
     const el=document.getElementById('ridge-d'+d.n); if(!el) return;
     el.innerHTML=ridgeSVG([{pts:d.pts,label:'Day '+d.n}],{w:900,h:150,px:el.clientWidth,axis:true,depart:d.depart,arrive:d.arrive});
@@ -1769,7 +1791,7 @@ window.addEventListener('resize',()=>{clearTimeout(rsz);rsz=setTimeout(()=>{pain
 function renderTabs(a){
   document.getElementById('switch').innerHTML=Object.values(D).map(s=>`
     <button class="tab" role="tab" aria-selected="${s.key===a}" data-k="${s.key}">
-      <span class="k"><i class="optw">Option</i> ${s.key}</span><span class="t">${s.title}</span><span class="s">${s.sub}</span></button>`).join('');
+      <span class="k"><i class="optw">Option</i> ${s.key}</span><span class="t"><span class="tl">${s.title}</span><span class="ts">${s.short||s.title}</span></span><span class="s">${s.sub}</span></button>`).join('');
   document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>render(b.dataset.k));
 }
 
