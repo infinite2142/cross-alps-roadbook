@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Four-day driving route across the Austrian and Italian Alps, 1-4 September 2026. Three route options, 12-16 passes, roadbook, altitude profiles, tolls and hotels.">
+<meta name="theme-color" content="#141619">
+<meta property="og:type" content="website">
+<meta property="og:title" content="2026 Cross-Alps Trip (short version)">
+<meta property="og:description" content="Munich to the Alps and back in four days. Three route options, 12-16 passes, full roadbook with altitude profiles, tolls and hotels.">
+<meta property="og:url" content="https://infinite2142.github.io/cross-alps-roadbook/">
+<meta property="og:image" content="https://infinite2142.github.io/cross-alps-roadbook/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>2026 Cross-Alps Trip (short version)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script>window.__leafletBlocked=false;</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" onerror="window.__leafletBlocked=true"></script>
+<style>
+  :root{
+    --rock:#E4E1DA; --panel:#F3F1EC; --ink:#191A18; --slate:#63665F;
+    --line:#CBC7BE; --glow:#C2496A; --signal:#16457A; --snow:#FFFFFF;
+    --d1:#26557F; --d2:#6E4A87; --d3:#A8467E; --d4:#C24966;
+    --at:#7A6A4E; --it:#3E6B4B; --de:#55525A; --ch:#8E3F3A;
+    --ghost:#CFCAC0;
+    --pad: clamp(16px, 4vw, 44px);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--rock);color:var(--ink);
+    font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.55}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+  h1,h2,h3{font-family:'Bricolage Grotesque','IBM Plex Sans',sans-serif;font-weight:800;letter-spacing:-.02em;margin:0}
+  a{color:var(--signal)}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 var(--pad)}
+
+  header{border-bottom:1px solid var(--ink);background:var(--rock);position:sticky;top:0;z-index:40}
+  .mast{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:baseline;justify-content:space-between;padding:14px 0 12px}
+  .mast h1{font-size:clamp(17px,2.6vw,22px);text-transform:uppercase}
+  .mast .dates{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
+
+  .switch{display:flex;border-top:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+  .switch::-webkit-scrollbar{display:none}
+  .tab{flex:1 1 0;min-width:180px;text-align:left;background:none;border:0;border-right:1px solid var(--line);
+    padding:12px 16px 13px;cursor:pointer;color:var(--slate);font-family:inherit;transition:background .18s,color .18s}
+  .tab:last-child{border-right:0}
+  .tab .k{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em}
+  .tab .t{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:15px;color:var(--ink)}
+  .tab .s{display:block;font-size:12px;line-height:1.35;margin-top:2px}
+  .tab[aria-selected="true"]{background:var(--ink);color:#B9B6AE}
+  .tab[aria-selected="true"] .t{color:var(--snow)}
+  .tab:focus-visible{outline:3px solid var(--glow);outline-offset:-3px}
+
+  .hero{padding:clamp(22px,4vw,38px) 0 8px}
+  .hero-top{display:flex;flex-wrap:wrap;gap:18px 40px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+  .hero h2{font-size:clamp(26px,4.8vw,46px);line-height:1.04;max-width:16ch}
+  .hero .blurb{max-width:44ch;font-size:15px;color:#3B3D39}
+  .stats{display:flex;flex-wrap:wrap;border-top:1px solid var(--ink);border-bottom:1px solid var(--line)}
+  .stat{flex:1 1 130px;padding:11px 16px 12px;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:0}
+  .stat b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(19px,2.8vw,26px);font-weight:800;line-height:1.1}
+  .stat span{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
+
+  /* ── map ─────────────────────────────────── */
+  .mapwrap{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(18px,3vw,36px);
+    margin:24px 0 6px;align-items:start}
+  @media(max-width:820px){.mapwrap{grid-template-columns:1fr}}
+  .mapbox{background:var(--panel);border:1px solid var(--line);padding:6px}
+  svg.map{display:block;width:100%;height:auto;touch-action:manipulation}
+  .viewtog{display:flex;gap:0;margin:0 0 6px;border:1px solid var(--line);background:var(--snow)}
+  .viewtog button{flex:1;background:none;border:0;border-right:1px solid var(--line);padding:7px 10px;cursor:pointer;
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);transition:background .15s,color .15s}
+  .viewtog button:last-child{border-right:0}
+  .viewtog button[aria-pressed="true"]{background:var(--ink);color:var(--snow)}
+  .viewtog button:focus-visible{outline:2px solid var(--glow);outline-offset:-2px}
+  #leafMap{height:min(74vh,600px);width:100%;background:#DDD9D0}
+  .leaflet-container{font-family:'IBM Plex Sans',sans-serif;font-size:12px;z-index:1}
+  .leaflet-top,.leaflet-bottom{z-index:400}
+  .leaflet-popup-content{margin:11px 13px;font-size:13px;line-height:1.45}
+  .leaflet-popup-content b{font-family:'Bricolage Grotesque',sans-serif;font-size:14px}
+  .leaflet-popup-content .alt{font-family:'IBM Plex Mono',monospace;color:var(--glow);font-weight:600;font-size:12px}
+  .leaflet-popup-content .nt{color:var(--slate);display:block;margin-top:4px}
+  .stayIcon{background:#191A18;border:1.5px solid #fff;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .tileWarn{display:none;padding:10px 12px;background:#F7E9EC;border:1px solid #E3BFC8;font-size:13px;margin:6px 0 0}
+  .gbtn{display:inline-flex;align-items:center;gap:7px;margin:14px 0 0;font-family:'IBM Plex Mono',monospace;font-size:11.5px;
+    letter-spacing:.05em;text-decoration:none;border:1px solid var(--ink);background:var(--ink);color:var(--snow);padding:7px 12px;transition:opacity .15s}
+  .gbtn:hover{opacity:.82}
+  .grat{stroke:var(--line);stroke-width:.5}
+  .grat-lbl{font-family:'IBM Plex Mono',monospace;font-size:var(--fg,6.5px);fill:var(--slate);opacity:.7}
+  .country{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;fill:var(--ghost);letter-spacing:.22em}
+  .rt-case{fill:none;stroke:var(--panel);stroke-width:6;stroke-linejoin:round;stroke-linecap:round}
+  .rt{fill:none;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round;transition:opacity .2s}
+  .dim{opacity:.13}
+  .pin{transition:transform .15s ease}
+  .pin circle,.pin rect,.pin polygon{transition:r .15s ease}
+  .pin.hot circle{r:5.6}
+  .pin.hot polygon{transform:scale(1.45);transform-origin:center;transform-box:fill-box}
+  .lbl{font-family:'IBM Plex Mono',monospace;font-size:var(--fl,8.4px);fill:var(--ink)}
+  .lbl.stay{font-weight:600}
+  .lead{stroke:var(--slate);stroke-width:.5;opacity:.7}
+  .scale-txt{font-family:'IBM Plex Mono',monospace;font-size:var(--fs,7px);fill:var(--slate);letter-spacing:.1em}
+  .mapfoot{display:flex;justify-content:space-between;gap:10px;padding:6px 6px 2px;
+    font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
+
+  .legend h4,.aside h4{font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:600;
+    letter-spacing:.16em;text-transform:uppercase;margin:0 0 10px;color:var(--slate)}
+  .legchip{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;background:none;
+    border:0;border-bottom:1px solid var(--line);padding:10px 0;cursor:pointer;font-family:inherit;
+    color:var(--ink);transition:opacity .18s}
+  .legchip .lt{color:var(--ink)}
+  .legchip .sw{width:22px;height:3px;border-radius:2px;margin-top:8px;flex:0 0 22px}
+  .legchip .lt{font-size:14px;font-weight:600;line-height:1.3}
+  .legchip .ls{display:block;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--slate);font-weight:400;margin-top:1px}
+  .legchip[aria-pressed="true"]{opacity:1}
+  .legchip.muted{opacity:.35}
+  .legchip:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+  .keyrow{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate)}
+  .keyrow span{display:flex;align-items:center;gap:6px}
+  .kd{width:9px;height:9px;background:var(--glow);transform:rotate(45deg)}
+  .ks{width:9px;height:9px;background:var(--ink);border-radius:1px}
+  .kw{width:7px;height:7px;background:#fff;border:1.5px solid var(--slate);border-radius:50%}
+
+  .ridge-box{margin:22px 0 0;background:var(--panel);border:1px solid var(--line);padding:10px 6px 4px}
+  .ridge-cap{display:flex;justify-content:space-between;padding:0 10px 4px;
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate)}
+  svg.profile{display:block;width:100%;height:auto}
+  .grid-line{stroke:var(--line);stroke-width:.6}
+  .grid-label{font-family:'IBM Plex Mono',monospace;font-size:var(--fg,8px);fill:#9A968D}
+  .ridge-path{fill:url(#ridgefill);stroke:var(--ink);stroke-width:1.4;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+  .peak-dot{fill:var(--glow)}
+  .peak-stem{stroke:var(--glow);stroke-width:.8;stroke-dasharray:2 2}
+  .peak-label{font-family:'IBM Plex Mono',monospace;font-size:var(--fl,8.4px);fill:var(--ink)}
+  .peak-alt{font-family:'IBM Plex Mono',monospace;font-size:var(--fa,7.6px);fill:var(--glow)}
+  .day-div{stroke:var(--ink);stroke-width:.7;stroke-dasharray:3 3;opacity:.45}
+  .day-tag{font-family:'IBM Plex Mono',monospace;font-size:var(--ft,8px);fill:var(--slate);letter-spacing:.14em}
+
+  .day{border-top:1px solid var(--ink);padding:26px 0 30px}
+  .day-head{display:flex;flex-wrap:wrap;gap:6px 20px;align-items:baseline;margin-bottom:4px}
+  .day-head h3{font-size:clamp(19px,3.2vw,27px)}
+  .daydot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:9px;vertical-align:1px}
+  .day-head .when{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
+  .day-metrics{display:flex;flex-wrap:wrap;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);margin-bottom:16px}
+  .day-metrics b{color:var(--ink);font-weight:600}
+  .day-note{background:var(--panel);border-left:3px solid var(--glow);padding:10px 14px;font-size:14px;margin:0 0 18px;max-width:80ch}
+
+  .cols{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
+  @media(max-width:860px){.cols{grid-template-columns:1fr}}
+
+  .rb{border-top:1px solid var(--line)}
+  .rb-row{display:grid;grid-template-columns:52px 1fr 60px;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);
+    align-items:baseline;transition:background .15s}
+  .rb-row:hover{background:rgba(25,26,24,.045)}
+  .rb-km{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);text-align:right;font-variant-numeric:tabular-nums}
+  .rb-name{font-size:14.5px;line-height:1.35}
+  .rb-name em{font-style:normal;display:block;font-size:12.5px;color:var(--slate);margin-top:1px}
+  .rb-alt{font-family:'IBM Plex Mono',monospace;font-size:12px;text-align:right;color:var(--slate);font-variant-numeric:tabular-nums}
+  .rb-row.is-pass{background:linear-gradient(90deg,rgba(194,73,106,.09),rgba(194,73,106,0) 62%)}
+  .rb-row.is-pass:hover{background:linear-gradient(90deg,rgba(194,73,106,.17),rgba(194,73,106,.02) 62%)}
+  .rb-row.is-pass .rb-name{font-weight:600}
+  .rb-row.is-pass .rb-alt{color:var(--glow);font-weight:600}
+  .flag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;
+    padding:1px 5px;border-radius:2px;color:var(--snow);vertical-align:2px;margin-right:6px}
+  .f-AT{background:var(--at)} .f-IT{background:var(--it)} .f-DE{background:var(--de)} .f-CH{background:var(--ch)}
+
+  .stay{background:var(--panel);border:1px solid var(--line);padding:12px 14px;margin-bottom:10px}
+  .stay.pick{border-color:var(--ink);border-left:3px solid var(--ink)}
+  .stay .nm{font-weight:600;font-size:15px;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+  .stay .pk{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:var(--glow);white-space:nowrap}
+  .stay .loc{font-size:12.5px;color:var(--slate);margin-top:2px}
+  .stay .why{font-size:13px;margin-top:6px}
+  .acts{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+  .acts a{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;text-decoration:none;
+    border:1px solid var(--line);background:var(--snow);color:var(--ink);padding:4px 9px;transition:background .15s,border-color .15s}
+  .acts a:hover{background:var(--ink);color:var(--snow);border-color:var(--ink)}
+  .evening{font-size:13.5px;color:#3B3D39;border-top:1px solid var(--line);padding-top:10px;margin-top:4px}
+  .evening b{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);display:block;margin-bottom:3px}
+
+  section.block{border-top:1px solid var(--ink);padding:26px 0 34px}
+  section.block > h3{font-size:clamp(19px,3vw,25px);margin-bottom:4px}
+  .lede{color:#3B3D39;max-width:70ch;margin:0 0 18px;font-size:14.5px}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);padding:14px 16px}
+  .card h5{margin:0 0 6px;font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:600}
+  .card p{margin:0;font-size:13.5px;color:#3B3D39}
+  .card p+p{margin-top:8px}
+
+  table.costs{width:100%;border-collapse:collapse;font-size:14px}
+  table.costs th,table.costs td{text-align:left;padding:8px 10px 8px 0;border-bottom:1px solid var(--line);vertical-align:top}
+  table.costs th{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);font-weight:500}
+  table.costs td.num{font-family:'IBM Plex Mono',monospace;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  table.costs tr.total td{border-bottom:0;border-top:1px solid var(--ink);font-weight:600;padding-top:10px}
+
+  ul.todo{list-style:none;margin:0;padding:0}
+  ul.todo li{border-bottom:1px solid var(--line)}
+  ul.todo label{display:grid;grid-template-columns:22px 1fr;gap:12px;padding:11px 0;cursor:pointer;align-items:start}
+  ul.todo input{width:17px;height:17px;margin:2px 0 0;accent-color:var(--glow);cursor:pointer}
+  ul.todo .txt{font-size:14.5px}
+  ul.todo .txt em{font-style:normal;display:block;font-size:13px;color:var(--slate);margin-top:2px}
+  ul.todo input:checked ~ .txt{opacity:.42;text-decoration:line-through}
+  ul.todo input:checked ~ .txt em{text-decoration:none}
+
+  footer{border-top:1px solid var(--ink);padding:20px 0 46px;font-size:12.5px;color:var(--slate)}
+  footer p{margin:0 0 6px;max-width:82ch}
+
+  /* ── icons ─────────────────────────────── */
+  .ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.14em;flex:0 0 auto}
+  .ic-x{width:1.1em;height:1.1em}
+  .sechead{display:flex;align-items:center;gap:11px;margin-bottom:4px}
+  .sechead h3{margin:0}
+  .sechead .ic{color:var(--glow);width:22px;height:22px;stroke-width:1.5}
+
+  /* ── hero banner ───────────────────────── */
+  .banner{position:relative;overflow:hidden;background:#0E1218;border-bottom:1px solid var(--ink)}
+  .banner .pano{display:block;width:100%;height:clamp(250px,36vw,400px)}
+  .banner-copy{position:absolute;left:0;right:0;bottom:0;padding:0 var(--pad) clamp(20px,3.4vw,34px);pointer-events:none}
+  .banner-copy .inner{max-width:1120px;margin:0 auto}
+  .banner .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;
+    color:#E4B9C6;margin:0 0 10px;display:flex;align-items:center;gap:9px}
+  .banner h1{font-size:clamp(28px,5.6vw,60px);line-height:.98;color:#fff;max-width:19ch;letter-spacing:-.03em}
+  .banner .sub{font-family:'IBM Plex Mono',monospace;font-size:clamp(11px,1.5vw,13px);letter-spacing:.1em;
+    color:#B8BFC8;margin:12px 0 0;text-transform:uppercase}
+
+  /* ── sticky header ─────────────────────── */
+  header{position:sticky;top:0;z-index:1100;overflow:hidden}
+  .hdr-art{position:absolute;inset:0;opacity:0;transition:opacity .4s ease;pointer-events:none}
+  .hdr-art svg{width:100%;height:100%}
+  header.compact .hdr-art{opacity:.30}
+  header .lift{position:relative;z-index:2}
+  header.compact .tab .s{display:none}
+  header.compact .mast{padding:8px 0 7px}
+  header.compact .mast h1{font-size:clamp(14px,2vw,17px)}
+  .mast h1{display:flex;align-items:center;gap:10px}
+  .mast h1 .ic{color:var(--glow);width:19px;height:19px;stroke-width:1.6}
+
+  /* ── section nav ───────────────────────── */
+  .secnav{display:flex;border-top:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+  .secnav::-webkit-scrollbar{display:none}
+  .secnav a{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:9px 15px;text-decoration:none;
+    border-right:1px solid var(--line);color:var(--slate);font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;transition:background .16s,color .16s;white-space:nowrap}
+  .secnav a:last-child{border-right:0}
+  .secnav a .ic{width:13px;height:13px;stroke-width:1.9}
+  .secnav a:hover{background:rgba(25,26,24,.07);color:var(--ink)}
+  .secnav a.on{background:var(--ink);color:var(--snow)}
+  .secnav a .dt{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
+
+  /* ── section tints ─────────────────────── */
+  .sec{border-top:1px solid var(--ink);padding:30px 0 36px}
+  .sec[id]{scroll-margin-top:var(--hdrH,150px)}
+  .t-rock{background:var(--rock)}
+  .t-warm{background:#EAE6DD}
+  .t-cool{background:#E1E4E1}
+  .t-ink{background:#1B1D1A;color:#D9D6CE}
+  .t-ink h3,.t-ink h5{color:#fff}
+  .t-ink .lede{color:#A8A59D}
+  .t-ink .card{background:#252722;border-color:#383B33}
+  .t-ink .card p{color:#B4B1A9}
+  .t-ink a{color:#96BCE2}
+  .t-ink .sechead .ic{color:#E4849F}
+  .day.alt{background:#EAE6DD}
+  .day .wrap{padding-left:0;padding-right:0}
+  .daywrap{max-width:1120px;margin:0 auto;padding:0 var(--pad)}
+  .rb-row .lg{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#9A968D;display:block;margin-top:2px}
+  .stay .nm .ic{color:var(--slate);width:15px;height:15px;margin-right:6px;vertical-align:-2px}
+  .costicon{color:var(--slate);width:15px;height:15px;margin-right:8px;vertical-align:-2.5px}
+  .legchip .ic{width:14px;height:14px;color:var(--slate);margin-top:7px;flex:0 0 14px}
+  .maplbl-alt{fill:var(--glow)}
+  .seg-km{font-family:'IBM Plex Mono',monospace;font-size:var(--fs,7px);fill:var(--slate);letter-spacing:.02em}
+  .seg-bg{fill:var(--panel);opacity:.9}
+
+
+  /* ── map tooltip ───────────────────────── */
+  .mapbox{position:relative}
+  #mapTip{display:none;position:absolute;z-index:20;max-width:270px;pointer-events:none;
+    background:var(--ink);color:var(--snow);padding:9px 12px 10px;border-radius:3px;
+    box-shadow:0 6px 22px rgba(0,0,0,.28);font-size:12.5px;line-height:1.42}
+  #mapTip b{font-family:'Bricolage Grotesque',sans-serif;font-size:13.5px;display:block}
+  #mapTip .tm{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--glow);display:block;margin-top:2px}
+  #mapTip .tk{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    opacity:.55;display:block;margin-top:5px}
+  #mapTip .tn{display:block;margin-top:5px;opacity:.86}
+  .map .pin{cursor:pointer}
+  .map .pin rect{fill:var(--ink);stroke:var(--panel)}
+  .map .pin polygon{stroke:var(--panel)}
+  .map .pin circle:not(.hit){fill:var(--panel)}
+  .map-bg{fill:var(--panel)}
+  .mnote{font-size:13px;color:#3B3D39}
+
+  /* ── theme switch ──────────────────────── */
+  .themebtn{background:none;border:1px solid var(--line);color:var(--slate);cursor:pointer;
+    width:32px;height:32px;display:grid;place-items:center;border-radius:50%;transition:background .16s,color .16s}
+  .themebtn:hover{background:var(--ink);color:var(--snow);border-color:var(--ink)}
+  .themebtn .ic{width:15px;height:15px}
+  .mast .right{display:flex;align-items:center;gap:14px}
+
+  /* ── dark theme ────────────────────────── */
+  body.dark{--rock:#141619;--panel:#1C1F24;--ink:#E9EAE7;--slate:#969C9C;--line:#2F343B;
+            --snow:#101216;--ghost:#262B32}
+  body.dark .mnote,body.dark .hero .blurb,body.dark .evening,body.dark .card p,body.dark .lede{color:#A7ADAD}
+  body.dark .t-rock{background:#141619} body.dark .t-warm{background:#191C21}
+  body.dark .t-cool{background:#171A20} body.dark .t-ink{background:#0B0D10}
+  body.dark .day.alt{background:#191C21}
+  body.dark .card,body.dark .stay,body.dark .day-note,body.dark .ridge-box,body.dark .mapbox{background:#1C1F24}
+  body.dark .t-ink .card{background:#181B1E;border-color:#2C3037}
+  body.dark .tab[aria-selected="true"]{background:#E9EAE7;color:#4A4E52}
+  body.dark .tab[aria-selected="true"] .t{color:#101216}
+  body.dark .secnav a.on{background:#E9EAE7;color:#101216}
+  body.dark .gbtn{background:#E9EAE7;color:#101216;border-color:#E9EAE7}
+  body.dark .acts a{background:#23272D;color:var(--ink);border-color:var(--line)}
+  body.dark .acts a:hover{background:#E9EAE7;color:#101216;border-color:#E9EAE7}
+  body.dark .viewtog{background:#181B20}
+  body.dark .viewtog button[aria-pressed="true"]{background:#E9EAE7;color:#101216}
+  body.dark .rb-row:hover{background:rgba(255,255,255,.055)}
+  body.dark .rb-row.is-pass{background:linear-gradient(90deg,rgba(194,73,106,.20),rgba(194,73,106,0) 62%)}
+  body.dark .rb-row.is-pass:hover{background:linear-gradient(90deg,rgba(194,73,106,.30),rgba(194,73,106,.03) 62%)}
+  body.dark .tileWarn{background:#2A1C22;border-color:#4B2C37;color:#E6CDD4}
+  body.dark #mapTip{background:#E9EAE7;color:#101216}
+  body.dark #mapTip .tm{color:#A8375A}
+  body.dark #leafMap{background:#1C1F24}
+  body.dark a{color:#8FB8E0}
+  body.dark .ridge-path{stroke:var(--ink)}
+  body.dark .peak-label{fill:var(--ink)}
+  body.dark .lbl{fill:var(--ink)}
+
+
+  /* ── compact header: vertical space is scarce on a phone ─────────── */
+  .mast .right{display:flex;align-items:center;gap:14px;margin-left:auto}
+  .mast h1 .sv{font-weight:400;opacity:.55}
+  header.compact .dates{display:none}
+  header.compact .mast h1 .sv{display:none}
+  header.compact .tab{padding:6px 13px 7px;min-width:0;flex:1 1 auto;
+    display:flex;align-items:baseline;gap:9px;white-space:nowrap}
+  header.compact .tab .k{font-size:9.5px;letter-spacing:.14em}
+  header.compact .tab .t{font-size:13px;display:inline;letter-spacing:-.005em}
+  header.compact .secnav a{padding:6px 12px}
+  header.compact .themebtn{width:27px;height:27px}
+  /* landscape phones: assume compact from the start */
+  @media (max-height:560px){
+    .banner .pano{height:clamp(150px,30vh,210px)}
+    .mast{padding:7px 0 6px}
+    .mast .dates{display:none}
+    .mast h1 .sv{display:none}
+    .tab .s{display:none}
+    .tab{padding:6px 12px 7px;min-width:0;flex:1 1 auto;display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+    .tab .k{font-size:9.5px} .tab .t{font-size:12.5px;display:inline}
+    .secnav a{padding:6px 11px;font-size:10px}
+  }
+  @media (max-width:560px){
+    header.compact .tab .k{display:none}
+    .mast h1{font-size:15px}
+  }
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+ <symbol id="i-peak" viewBox="0 0 24 24"><path d="M2 20 9.5 6l4 7 2.5-4 6 11z"/><path d="M7.4 10.2h4.2"/></symbol>
+ <symbol id="i-car" viewBox="0 0 24 24"><path d="M3 16v-3.2L5.2 8A2 2 0 0 1 7 7h10a2 2 0 0 1 1.8 1L21 12.8V16"/><path d="M3 16h18"/><circle cx="7.5" cy="16.5" r="1.8"/><circle cx="16.5" cy="16.5" r="1.8"/><path d="M4.6 12.6h14.8"/></symbol>
+ <symbol id="i-road" viewBox="0 0 24 24"><path d="M8 21c0-6 8-12 8-18"/><path d="M4 21c1.5-5 5-8 5-12"/><path d="M12.6 6.5h3M11 11h3M9.4 15.5h3"/></symbol>
+ <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 8.5V6h18v2.5a2.2 2.2 0 0 0 0 4.4V18H3v-5.1a2.2 2.2 0 0 0 0-4.4Z"/><path d="M9 6v2M9 11v2M9 16v2"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 7h9M4 12h9M4 17h6"/><path d="m15 15.5 2.2 2.2L21 13.5"/></symbol>
+ <symbol id="i-bed" viewBox="0 0 24 24"><path d="M3 18v-7h14a4 4 0 0 1 4 4v3"/><path d="M3 14h18M3 8v6"/><circle cx="7.2" cy="11.2" r="1.6"/></symbol>
+ <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 2.6 20h18.8Z"/><path d="M12 10v4.2M12 17.2v.1"/></symbol>
+ <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3 1.8"/></symbol>
+ <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s6.4-6.1 6.4-10.6A6.4 6.4 0 0 0 5.6 10.4C5.6 14.9 12 21 12 21Z"/><circle cx="12" cy="10.3" r="2.3"/></symbol>
+ <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 17a8.5 8.5 0 1 1 16 0"/><path d="m12 17 4-5.2"/><circle cx="12" cy="17" r="1.2"/></symbol>
+ <symbol id="i-map" viewBox="0 0 24 24"><path d="m3 6.5 6-2.2 6 2.2 6-2.2v13.2l-6 2.2-6-2.2-6 2.2Z"/><path d="M9 4.3v13.2M15 6.5v13.2"/></symbol>
+ <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.4M12 19v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.6 12H5M19 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></symbol>
+ <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.2A8.4 8.4 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2Z"/></symbol>
+ <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5.5 21V3.6"/><path d="M5.5 4.6h12l-2.4 4 2.4 4h-12"/></symbol>
+</defs></svg>
+
+<!-- ═══ hero panorama: layered ridgelines, a switchback and a car ═══ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="pano" viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#131A26"/><stop offset="46%" stop-color="#3B3350"/>
+      <stop offset="76%" stop-color="#8E4A67"/><stop offset="100%" stop-color="#C2496A"/>
+    </linearGradient>
+    <linearGradient id="r1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#715876"/><stop offset="100%" stop-color="#4E4361"/></linearGradient>
+    <linearGradient id="r2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#463C56"/><stop offset="100%" stop-color="#332E45"/></linearGradient>
+    <linearGradient id="r3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2A2739"/><stop offset="100%" stop-color="#1E1D2B"/></linearGradient>
+    <linearGradient id="r4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#16171F"/><stop offset="100%" stop-color="#0E1015"/></linearGradient>
+  </defs>
+  <rect width="1400" height="420" fill="url(#sky)"/>
+  <circle cx="1108" cy="112" r="27" fill="#F2D9CE" opacity=".92"/>
+  <circle cx="1108" cy="112" r="54" fill="#F2D9CE" opacity=".09"/>
+  <path fill="url(#r1)" d="M0 240 L70 205 L140 232 L215 168 L290 216 L360 190 L440 150 L515 205 L590 178 L670 225 L745 186 L820 232 L900 162 L975 214 L1050 192 L1130 158 L1210 208 L1290 182 L1360 220 L1400 238 L1400 420 L0 420Z"/>
+  <g fill="#EFE4E7" opacity=".82"><path d="M215.0 168.0 L240.5 184.3 L226.2 181.3 L215.0 189.0 L203.8 183.7 L189.5 189.8Z"/><path d="M440.0 150.0 L465.5 168.7 L450.7 162.8 L439.1 168.1 L427.6 160.5 L412.8 163.6Z"/><path d="M590.0 178.0 L617.2 194.0 L602.4 187.6 L590.9 192.6 L579.3 184.6 L564.5 187.2Z"/><path d="M900.0 162.0 L925.5 179.7 L910.7 176.9 L899.1 184.7 L887.6 179.6 L872.8 185.8Z"/><path d="M1130.0 158.0 L1157.2 175.0 L1142.0 169.0 L1130.0 174.3 L1118.0 166.6 L1102.8 169.6Z"/><path d="M1290.0 182.0 L1313.8 194.9 L1299.5 189.3 L1288.3 194.9 L1277.1 187.5 L1262.8 190.8Z"/></g>
+  <path fill="url(#r2)" d="M0 292 L96 252 L170 286 L255 238 L340 290 L420 250 L510 296 L600 244 L690 288 L775 246 L865 300 L950 252 L1040 292 L1125 248 L1215 296 L1300 254 L1400 288 L1400 420 L0 420Z"/>
+  <path fill="url(#r3)" d="M0 336 L130 300 L235 344 L350 308 L465 352 L585 314 L700 350 L820 318 L940 354 L1055 320 L1175 352 L1290 322 L1400 346 L1400 420 L0 420Z"/>
+  <g stroke="#E9E3DA" fill="none" stroke-linecap="round" opacity=".8" transform="translate(430,0)">
+    <path d="M262 420c30-26 118-16 150-38s-8-40 26-54 118-6 140-24-14-34 14-46 96-4 118-18" stroke-width="4.4"/>
+    <path d="M262 420c30-26 118-16 150-38s-8-40 26-54 118-6 140-24-14-34 14-46 96-4 118-18" stroke-width="1" stroke-dasharray="7 11" stroke="#C2496A" opacity=".9"/>
+  </g>
+  <path fill="url(#r4)" d="M0 388 L150 362 L280 390 L420 368 L555 394 L700 372 L840 396 L980 374 L1120 398 L1260 376 L1400 392 L1400 420 L0 420Z"/>
+  <g stroke="#2B2D33" stroke-width=".8" fill="none" opacity=".5">
+    <path d="M0 402 L150 362 L280 390 L420 368 L555 394 L700 372 L840 396 L980 374 L1120 398 L1260 376 L1400 392" transform="translate(0,14)"/>
+    <path d="M0 388 L150 362 L280 390 L420 368 L555 394 L700 372 L840 396 L980 374 L1120 398 L1260 376 L1400 392" transform="translate(0,28)"/>
+  </g>
+</symbol></defs></svg>
+
+<div class="banner">
+  <svg class="pano" viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Stylised alpine ridgelines with a switchback road"><use href="#pano"/></svg>
+  <div class="banner-copy"><div class="inner">
+    <p class="eyebrow"><svg class="ic"><use href="#i-peak"/></svg> Three days · three options · 12–16 passes · Ro &amp; Bon</p>
+    <h1>2026 Cross-Alps Trip <span style="opacity:.62;font-weight:400">(short&nbsp;version)</span></h1>
+    <p class="sub">1–4 September 2026 · two drivers · one car (the fastest one an 18yo can rent…)</p>
+  </div></div>
+</div>
+
+<header id="hdr">
+  <div class="hdr-art"><svg viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice"><use href="#pano"/></svg></div>
+  <div class="lift">
+  <div class="wrap">
+    <div class="mast">
+      <h1><svg class="ic"><use href="#i-peak"/></svg>2026 Cross-Alps Trip <span class="sv">(short version)</span></h1>
+      <div class="right"><div class="dates mono">Tue 1 Sep 16:00 · Fri 4 Sep 15:00 · 2 drivers</div>
+        <button class="themebtn" id="themeBtn" aria-label="Switch between light and dark"><svg class="ic"><use href="#i-moon" id="themeIcon"/></svg></button></div>
+    </div>
+  </div>
+  <div class="wrap" style="padding-left:0;padding-right:0">
+    <div class="switch" role="tablist" aria-label="Route options" id="switch"></div>
+  </div>
+  <div class="wrap" style="padding-left:0;padding-right:0">
+    <nav class="secnav" id="secnav" aria-label="Jump to section"></nav>
+  </div>
+  </div>
+</header>
+
+<main>
+
+<div class="sec t-rock" id="sec-overview" style="border-top:0;padding-top:0">
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-top">
+      <h2 id="heroTitle"></h2>
+      <p class="blurb" id="heroBlurb"></p>
+    </div>
+    <div class="stats" id="heroStats"></div>
+
+    <div class="mapwrap">
+      <div class="mapbox">
+        <div class="viewtog" role="group" aria-label="Map view">
+          <button id="vSchematic" aria-pressed="true">Schematic</button>
+          <button id="vTerrain" aria-pressed="false">Terrain (needs network)</button>
+        </div>
+        <div id="leafMap" style="display:none"></div>
+        <div id="mapHost"></div>
+        <div id="mapTip" role="tooltip"></div>
+        <div class="tileWarn" id="tileWarn"></div>
+        <div class="mapfoot"><span id="mapMode">Drawn from coordinates · no connection needed</span><span id="mapKm"></span></div>
+      </div>
+      <div class="legend">
+        <h4>Days · tap to isolate</h4>
+        <div id="legend"></div>
+        <div class="keyrow">
+          <span><i class="kd"></i> Pass or toll road</span>
+          <span><i class="ks"></i> Overnight</span>
+          <span><i class="kw"></i> Waypoint</span>
+        </div>
+        <a class="gbtn" id="liveMap" href="#" target="_blank" rel="noopener" style="margin-top:16px"><svg class="ic"><use href="#i-map"/></svg>Open this area on OpenTopoMap ↗</a>
+        <p class="mnote" style="margin:12px 0 0">
+          <strong>Schematic</strong> is drawn from the same coordinates as everything else and always renders.
+          <strong>Terrain</strong> pulls OpenTopoMap tiles — real contours, relief and spot heights — but a published
+          page runs in a sandbox that often blocks external map tiles. If it does, the button above and the per-day
+          Google Maps links below still work, and saving this file and opening it from your desktop restores the terrain map.
+        </p>
+        <p class="mnote" style="margin:10px 0 0">
+          Route lines are straight between waypoints, not traced roads. Hover any roadbook row below and its pin lights up.
+        </p>
+      </div>
+    </div>
+
+    <div class="ridge-box">
+      <div class="ridge-cap"><span>Altitude profile · whole route</span><span>150 m – 2,850 m</span></div>
+      <div id="heroRidge"></div>
+    </div>
+  </div>
+</div></div>
+
+  <div id="days"></div>
+
+  <section class="sec t-cool" id="sec-tolls"><div class="wrap">
+    <div class="sechead"><svg class="ic"><use href="#i-ticket"/></svg><h3>Tolls and access</h3></div>
+    <p class="lede">Per car, 2026 rates, for the option selected above. Verify at the gate — Alpine road operators change prices and hours at short notice.</p>
+    <table class="costs" id="costTable"></table>
+  </div></section>
+
+  <section class="sec t-rock" id="sec-book"><div class="wrap">
+    <div class="sechead"><svg class="ic"><use href="#i-check"/></svg><h3>Book before you fly</h3></div>
+    <p class="lede">Ordered by how badly it goes wrong if you skip it.</p>
+    <ul class="todo" id="todo"></ul>
+  </div></section>
+
+  <section class="sec t-ink" id="sec-car"><div class="wrap">
+    <div class="sechead"><svg class="ic"><use href="#i-car"/></svg><h3>The car</h3></div>
+    <p class="lede">Same for all three options.</p>
+    <div class="grid3">
+      <div class="card"><h5>What's bookable at 18</h5>
+        <p>Sixt Germany rents from 18 with the licence held one day, but only in groups MBMR through CWMR — mini to compact estate. In Munich that means a BMW 1 Series, Mercedes A-Class or Audi A3, roughly 150–190 hp. Young driver surcharge applies under 25.</p>
+        <p>Premium and Sports &amp; Luxury need 25 or 30. No German insurer writes a performance car for an 18-year-old at consumer rates, so paying more doesn't unlock it.</p></div>
+      <div class="card"><h5>Everyone else</h5>
+        <p>Europcar and Buchbinder start at 18–19 but only in the smallest classes. Avis and Budget at 19. Hertz and Enterprise at 21. Sixt is the best available answer.</p>
+        <p>Book with his real date of birth entered — the engine greys out what he can't take. Then call Munich Airport on <a class="mono" href="tel:+498966060">+49 89 66 06 00</a> and ask for the top of the permitted family.</p></div>
+      <div class="card"><h5>Italy's new-driver power cap</h5>
+        <p>Since December 2024, drivers in their first three years may not drive cars over 75 kW/tonne or 105 kW absolute (about 143 hp). A 156 hp 1 Series is over it on paper.</p>
+        <p>The penalty clause is written against holders of an Italian licence, and a valid foreign licence circulates freely, so a UK-licensed driver is very unlikely to be stopped.</p></div>
+      <div class="card"><h5>Why it matters less than it sounds</h5>
+        <p>Stelvio, Timmelsjoch and the Sellaronda are first-and-second-gear roads. A 156 hp hatch with good brakes is more fun here than a 911 you'd never open up. Put the money into the excess reduction and the second-driver fee.</p></div>
+    </div>
+  </div></section>
+
+  <section class="sec t-warm" id="sec-rules"><div class="wrap">
+    <div class="sechead"><svg class="ic"><use href="#i-alert"/></svg><h3>Rules that will catch you out</h3></div>
+    <div class="grid3">
+      <div class="card"><h5>Passo Gardena is open</h5>
+        <p>Several blogs say it closes to all traffic from 1 September 2026. It doesn't. The restriction was reduced to a digital simulation with no physical barriers and no penalties; the province has confirmed no restriction for 2026. The real ZTL is targeted at summer 2027.</p></div>
+      <div class="card"><h5>Night driving bans</h5>
+        <p>Grossglockner runs 06:00–19:30 from 1 September, last entry 18:45. Timmelsjoch is 07:00–20:00. Both are enforced with gates, not signs. Build the day backwards from the gate time.</p></div>
+      <div class="card"><h5>Austrian vignette</h5>
+        <p>German-plated rental cars usually don't carry one. Buy the 10-day digital vignette (€12.80) at a petrol station or ADAC office for immediate validity. Fine is €200+.</p></div>
+      <div class="card"><h5>Parking colours in Italy</h5>
+        <p>White is free but may need a disc, blue is paid, yellow is residents only and gets towed in Ortisei and Cortina. On the passes, park only in marked gravel bays.</p></div>
+      <div class="card"><h5>Places not to improvise</h5>
+        <p>Lago di Braies can't be driven to 09:00–16:00 until 15 September without a reservation. Alpe di Siusi is closed to private traffic 09:00–17:00. Neither is on these routes.</p></div>
+      <div class="card"><h5>Check the morning before</h5>
+        <p>alpen-paesse.ch for Swiss and border passes, suedtirol.com/verkehr for South Tyrol, grossglockner.at webcams for the Glockner. Late-August roadworks near Umbrail had alternate dates of 1–3 September.</p></div>
+    </div>
+  </div></section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Distances and times are moving time on the routing shown. Add 40–60% for photo stops, food, toll queues and the fact that you will stop at Fuscher Törl for longer than you plan to.</p>
+    <p>Hotel links open Google Maps, where the current photo gallery, opening hours and directions live. Details were correct at time of writing; at this notice, phone rather than book online.</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================ GEO ============ */
+const GEO = {
+ 'Munich Airport':[48.354,11.786],'A8 east toward Salzburg':[47.960,12.320],
+ 'Berchtesgaden':[47.630,13.004],'Rossfeld Panoramastrasse':[47.626,13.070],
+ 'Lofer':[47.586,12.694],'Salzburg':[47.809,13.055],'Zell am See':[47.323,12.797],
+ 'Ferleiten toll gate':[47.153,12.803],'Ferleiten':[47.153,12.803],
+ 'Edelweissspitze':[47.129,12.831],'Fuscher Törl':[47.113,12.830],'Hochtor tunnel':[47.079,12.842],
+ 'Kaiser-Franz-Josefs-Höhe':[47.075,12.752],'Heiligenblut':[47.032,12.844],'Heiligenblut toll gate':[47.032,12.844],
+ 'Lienz':[46.828,12.769],'Toblach / Dobbiaco':[46.735,12.222],'Misurina':[46.583,12.255],
+ 'Rifugio Auronzo · Tre Cime':[46.612,12.303],"Cortina d'Ampezzo":[46.537,12.136],
+ 'Passo Falzarego':[46.519,12.008],'Passo Valparola':[46.529,11.994],'Corvara in Badia':[46.548,11.874],
+ 'Passo Campolongo':[46.499,11.868],'Arabba':[46.496,11.872],'Passo Pordoi':[46.488,11.813],
+ 'Canazei':[46.477,11.769],'Passo Sella':[46.510,11.762],'Passo Gardena':[46.546,11.808],
+ 'Ortisei / Val Gardena':[46.576,11.671],'Bolzano':[46.498,11.354],'Sterzing / Vipiteno':[46.895,11.433],
+ 'Jaufenpass':[46.838,11.313],'St Leonhard in Passeier':[46.812,11.246],
+ 'Timmelsjoch / Passo del Rombo':[46.909,11.096],'Sölden':[46.967,11.008],'Längenfeld':[47.070,10.970],
+ 'Imst':[47.239,10.739],'Hahntennjoch':[47.313,10.628],'Elmen / Lechtal':[47.348,10.545],
+ 'Reutte':[47.489,10.717],'Ehrwald':[47.401,10.917],'Garmisch-Partenkirchen':[47.492,11.096],
+ 'Fernpass':[47.362,10.828],'Landeck':[47.139,10.566],'Reschenpass':[46.838,10.505],
+ 'Lago di Resia':[46.808,10.541],'Glurns / Glorenza':[46.671,10.556],'Prad allo Stelvio':[46.617,10.590],
+ 'Passo dello Stelvio':[46.529,10.454],'Umbrail Pass':[46.539,10.418],'Santa Maria Val Müstair':[46.601,10.418],
+ 'Bormio':[46.467,10.372],'Santa Caterina Valfurva':[46.410,10.494],'Passo Gavia':[46.343,10.489],
+ 'Ponte di Legno':[46.259,10.510],'Passo del Tonale':[46.259,10.585],'Cles / Val di Non':[46.364,11.034],
+ 'Passo della Mendola':[46.418,11.198],'Passo di Costalunga':[46.409,11.596],
+ 'Passo Fedaia':[46.457,11.878],'Caprile':[46.446,12.006],'Passo Giau':[46.482,12.055],
+ 'Bruneck / Brunico':[46.796,11.936],'Brixen / Bressanone':[46.716,11.657],
+ 'Brenner Pass':[47.005,11.506],'Innsbruck':[47.269,11.404]
+};
+const gmap = id => 'https://www.google.com/maps/place/?q=place_id:'+id;
+const enc = encodeURIComponent;
+/* Official sites for these 19 hotels aren't reliably resolvable — search engines return OTA pages,
+   and a guessed domain is worse than no link. These two resolve every time. */
+const site = h => 'https://www.google.com/search?q='+enc('"'+h.n+'" '+h.loc.split(',').pop().trim()+' official website');
+const bkg  = h => 'https://www.booking.com/searchresults.html?ss='+enc(h.n+' '+h.loc.split(',').pop().trim());
+
+/* Google Maps driving directions. The URL API caps at 9 intermediate waypoints,
+   so passes win, then overnight stops, in road order. */
+function gdir(day){
+  const pts = day.pts.filter(p=>GEO[p[2]]);
+  if(pts.length<2) return null;
+  const o=pts[0], d=pts[pts.length-1], mid=pts.slice(1,-1);
+  let picks = mid.filter(p=>p[3]==='pass');
+  if(picks.length>9){
+    const keep = new Set(picks.slice().sort((a,b)=>b[1]-a[1]).slice(0,9));
+    picks = picks.filter(p=>keep.has(p));
+  } else {
+    for(const s of mid.filter(p=>p[3]==='stop')){ if(picks.length>=9) break; if(!picks.includes(s)) picks.push(s); }
+    picks.sort((a,b)=>a[0]-b[0]);
+  }
+  const c = p => GEO[p[2]][0].toFixed(5)+','+GEO[p[2]][1].toFixed(5);
+  return 'https://www.google.com/maps/dir/?api=1&origin='+c(o)+'&destination='+c(d)
+       + (picks.length?'&waypoints='+picks.map(c).join('%7C'):'') + '&travelmode=driving';
+}
+
+/* ============================================================ DATA =========== */
+const D = {
+A:{key:'A',tag:'Option A',title:'Glockner &amp; Dolomites',sub:'Recommended. Best road of the three, balanced days.',
+ heroTitle:'Twelve crossings, one glacier, and a spa at the end of it.',
+ blurb:'Anticlockwise: the Grossglockner on Wednesday morning while the light is still low, the Dolomite passes on Thursday, and the Jaufen–Timmelsjoch sequence as the last real drive before an easy run home over the Hahntennjoch.',
+ stats:[['1,100 km','total distance'],['21h 45m','moving time'],['12','named passes'],['2,571 m','highest point'],['3','countries']],
+ costs:[['Rossfeld Panoramastrasse','Day 1','~€10'],['Austrian 10-day digital vignette','Day 1, buy at a petrol station','€12.80'],
+  ['Grossglockner High Alpine Road','Day 2, day ticket','€46.50'],['Tre Cime di Lavaredo toll road','Day 2, pre-booked slot','€40.00'],
+  ['Timmelsjoch, return ticket','Day 3, paid at Hochgurgl','€28.00'],['Italian autostrada, Bolzano–Sterzing','Day 3','~€8']],
+ total:'≈ €145',
+ days:[
+  {n:1,date:'Tue 1 Sep',from:'Munich Airport',to:'Zell am See',km:280,time:'4h 00m',passes:1,depart:'16:00',arrive:'≈20:15',
+   note:'<strong>Tight but worth it.</strong> If the flight is late or the Sixt desk is slow, drop the Rossfeld and run straight down the A8 — Zell am See in 2h15. The Rossfeld is a good warm-up loop, not a highlight worth arriving at 22:00 for.',
+   pts:[[0,448,'Munich Airport','stop','DE','Sixt, Terminalstr. Mitte. Allow 45 min for the desk and the young-driver paperwork.'],
+    [20,520,'A8 east toward Salzburg','','DE',''],[150,570,'Berchtesgaden','','DE',''],
+    [172,1570,'Rossfeld Panoramastrasse','pass','DE','Loop road on the German–Austrian ridge. Views into the Salzburg basin.'],
+    [195,630,'Lofer','','AT',''],[280,750,'Zell am See','stop','AT','Overnight.']],
+   evening:'Lake promenade is a five-minute walk from all three hotels. Kitchens in Zell stop around 21:00 — call ahead if you are running late.',
+   stays:[{n:'Hotel Berner',pick:'Pick',loc:'Nikolaus-Gassner-Promenade 1, Zell am See',why:'Small, family-run, consistently the best kitchen in town. Quiet end of the lake, five minutes from the centre.',tel:'+43 6542 779',pid:'ChIJu5rn8tgcd0cRDjal7S1ybjU'},
+    {n:'Hotel Tirolerhof',loc:'Auerspergstrasse 5, Zell am See',why:'Central, free parking, spa. Easiest arrival if you get in late.',tel:'+43 6542 772',pid:'ChIJ5-E0ziAdd0cRMwodEx5hfh4'},
+    {n:'Grand Hotel Zell am See',loc:'Esplanade 4–6, Zell am See',why:'On its own peninsula with a private lake beach. The view option.',tel:'+43 6542 7880',pid:'ChIJLTewaiAdd0cRlZubVPZ7Tio'}]},
+  {n:2,date:'Wed 2 Sep',from:'Zell am See',to:'Corvara',km:292,time:'7h 00m',passes:5,depart:'07:30',arrive:'≈19:00',
+   note:'<strong>The long one.</strong> Ferleiten gate opens 06:00 — being through it by 08:00 buys you empty hairpins and low light on the Pasterze. Your Tre Cime slot must be booked in advance; if you can\'t get one, skip Misurina and go Toblach → Cortina, which saves 90 minutes.',
+   pts:[[0,750,'Zell am See','stop','AT',''],[25,1150,'Ferleiten toll gate','','AT','€46.50 day ticket. Gate 06:00–19:30 from 1 Sep.'],
+    [33,2571,'Edelweissspitze','pass','AT','Cobbled spur off the main road. Highest point you can drive to here.'],
+    [40,2428,'Fuscher Törl','pass','AT','The postcard hairpin stack. Stop.'],
+    [55,2504,'Hochtor tunnel','pass','AT','Main Alpine ridge crossing.'],
+    [73,2369,'Kaiser-Franz-Josefs-Höhe','stop','AT','Pasterze glacier. Visitor centre 10:00–17:00.'],
+    [95,1301,'Heiligenblut','','AT',''],[135,673,'Lienz','stop','AT','Lunch. Last easy fuel before Italy.'],
+    [185,1256,'Toblach / Dobbiaco','','IT','Border crossing into South Tyrol.'],[210,1754,'Misurina','','IT',''],
+    [218,2320,'Rifugio Auronzo · Tre Cime','pass','IT','€40, booked slot, 12 hours. Short walk to the Cadini viewpoint.'],
+    [253,1224,"Cortina d'Ampezzo",'','IT',''],[271,2105,'Passo Falzarego','pass','IT',''],
+    [275,2192,'Passo Valparola','pass','IT','Better than Falzarego and almost nobody drives it.'],
+    [292,1568,'Corvara in Badia','stop','IT','Overnight.']],
+   evening:'Alta Badia eats late by Alpine standards — 20:00 is normal. Half board at all three is worth taking; the à la carte scene in Corvara is thin midweek in September.',
+   stays:[{n:'Hotel Arkadia',pick:'Pick',loc:'Str. Burjé 11, Corvara in Badia',why:'In the village, garage parking, pool looking straight at the Sella massif. Set up for people arriving late and leaving early.',tel:'+39 0471 836043',pid:'ChIJy5DZLAY_eEcRy0XVm6QdE0I'},
+    {n:'Dolomites Lifestyle Hotel Marmolada',loc:'Str. Col Alt 80, Corvara in Badia',why:'Recently renovated, smaller, strong dinner. Slightly quieter.',tel:'+39 0471 836139',pid:'ChIJE6i_BQY_eEcRz6oD4rN4oz4'},
+    {n:'Sporthotel Arabba',loc:'Via Mesdi 76, Arabba',why:'Fifteen minutes south, at the foot of Pordoi. Saves you the Campolongo in the morning and is used to guests keeping odd hours.',tel:'+39 0436 79321',pid:'ChIJl-BumLRBeEcRotYE7w4dVvE'}]},
+  {n:3,date:'Thu 3 Sep',from:'Corvara',to:'Längenfeld',km:285,time:'6h 30m',passes:6,depart:'08:00',arrive:'≈18:30',
+   note:'<strong>Watch the Timmelsjoch gate.</strong> It shuts at 20:00 and there is no discretion. Aim to be at Hochgurgl by 18:00. The Bolzano–Sterzing stretch on the A22 is the only dull hour of the trip — use it to swap drivers.',
+   pts:[[0,1568,'Corvara in Badia','stop','IT',''],[6,1875,'Passo Campolongo','pass','IT',''],[12,1602,'Arabba','','IT',''],
+    [22,2239,'Passo Pordoi','pass','IT','Cable car to Sass Pordoi, 2,950 m, if you want an hour off the road.'],
+    [34,1465,'Canazei','','IT',''],[45,2240,'Passo Sella','pass','IT','The Sella towers straight above the road.'],
+    [58,2121,'Passo Gardena','pass','IT','Open in 2026 — the September closure was cancelled.'],
+    [75,1236,'Ortisei / Val Gardena','stop','IT','Coffee stop. Yellow lines are towed here.'],
+    [105,262,'Bolzano','','IT','Fuel before the A22.'],[175,948,'Sterzing / Vipiteno','','IT',''],
+    [195,2094,'Jaufenpass','pass','IT','Quiet, fast, underrated.'],[215,693,'St Leonhard in Passeier','','IT',''],
+    [245,2509,'Timmelsjoch / Passo del Rombo','pass','AT','€28 return, paid at Hochgurgl. Italian side is the steep, narrow one.'],
+    [265,1368,'Sölden','','AT',''],[285,1179,'Längenfeld','stop','AT','Overnight.']],
+   evening:'Aqua Dome thermal spa in Längenfeld — outdoor bowls at 34–36°C, open until 22:00. Free entry if you stay at the Bergwelt. This is the relaxation day.',
+   stays:[{n:'Hotel Bergwelt',pick:'Pick',loc:'Au 135, Unterlängenfeld',why:'Aqua Dome entry included, which is the reason to stay in Längenfeld rather than Sölden. Large rooms, will hold dinner for late arrivals.',tel:'+43 5253 5301',pid:'ChIJUwCcTJUlnUcRhNONkwGNw-M'},
+    {n:'Hotel Stern',loc:'Oberlängenfeld 1, Längenfeld',why:'Infinity pool, very good half board, mid-valley so short hops in both directions.',tel:'+43 5253 5226',pid:'ChIJuZN1VIIvnUcRGEO5hkjqzn8'},
+    {n:'die berge lifestyle-hotel',loc:'Gemeindestrasse 2, Sölden',why:'If you\'d rather stay in Sölden: rooftop pool, underground garage, central. Twenty minutes closer to the Timmelsjoch.',tel:'+43 5254 2062',pid:'ChIJ0WiufEMynUcRq9M6VKSR-UE'}]},
+  {n:4,date:'Fri 4 Sep',from:'Längenfeld',to:'Munich Airport',km:245,time:'4h 00m',passes:1,depart:'08:30',arrive:'≈13:15',
+   note:'<strong>Leave by 08:30.</strong> That lands you at the Sixt return around 13:15 with an hour of slack. Drop the Hahntennjoch and go Imst → Fernpass → Garmisch if you are behind — same finish, 40 minutes quicker.',
+   pts:[[0,1179,'Längenfeld','stop','AT',''],[55,828,'Imst','','AT','Fuel. Fill up in Austria — cheaper than Bavaria.'],
+    [85,1894,'Hahntennjoch','pass','AT','Narrow, empty, technical. The best last road of the trip.'],
+    [100,976,'Elmen / Lechtal','','AT',''],[130,854,'Reutte','','AT',''],[150,994,'Ehrwald','','AT','Zugspitze on your right.'],
+    [175,708,'Garmisch-Partenkirchen','','DE',''],[245,448,'Munich Airport','stop','DE','Refuel within 10 km of the return or Sixt charges its own rate.']],
+   evening:'',stays:[]}
+ ]},
+
+B:{key:'B',tag:'Option B',title:'Stelvio &amp; Dolomites',sub:'Take this if Stelvio is non-negotiable. Adds Switzerland.',
+ heroTitle:'Forty-eight hairpins, then the Gavia, then everything else.',
+ blurb:'Clockwise and further west. Stelvio first thing Wednesday, a short hop into Switzerland over the Umbrail, the Gavia in the afternoon, and the full Sellaronda plus Giau on Thursday. Wednesday is eight hours in the seat.',
+ stats:[['1,145 km','total distance'],['21h 00m','moving time'],['16','named passes'],['2,757 m','highest point'],['4','countries']],
+ costs:[['Austrian 10-day digital vignette','Day 1','€12.80'],['Stelvio, Umbrail, Gavia, Tonale','No toll on any of them','€0'],
+  ['Italian autostrada, Trento–Bolzano','Day 2','~€10'],['Tre Cime di Lavaredo toll road','Day 3, pre-booked slot','€40.00'],
+  ['Brenner motorway, A22 + A13','Day 4','~€22'],['Parking, Ortisei / Cortina / passes','Blue lines, cash or EasyPark','~€15']],
+ total:'≈ €100',
+ days:[
+  {n:1,date:'Tue 1 Sep',from:'Munich Airport',to:'Prad allo Stelvio',km:288,time:'4h 15m',passes:2,depart:'16:00',arrive:'≈20:30',
+   note:'<strong>A long first evening.</strong> Two passes on day one, arriving after dark in the Vinschgau. The payoff is waking up 25 minutes from the bottom of the Stelvio.',
+   pts:[[0,448,'Munich Airport','stop','DE','Sixt, Terminalstr. Mitte.'],[95,708,'Garmisch-Partenkirchen','','DE',''],
+    [140,1216,'Fernpass','pass','AT','Busy but scenic. Fernsteinsee on your left.'],[165,828,'Imst','','AT',''],
+    [195,816,'Landeck','','AT','Fuel.'],[245,1504,'Reschenpass','pass','IT','Border into South Tyrol.'],
+    [252,1520,'Lago di Resia','stop','IT','The submerged bell tower. Two minutes off the road.'],
+    [280,907,'Glurns / Glorenza','','IT','Smallest walled town in the Alps. Worth a slow drive-through.'],
+    [288,915,'Prad allo Stelvio','stop','IT','Overnight.']],
+   evening:'Prad is a cycling town — kitchens run late and everywhere does a proper vegetarian plate. Both hotels do a five-course half board that beats eating out.',
+   stays:[{n:'Garden Park Hotel',pick:'Pick',loc:'Via Pineta 35A, Prato allo Stelvio',why:'Big grounds, garage, spa, and a kitchen that handles vegetarian requests properly. Fifteen minutes from hairpin one.',tel:'+39 0473 618228',pid:'ChIJixzz5XIfg0cRHRz497sJXR0'},
+    {n:'Aktiv- & Wellnesshotel Zentral',loc:'Via Principale 100, Prato allo Stelvio',why:'In the village centre, modern rooms, large spa. Good backup.',tel:'+39 0473 616008',pid:'ChIJFcsAkggfg0cRn2q1S2FwGaw'},
+    {n:'Pension & Residence Astoria',loc:'Vicolo Maniscalchi 1, Prato allo Stelvio',why:'Simpler and cheaper, owner-run, early breakfast for the Stelvio crowd.',tel:'+39 0473 616338',pid:'ChIJz8UiYggfg0cRJuauLq7j3V4'}]},
+  {n:2,date:'Wed 2 Sep',from:'Prad allo Stelvio',to:'Canazei',km:325,time:'8h 00m',passes:6,depart:'07:00',arrive:'≈19:30',
+   note:'<strong>Eight hours, no slack.</strong> Start at 07:00 to have the Stelvio to yourself — by 10:00 it is a queue of motorhomes with nowhere to overtake. The Umbrail leg into Switzerland is an out-and-back of about 45 minutes; drop it if you are behind. No Swiss vignette needed, the Umbrail is a main road.',
+   pts:[[0,915,'Prad allo Stelvio','stop','IT',''],[25,2757,'Passo dello Stelvio','pass','IT','48 numbered hairpins on the east ramp. Highest point of the trip.'],
+    [33,2501,'Umbrail Pass','pass','CH','Into Switzerland. Passport not needed, but carry it.'],
+    [45,1375,'Santa Maria Val Müstair','stop','CH','Turn round here. Coffee, then back up.'],
+    [80,1225,'Bormio','','IT','Fuel and lunch.'],[100,1738,'Santa Caterina Valfurva','','IT',''],
+    [115,2621,'Passo Gavia','pass','IT','Narrow, no guardrails in places, second-best road on this route.'],
+    [140,1258,'Ponte di Legno','','IT',''],[152,1883,'Passo del Tonale','pass','IT',''],
+    [200,658,'Cles / Val di Non','','IT','Apple country.'],
+    [230,1363,'Passo della Mendola','pass','IT','Long, smooth, fast switchbacks down to Bolzano.'],
+    [255,262,'Bolzano','','IT',''],[300,1745,'Passo di Costalunga','pass','IT','Lago di Carezza just below the summit.'],
+    [325,1465,'Canazei','stop','IT','Overnight.']],
+   evening:'Canazei and the Fassa valley have the widest pizza-and-pasta choice of any base on any of these routes. Nothing needs booking midweek in September.',
+   stays:[{n:'Olympic Spa Hotel',pick:'Pick',loc:'S.da de Ciarlonch 5, San Giovanni di Fassa',why:'Ten minutes down valley from Canazei. Large spa, kitchen is good with dietary requests. Best-run hotel on this list.',tel:'+39 0462 764225',pid:'ChIJK84u3thoeEcRYB9Z2Hicql4'},
+    {n:'Hotel Sas Morin',loc:'Via Donato Zeni 6, Pozza di Fassa',why:'Smaller, outdoor jacuzzi and sauna, easy parking. Quieter than staying in Canazei itself.',tel:'+39 0462 764419',pid:'ChIJdWQiHz1peEcRjq38u-EKGeM'},
+    {n:'Hotel Renè',loc:'Strada de la Veisc 69, San Giovanni di Fassa',why:'Recently renovated, big free car park, strong half board.',tel:'+39 0462 764258',pid:'ChIJcUD0etDkLhMR9-e_Z0hEHIE'}]},
+  {n:3,date:'Thu 3 Sep',from:'Canazei',to:'Bruneck',km:230,time:'6h 00m',passes:7,depart:'08:00',arrive:'≈18:00',
+   note:'<strong>The best driving day of any of the three options.</strong> Full Sellaronda loop from Canazei, then Fedaia under the Marmolada, then the Giau — the finest single pass in the Dolomites and considerably better than Falzarego next door.',
+   pts:[[0,1465,'Canazei','stop','IT',''],[12,2240,'Passo Sella','pass','IT',''],[25,2121,'Passo Gardena','pass','IT','Open in 2026.'],
+    [35,1568,'Corvara in Badia','','IT',''],[42,1875,'Passo Campolongo','pass','IT',''],[48,1602,'Arabba','','IT',''],
+    [58,2239,'Passo Pordoi','pass','IT','Sellaronda loop closes here.'],
+    [68,2057,'Passo Fedaia','pass','IT','Marmolada glacier and the dam. Steep west ramp.'],
+    [95,1023,'Caprile','','IT',''],[115,2236,'Passo Giau','pass','IT','29 hairpins, wide open, almost no traffic. Stop at the top.'],
+    [132,1224,"Cortina d'Ampezzo",'stop','IT','Lunch.'],[155,1754,'Misurina','','IT',''],
+    [163,2320,'Rifugio Auronzo · Tre Cime','pass','IT','€40, booked slot.'],[195,1256,'Toblach / Dobbiaco','','IT',''],
+    [230,835,'Bruneck / Brunico','stop','IT','Overnight.']],
+   evening:'Bruneck old town is a proper town rather than a resort — pedestrianised Stadtgasse, decent bars, food served until late. Best last evening of the three routes.',
+   stays:[{n:'Hotel Olympia',pick:'Pick',loc:'Via In der Sandgrube 62, Riscone / Reischach',why:'Just outside Bruneck, easy parking, very good half board and quick to get out of on Friday morning.',tel:'+39 0474 410924',pid:'ChIJTTaTKsoheEcRVVt9YXaqj7k'},
+    {n:'Majestic Unique Spa Resort',loc:'Im Gelände 20, Riscone / Reischach',why:'Bigger and more polished, outdoor pool and multiple saunas. The treat option.',tel:'+39 0474 410993',pid:'ChIJOxdujckheEcR0OiioATWbjs'},
+    {n:'K1 Mountain Chalet',loc:'Via Funivia 22, Bruneck',why:'Apartments rather than a hotel. Useful if you want space and don\'t care about dinner.',tel:'+39 0474 862040',pid:'ChIJ3Zyao7kheEcR9x99bUHmw3I'}]},
+  {n:4,date:'Fri 4 Sep',from:'Bruneck',to:'Munich Airport',km:300,time:'3h 15m',passes:1,depart:'09:00',arrive:'≈12:45',
+   note:'<strong>Pure motorway.</strong> The easiest Friday of the three — 300 km but almost all of it at 130 km/h. Leave at 09:00 and you are at the Sixt return before 13:00.',
+   pts:[[0,835,'Bruneck / Brunico','stop','IT',''],[35,559,'Brixen / Bressanone','','IT','Join the A22.'],
+    [70,1370,'Brenner Pass','pass','AT','Border. Toll booth on the Austrian side.'],
+    [110,574,'Innsbruck','','AT','Fuel here, not in Germany.'],[300,448,'Munich Airport','stop','DE','']],
+   evening:'',stays:[]}
+ ]},
+
+C:{key:'C',tag:'Option C',title:'Everything',sub:'Stelvio and Glockner in one go. Thursday has no slack.',
+ heroTitle:'Both headline roads, and a Thursday you will remember for the wrong reasons if anything slips.',
+ blurb:'Option B for the first two days, then a 345 km Thursday that runs the Sellaronda, crosses the Dolomites to Lienz and comes over the Grossglockner northbound before the gate shuts. Friday is a two-hour run home. Only take this if you are happy to drop Tre Cime and Giau on the day.',
+ stats:[['1,240 km','total distance'],['23h 30m','moving time'],['16','named passes'],['2,757 m','highest point'],['4','countries']],
+ costs:[['Austrian 10-day digital vignette','Day 1','€12.80'],['Stelvio, Umbrail, Gavia, Tonale','No toll','€0'],
+  ['Italian autostrada, Trento–Bolzano','Day 2','~€10'],['Grossglockner High Alpine Road','Day 3, Heiligenblut gate','€46.50'],
+  ['Rossfeld Panoramastrasse','Day 4, optional','~€10'],['Parking and incidentals','','~€15']],
+ total:'≈ €95',
+ days:[
+  {n:1,date:'Tue 1 Sep',from:'Munich Airport',to:'Prad allo Stelvio',km:288,time:'4h 15m',passes:2,depart:'16:00',arrive:'≈20:30',
+   note:'<strong>Identical to Option B.</strong> Fernpass then Reschen, sleeping at the foot of the Stelvio.',
+   pts:[[0,448,'Munich Airport','stop','DE','Sixt, Terminalstr. Mitte.'],[95,708,'Garmisch-Partenkirchen','','DE',''],
+    [140,1216,'Fernpass','pass','AT',''],[165,828,'Imst','','AT',''],[195,816,'Landeck','','AT','Fuel.'],
+    [245,1504,'Reschenpass','pass','IT','Border into South Tyrol.'],[252,1520,'Lago di Resia','stop','IT','The submerged bell tower.'],
+    [280,907,'Glurns / Glorenza','','IT',''],[288,915,'Prad allo Stelvio','stop','IT','Overnight.']],
+   evening:'Early night. Wednesday and Thursday are both long.',
+   stays:[{n:'Garden Park Hotel',pick:'Pick',loc:'Via Pineta 35A, Prato allo Stelvio',why:'Garage, spa, good kitchen, fifteen minutes from hairpin one.',tel:'+39 0473 618228',pid:'ChIJixzz5XIfg0cRHRz497sJXR0'},
+    {n:'Aktiv- & Wellnesshotel Zentral',loc:'Via Principale 100, Prato allo Stelvio',why:'Central, modern, large spa.',tel:'+39 0473 616008',pid:'ChIJFcsAkggfg0cRn2q1S2FwGaw'},
+    {n:'Pension & Residence Astoria',loc:'Vicolo Maniscalchi 1, Prato allo Stelvio',why:'Simple and cheap with an early breakfast.',tel:'+39 0473 616338',pid:'ChIJz8UiYggfg0cRJuauLq7j3V4'}]},
+  {n:2,date:'Wed 2 Sep',from:'Prad allo Stelvio',to:'Canazei',km:325,time:'8h 00m',passes:6,depart:'07:00',arrive:'≈19:30',
+   note:'<strong>Identical to Option B.</strong> Stelvio at dawn, Umbrail for the Swiss tick, Gavia after lunch. Drop the Umbrail detour if you leave late — Thursday cannot absorb a deficit.',
+   pts:[[0,915,'Prad allo Stelvio','stop','IT',''],[25,2757,'Passo dello Stelvio','pass','IT','48 hairpins. Be here by 08:00.'],
+    [33,2501,'Umbrail Pass','pass','CH','Into Switzerland.'],[45,1375,'Santa Maria Val Müstair','stop','CH','Turn round.'],
+    [80,1225,'Bormio','','IT','Fuel and lunch.'],[115,2621,'Passo Gavia','pass','IT','Narrow, spectacular, slow.'],
+    [140,1258,'Ponte di Legno','','IT',''],[152,1883,'Passo del Tonale','pass','IT',''],
+    [200,658,'Cles / Val di Non','','IT',''],[230,1363,'Passo della Mendola','pass','IT',''],
+    [255,262,'Bolzano','','IT',''],[300,1745,'Passo di Costalunga','pass','IT',''],[325,1465,'Canazei','stop','IT','Overnight.']],
+   evening:'Eat early and pack the car tonight. Thursday starts at 07:00.',
+   stays:[{n:'Olympic Spa Hotel',pick:'Pick',loc:'S.da de Ciarlonch 5, San Giovanni di Fassa',why:'Best-run hotel on this list, ten minutes down valley, big spa.',tel:'+39 0462 764225',pid:'ChIJK84u3thoeEcRYB9Z2Hicql4'},
+    {n:'Hotel Sas Morin',loc:'Via Donato Zeni 6, Pozza di Fassa',why:'Smaller, easy parking, outdoor sauna.',tel:'+39 0462 764419',pid:'ChIJdWQiHz1peEcRjq38u-EKGeM'},
+    {n:'Hotel Renè',loc:'Strada de la Veisc 69, San Giovanni di Fassa',why:'Large free car park, strong half board.',tel:'+39 0462 764258',pid:'ChIJcUD0etDkLhMR9-e_Z0hEHIE'}]},
+  {n:3,date:'Thu 3 Sep',from:'Canazei',to:'Zell am See',km:345,time:'8h 30m',passes:7,depart:'07:00',arrive:'≈19:30',
+   note:'<strong>The gate at Heiligenblut is the whole day.</strong> Last entry 18:45, no exceptions — and you want to be through by 16:00 to actually see the Glockner rather than commute over it. Working backwards: Cortina by 10:30, Toblach 11:30, Lienz 13:00, Heiligenblut 14:15. If you are behind at Cortina, skip Misurina.',
+   pts:[[0,1465,'Canazei','stop','IT',''],[12,2240,'Passo Sella','pass','IT',''],[25,2121,'Passo Gardena','pass','IT',''],
+    [35,1568,'Corvara in Badia','','IT',''],[42,1875,'Passo Campolongo','pass','IT',''],
+    [52,2239,'Passo Pordoi','pass','IT','Sellaronda done. Now head east.'],[70,1602,'Arabba','','IT',''],
+    [88,2105,'Passo Falzarego','pass','IT',''],[100,1224,"Cortina d'Ampezzo",'stop','IT','Be here by 10:30.'],
+    [125,1754,'Misurina','','IT','Drop this if you are late.'],[150,1256,'Toblach / Dobbiaco','','IT',''],
+    [200,673,'Lienz','stop','AT','Fuel and a fast lunch. Nothing leisurely.'],
+    [245,1301,'Heiligenblut toll gate','','AT','€46.50. Last entry 18:45.'],
+    [265,2504,'Hochtor tunnel','pass','AT','Northbound over the main ridge.'],
+    [280,2428,'Fuscher Törl','pass','AT','Late-afternoon light here is the best of the trip.'],
+    [300,1150,'Ferleiten','','AT',''],[345,750,'Zell am See','stop','AT','Overnight.']],
+   evening:'Whatever is still serving. This is not the evening you plan anything for.',
+   stays:[{n:'Hotel Berner',pick:'Pick',loc:'Nikolaus-Gassner-Promenade 1, Zell am See',why:'Will hold dinner if you call ahead from Lienz. Quiet, five minutes from the lake.',tel:'+43 6542 779',pid:'ChIJu5rn8tgcd0cRDjal7S1ybjU'},
+    {n:'Hotel Tirolerhof',loc:'Auerspergstrasse 5, Zell am See',why:'Central, free parking, spa open late.',tel:'+43 6542 772',pid:'ChIJ5-E0ziAdd0cRMwodEx5hfh4'},
+    {n:'Grand Hotel Zell am See',loc:'Esplanade 4–6, Zell am See',why:'Lakefront, private beach, valet parking. Easiest late arrival.',tel:'+43 6542 7880',pid:'ChIJLTewaiAdd0cRlZubVPZ7Tio'}]},
+  {n:4,date:'Fri 4 Sep',from:'Zell am See',to:'Munich Airport',km:280,time:'3h 45m',passes:1,depart:'09:00',arrive:'≈13:30',
+   note:'<strong>The reward for Thursday.</strong> Two hours of motorway will do it, so there is room for the Rossfeld above Berchtesgaden on the way past. Skip it and you are at the airport by 11:30.',
+   pts:[[0,750,'Zell am See','stop','AT',''],[85,630,'Lofer','','AT',''],[110,570,'Berchtesgaden','','DE',''],
+    [128,1570,'Rossfeld Panoramastrasse','pass','DE','Optional loop, ~€10, about 45 minutes.'],
+    [150,424,'Salzburg','','AT','Join the A8.'],[280,448,'Munich Airport','stop','DE','Refuel within 10 km of the return.']],
+   evening:'',stays:[]}
+ ]}
+};
+
+
+/* One descriptive line per waypoint. Applied where the roadbook entry has
+   none, or prepended where the existing note is a bare instruction.        */
+const NOTES={
+ 'A8 east toward Salzburg':'Two hours of unrestricted autobahn to settle into the car before anything technical starts.',
+ 'Berchtesgaden':'Königssee and the Eagle\'s Nest are here if you ever come back with a spare day; today it is just the turn-off for the Rossfeld.',
+ 'Lofer':'Tight limestone gorge on the B311 with the Loferer Steinberge standing over the road the whole way.',
+ 'Zell am See':'Lakeside town at 750 m, and the staging post for the Grossglockner run.',
+ 'Salzburg':'Skirt the city on the A10 and pick up the A8 north-west for the last flat hour to Munich.',
+ 'Ferleiten':'Northern toll plaza at 1,150 m and the bottom of the Glockner\'s Fusch ramp.',
+ 'Heiligenblut':'Pilgrimage church with a needle spire framed against the Glockner — the classic photograph of the whole range.',
+ 'Lienz':'Sunny Drau valley town where Tyrol meets Carinthia, with an arcaded square worth twenty minutes.',
+ 'Toblach / Dobbiaco':'Head of the Pustertal and the gateway into the Dolomites proper.',
+ 'Misurina':'Lake at 1,754 m with the Sorapiss reflected in it; the Tre Cime toll gate is just past the far shore.',
+ "Cortina d'Ampezzo":'Host of the 1956 Winter Olympics and co-host in 2026 — expensive coffee, good bakeries, easiest parking on the north edge.',
+ 'Passo Falzarego':'Wide, fast and busy; the Lagazuoi cable car climbs from the summit car park to a WWI tunnel complex in the rock.',
+ 'Corvara in Badia':'Ladin-speaking village at 1,568 m ringed by the Sella, the Sassongher and the Puez towers.',
+ 'Passo Campolongo':'Short, gentle link from Corvara to Arabba and the easiest of the four Sellaronda passes.',
+ 'Arabba':'Small village wedged between Campolongo and Pordoi; useful fuel stop in the middle of the loop.',
+ 'Passo Sella':'The Sella massif rises straight off the road here and the Langkofel fills the mirror on the way down.',
+ 'Passo Gardena':'Grassy saddle between Val Gardena and Val Badia, and the quietest of the Sellaronda four.',
+ 'Canazei':'Val di Fassa\'s main town and the junction of the Sella, Pordoi and Fedaia roads.',
+ 'Ortisei / Val Gardena':'Woodcarving town in the Val Gardena; the Seceda cable car goes up from the centre.',
+ 'Bolzano':'Warm, Italian-feeling valley city at 262 m — the Ötzi museum is here if the weather turns.',
+ 'Sterzing / Vipiteno':'Last South Tyrolean town before the Brenner, with an arcaded main street under a tower.',
+ 'Jaufenpass':'Twenty hairpins with almost no traffic — quiet, fast and consistently underrated.',
+ 'St Leonhard in Passeier':'Bottom of the Passeier valley, where the Jaufen and Timmelsjoch roads meet.',
+ 'Sölden':'Ski resort with a glacier road of its own; the Ötztaler Gletscherstrasse is worth 30 minutes if you have light left.',
+ 'Längenfeld':'Quiet mid-valley village whose reason to exist, for you, is the Aqua Dome across the river.',
+ 'Imst':'Valley town at the mouth of the Pitztal and the junction for the Hahntennjoch.',
+ 'Elmen / Lechtal':'Bottom of the Hahntennjoch descent, on the turquoise Lech river.',
+ 'Reutte':'Last Austrian town before the German border; the Highline 179 footbridge is signposted off the bypass.',
+ 'Ehrwald':'Zugspitze village at 994 m, with the cable car station just off the road.',
+ 'Garmisch-Partenkirchen':'Zugspitze town and the end of the Alps — from here it is flat Bavarian farmland to the airport.',
+ 'Fernpass':'Busy but genuinely scenic, with the Fernsteinsee turning an improbable green below the road.',
+ 'Landeck':'Castle town where the Inn valley turns south, and the last cheap fuel before Italy.',
+ 'Reschenpass':'Gentle border crossing at 1,504 m — you are in Italy, but everyone still speaks German.',
+ 'Lago di Resia':'The bell tower of a village drowned by a 1950 dam still stands in the lake, two minutes off the road.',
+ 'Glurns / Glorenza':'Smallest walled town in the Alps, still complete with gates and towers; worth a slow drive-through.',
+ 'Prad allo Stelvio':'Apple-orchard village at the foot of the eastern Stelvio ramp.',
+ 'Umbrail Pass':'Switzerland\'s highest paved pass and its quietest border post, gravelled until 2015.',
+ 'Santa Maria Val Müstair':'Val Müstair village with a UNESCO-listed Carolingian abbey full of ninth-century frescoes.',
+ 'Bormio':'Spa town at the western foot of the Stelvio and the start of the Gavia road.',
+ 'Santa Caterina Valfurva':'Small resort at 1,738 m where the Gavia climb starts in earnest.',
+ 'Ponte di Legno':'Bottom of the Gavia\'s southern ramp, in the Val Camonica.',
+ 'Passo del Tonale':'Broad, open saddle at 1,883 m — wide and fast after the Gavia\'s single track.',
+ 'Cles / Val di Non':'Heart of the Val di Non apple country, with terraced orchards up both valley walls.',
+ 'Passo della Mendola':'Long, smooth switchbacks dropping off the ridge into Bolzano.',
+ 'Passo di Costalunga':'Lago di Carezza sits just below the summit, green and absurdly photogenic in morning light.',
+ 'Passo Fedaia':'Runs along the dam under the Marmolada glacier; the western ramp is the steepest thing on the trip.',
+ 'Caprile':'Junction village below the Marmolada where the Fedaia and Giau roads meet.',
+ 'Passo Giau':'Twenty-nine hairpins, wide open and almost empty — the finest single pass in the Dolomites.',
+ 'Bruneck / Brunico':'Pustertal market town with a walled old quarter and a castle above it.',
+ 'Brixen / Bressanone':'Cathedral town at the confluence of the Eisack and the Rienz; join the A22 here.',
+ 'Brenner Pass':'Lowest of the main Alpine crossings at 1,370 m, and busy with freight all day.',
+ 'Innsbruck':'Tyrolean capital in a tight valley under the Nordkette — fuel here, it is cheaper than Bavaria.',
+ 'Hochtor tunnel':'The main Alpine ridge crossing at 2,504 m, cut through the rock in 1935.',
+ 'Rossfeld Panoramastrasse':'Loop road running along the German–Austrian ridge with the Salzburg basin laid out below.',
+ 'Munich Airport':'Sixt is at Terminalstr. Mitte, parking level P20.'
+};
+Object.values(D).forEach(sc=>sc.days.forEach(d=>d.pts.forEach(pt=>{
+  const base=NOTES[pt[2]]; if(!base) return;
+  pt[5] = !pt[5] ? base : (pt[5].length<30 ? base+' '+pt[5] : pt[5]);
+})));
+
+const TODO=[
+ {t:'Book the Sixt car with the 18-year-old\'s real date of birth',d:'The booking engine hides categories he can\'t take. Then phone Munich Airport on +49 89 66 06 00 and ask for the top of the permitted group. Add him as a named additional driver — unnamed drivers void the insurance entirely.'},
+ {t:'Reserve the Tre Cime toll road slot',d:'auronzo.info · €40 · mandatory, no booking means no entry. You can book without a plate now and add it the day before. Options A and B only.'},
+ {t:'Buy the Austrian 10-day digital vignette',d:'€12.80. Buy at a petrol station or ADAC office once you have the plate, not online — online purchases can have a delayed start. Fine is €200+.'},
+ {t:'Call the three hotels',d:'Four days out, phone beats any booking site. Ask for half board and mention vegetarian at the time of booking, not on arrival.'},
+ {t:'Buy the Grossglockner ticket online',d:'grossglockner.at · €46.50 · 10% off in the road\'s shops if bought in advance, and it saves a queue at Ferleiten. Options A and C.'},
+ {t:'Download offline maps for the whole corridor',d:'Signal drops in the Ötztal, the Passeier and most of the Val Badia. Offline areas in Google Maps, plus a paper Kompass sheet if you want redundancy.'},
+ {t:'Check pass status the morning before',d:'alpen-paesse.ch, suedtirol.com/verkehr, grossglockner.at webcams. Late-August roadworks near Umbrail had alternate dates of 1–3 September.'},
+ {t:'Take a fleece and gloves in the cabin, not the boot',d:'It is routinely 15°C colder at 2,500 m than in the valley. Fuscher Törl in a t-shirt is a short visit.'}
+];
+
+/* ============================================================ RENDER ========= */
+const DAYC=['#26557F','#6E4A87','#A8467E','#C24966'];
+const esc=s=>String(s).replace(/&(?!\w+;)/g,'&amp;').replace(/</g,'&lt;');
+const ALT_MIN=150,ALT_MAX=2850;
+
+/* fixed frame across all three routes so switching tabs doesn't jump */
+const LAT0=48.42,LAT1=46.22,LNG0=10.33,LNG1=13.13,KX=Math.cos(47.3*Math.PI/180);
+const MW=540,MH=600,MP=30;
+const _sx=(MW-2*MP)/((LNG1-LNG0)*KX), _sy=(MH-2*MP)/(LAT0-LAT1);
+const SC=Math.min(_sx,_sy);
+const OX=MP+((MW-2*MP)-(LNG1-LNG0)*KX*SC)/2, OY=MP+((MH-2*MP)-(LAT0-LAT1)*SC)/2;
+const px=lng=>OX+(lng-LNG0)*KX*SC, py=lat=>OY+(LAT0-lat)*SC;
+
+let TIPS={};
+function buildMap(s,PX){
+  const mk=Math.min(2.6,Math.max(.8,MW/Math.max(220,PX||MW)));
+  const fL=9.6*mk, fA=8*mk, fG=7.4*mk, fS=8*mk;
+  let grat='';
+  for(let lg=10.5;lg<=13;lg+=.5){const x=px(lg).toFixed(1);
+    grat+=`<line class="grat" x1="${x}" y1="${MP}" x2="${x}" y2="${MH-MP}"/>`+
+          `<text class="grat-lbl" x="${x}" y="${MH-MP+9}" text-anchor="middle">${lg.toFixed(1)}°E</text>`;}
+  for(let la=46.5;la<=48.5;la+=.5){const y=py(la).toFixed(1);
+    grat+=`<line class="grat" x1="${MP}" y1="${y}" x2="${MW-MP}" y2="${y}"/>`+
+          `<text class="grat-lbl" x="${MP-4}" y="${(+y+2.4).toFixed(1)}" text-anchor="end">${la.toFixed(1)}°N</text>`;}
+
+  const countries=[['GERMANY',48.20,11.55],['AUSTRIA',47.60,12.05],['ITALY',46.40,11.05],['SWITZ.',46.72,10.40]];
+  let clab=countries.map(c=>`<text class="country" x="${px(c[2]).toFixed(1)}" y="${py(c[1]).toFixed(1)}" text-anchor="middle">${c[0]}</text>`).join('');
+
+  let routes='',pins='',labelSeeds=[];
+  TIPS={};
+  s.days.forEach((day,di)=>{
+    const coords=day.pts.map(p=>GEO[p[2]]).filter(Boolean).map(g=>[px(g[1]),py(g[0])]);
+    const d='M'+coords.map(c=>c[0].toFixed(1)+','+c[1].toFixed(1)).join(' L');
+    routes+=`<path class="rt-case" data-day="${di}" d="${d}"/>`;
+    routes+=`<path class="rt" data-day="${di}" d="${d}" stroke="${DAYC[di]}"/>`;
+    day.pts.forEach((p,pi)=>{
+      const g=GEO[p[2]]; if(!g) return;
+      const x=px(g[1]),y=py(g[0]),id=`pin-${di}-${pi}`;
+      TIPS[id]={n:p[2],a:p[1],km:p[0],day:day.n,note:p[5]||'',kind:p[3]||'',c:p[4]};
+      const hit=`<circle class="hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="11" fill="transparent"/>`;
+      const isStay=p[3]==='stop'&&(pi===day.pts.length-1||(di===0&&pi===0));
+      if(p[3]==='pass'){
+        pins+=`<g class="pin" id="${id}" data-day="${di}">${hit}<polygon points="${x},${(y-4.4).toFixed(1)} ${(x+4.4).toFixed(1)},${y} ${x},${(y+4.4).toFixed(1)} ${(x-4.4).toFixed(1)},${y}" fill="${DAYC[di]}" stroke="#F3F1EC" stroke-width=".9"><title>${esc(p[2])} — ${p[1]} m</title></polygon></g>`;
+        if(p[1]>=1950) labelSeeds.push({x,y,t:p[2].replace(/^Passo (dello |del |della |di )?/,'').replace(' tunnel','').replace(' / Passo del Rombo','').replace(' · Tre Cime',''),alt:p[1],stay:false,di,pid:id});
+      } else if(isStay){
+        pins+=`<g class="pin" id="${id}" data-day="${di}">${hit}<rect x="${(x-4.2).toFixed(1)}" y="${(y-4.2).toFixed(1)}" width="8.4" height="8.4" rx="1" fill="#191A18" stroke="#F3F1EC" stroke-width="1"><title>${esc(p[2])}</title></rect></g>`;
+        labelSeeds.push({x,y,t:p[2].replace(' / Dobbiaco','').replace(' / Brunico','').replace(' / Val Gardena',''),alt:p[1],stay:true,di,pid:id});
+      } else {
+        pins+=`<g class="pin" id="${id}" data-day="${di}">${hit}<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6" fill="#F3F1EC" stroke="${DAYC[di]}" stroke-width="1.5"><title>${esc(p[2])}</title></circle></g>`;
+      }
+    });
+  });
+
+  /* leg distances at segment midpoints, greedily de-cluttered */
+  let segs='';
+  const placed=[];
+  s.days.forEach((day,di)=>{
+    for(let i=1;i<day.pts.length;i++){
+      const a=GEO[day.pts[i-1][2]], b=GEO[day.pts[i][2]]; if(!a||!b) continue;
+      const leg=day.pts[i][0]-day.pts[i-1][0]; if(leg<14) continue;
+      const mx=(px(a[1])+px(b[1]))/2, my=(py(a[0])+py(b[0]))/2;
+      if(placed.some(q=>Math.abs(q[0]-mx)<26 && Math.abs(q[1]-my)<13)) continue;
+      placed.push([mx,my]);
+      const w=String(leg).length*4.2+8;
+      segs+=`<g><rect class="seg-bg" x="${(mx-w/2).toFixed(1)}" y="${(my-4.6).toFixed(1)}" width="${w.toFixed(1)}" height="9.2" rx="4.6"/>`+
+            `<text class="seg-km" x="${mx.toFixed(1)}" y="${(my+2.4).toFixed(1)}" text-anchor="middle">${leg}</text></g>`;
+    }
+  });
+
+  /* de-collide labels: push outward from centre, then space vertically */
+  const showAlt = (PX||MW) >= 400;   /* on a phone the name alone is enough; the tooltip has the rest */
+  const cx=MW/2, L=[],R=[];
+  const seen=new Set();
+  labelSeeds.forEach(o=>{const k=o.t+o.stay; if(seen.has(k))return; seen.add(k); (o.x<cx?L:R).push(o);});
+  const place=(arr,side)=>{
+    arr.sort((a,b)=>a.y-b.y); let last=-99;
+    const gap=(showAlt?fL*1.15+fA*1.1:fL*1.35);
+    arr.forEach(o=>{o.ly=Math.max(o.y,last+gap); last=o.ly;});
+    const over=last-(MH-MP-6);
+    if(over>0) arr.forEach(o=>o.ly-=over);
+    arr.forEach(o=>{o.lx=side==='L'?o.x-7:o.x+7; o.anchor=side==='L'?'end':'start';});
+  };
+  place(L,'L'); place(R,'R');
+  let labels='';
+  [...L,...R].forEach(o=>{
+    if(Math.abs(o.ly-o.y)>2.5)
+      labels+=`<line class="lead" x1="${o.x.toFixed(1)}" y1="${o.y.toFixed(1)}" x2="${o.lx.toFixed(1)}" y2="${(o.ly-2.5).toFixed(1)}"/>`;
+    labels+=`<text class="lbl ${o.stay?'stay':''}" x="${o.lx.toFixed(1)}" y="${o.ly.toFixed(1)}" text-anchor="${o.anchor}" data-day="${o.di}" data-pin="${o.pid}">${esc(o.t)}</text>`;
+    if(showAlt) labels+=`<text class="lbl maplbl-alt" x="${o.lx.toFixed(1)}" y="${(o.ly+fA*1.05).toFixed(1)}" text-anchor="${o.anchor}" data-day="${o.di}" data-pin="${o.pid}" style="font-size:${fA.toFixed(2)}px">${o.alt} m</text>`;
+  });
+
+  /* scale bar: 50 km */
+  const kmPx=SC/111.32, bar=(50*kmPx).toFixed(1);
+  const bx=MP+4, by=MH-MP-10;
+  const scale=`<g><line x1="${bx}" y1="${by}" x2="${(+bx+ +bar).toFixed(1)}" y2="${by}" stroke="#63665F" stroke-width="1.2"/>
+    <line x1="${bx}" y1="${by-3}" x2="${bx}" y2="${by+3}" stroke="#63665F" stroke-width="1.2"/>
+    <line x1="${(+bx+ +bar).toFixed(1)}" y1="${by-3}" x2="${(+bx+ +bar).toFixed(1)}" y2="${by+3}" stroke="#63665F" stroke-width="1.2"/>
+    <text class="scale-txt" x="${bx}" y="${by-6}">50 KM</text></g>
+    <g><line x1="${MW-MP-6}" y1="${MP+4}" x2="${MW-MP-6}" y2="${MP+18}" stroke="#63665F" stroke-width="1.2"/>
+    <polygon points="${MW-MP-6},${MP+1} ${MW-MP-9},${MP+8} ${MW-MP-3},${MP+8}" fill="#63665F"/>
+    <text class="scale-txt" x="${MW-MP-6}" y="${MP+27}" text-anchor="middle">N</text></g>`;
+
+  const mvars=`--fl:${fL.toFixed(2)}px;--fg:${fG.toFixed(2)}px;--fs:${fS.toFixed(2)}px`;
+  return `<svg class="map" viewBox="0 0 ${MW} ${MH}" style="${mvars}" role="img" aria-label="Route map of the eastern Alps">
+    <rect class="map-bg" x="0" y="0" width="${MW}" height="${MH}"/>
+    ${grat}${clab}${routes}${segs}${pins}${labels}${scale}</svg>`;
+}
+
+/* ---------- Leaflet terrain map (OpenTopoMap / OpenStreetMap), best-effort ----------
+   Two ways this fails in a sandboxed page: the cdnjs script is blocked, or the tile
+   images are. Both are detected and reported rather than left as a grey box.        */
+let LMAP=null, LLAYER=null, tilesOK=0, tilesBad=0, terrainDead=false, CURRENT=null;
+function warn(msg){
+  const w=document.getElementById('tileWarn'); w.textContent=msg; w.style.display='block';
+}
+function killTerrain(msg){
+  terrainDead=true; warn(msg); setView('schematic');
+  const b=document.getElementById('vTerrain');
+  b.disabled=true; b.style.opacity='.4'; b.style.cursor='not-allowed'; b.textContent='Terrain unavailable';
+}
+function initLeaflet(){
+  if(LMAP || terrainDead) return true;
+  if(window.__leafletBlocked || typeof L==='undefined'){
+    killTerrain('The map library is blocked on this page, so the terrain view can\'t start. The schematic map below is drawn from the same coordinates. Save this file and open it from your desktop and the terrain map will work.');
+    return false;
+  }
+  LMAP = L.map('leafMap',{scrollWheelZoom:false, zoomControl:true}).setView([47.3,11.7],8);
+  const topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{
+    maxZoom:17, attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, SRTM · style © <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)'});
+  const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom:19, attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
+  [topo,osm].forEach(l=>{l.on('tileload',()=>tilesOK++); l.on('tileerror',()=>tilesBad++);});
+  topo.addTo(LMAP);
+  L.control.layers({'OpenTopoMap (relief)':topo,'OpenStreetMap':osm},null,{position:'topright'}).addTo(LMAP);
+  LMAP.on('baselayerchange',e=>{document.getElementById('mapMode').textContent =
+    e.name.indexOf('Topo')>-1 ? 'OpenTopoMap · relief and contours' : 'OpenStreetMap · standard';});
+  LLAYER = L.layerGroup().addTo(LMAP);
+  /* no successful tile after 5s means they're blocked, whether or not an error fired */
+  setTimeout(()=>{ if(tilesOK===0) killTerrain('Map tiles are blocked on this page — the sandbox a published artifact runs in usually refuses external tile servers. The schematic map below uses the same coordinates, the OpenTopoMap link opens the real thing in a new tab, and saving this file to your desktop restores the terrain view.'); },5000);
+  return true;
+}
+function drawLeaflet(s){
+  if(!LMAP) return;
+  LMAP.invalidateSize();                 /* bounds are useless on a zero-size map */
+  LLAYER.clearLayers();
+  const all=[];
+  s.days.forEach((day,di)=>{
+    const line=[];
+    day.pts.forEach(p=>{
+      const g=GEO[p[2]]; if(!g) return;
+      line.push(g); all.push(g);
+      const pop=`<b>${esc(p[2])}</b><br><span class="alt">${p[1]} m</span> · Day ${day.n} · km ${p[0]}${p[5]?`<span class="nt">${esc(p[5])}</span>`:''}`;
+      const isStay = p[3]==='stop' && (p===day.pts[day.pts.length-1] || (di===0 && p===day.pts[0]));
+      if(p[3]==='pass'){
+        L.circleMarker(g,{radius:6,color:'#fff',weight:1.6,fillColor:DAYC[di],fillOpacity:1}).bindPopup(pop).addTo(LLAYER);
+      } else if(isStay){
+        L.marker(g,{icon:L.divIcon({className:'',html:'<div class="stayIcon" style="width:13px;height:13px"></div>',iconSize:[13,13],iconAnchor:[6.5,6.5]})}).bindPopup(pop).addTo(LLAYER);
+      } else {
+        L.circleMarker(g,{radius:3.6,color:DAYC[di],weight:1.6,fillColor:'#fff',fillOpacity:1}).bindPopup(pop).addTo(LLAYER);
+      }
+    });
+    L.polyline(line,{color:'#F3F1EC',weight:7,opacity:.85}).addTo(LLAYER);
+    L.polyline(line,{color:DAYC[di],weight:3.4,opacity:.95}).addTo(LLAYER);
+  });
+  const fit=()=>{ LMAP.invalidateSize(); if(all.length) LMAP.fitBounds(L.latLngBounds(all).pad(.08)); };
+  fit(); setTimeout(fit,120);
+}
+function setView(mode){
+  const terr = mode==='terrain' && !terrainDead;
+  document.getElementById('leafMap').style.display = terr?'block':'none';
+  document.getElementById('mapHost').style.display = terr?'none':'block';
+  document.getElementById('vTerrain').setAttribute('aria-pressed',terr);
+  document.getElementById('vSchematic').setAttribute('aria-pressed',!terr);
+  document.getElementById('mapMode').textContent = terr
+    ? 'OpenTopoMap · relief and contours'
+    : 'Drawn from coordinates · no connection needed';
+  if(terr && LMAP) setTimeout(()=>LMAP.invalidateSize(),60);
+}
+document.getElementById('vTerrain').onclick=()=>{
+  if(terrainDead) return;
+  setView('terrain');                    /* show it first so it has a real size */
+  requestAnimationFrame(()=>{ if(initLeaflet()) drawLeaflet(CURRENT); });
+};
+document.getElementById('vSchematic').onclick=()=>setView('schematic');
+
+function ridgeSVG(segments,opts){
+  const W=opts.w||900,H=opts.h||130;
+  /* px = how wide this SVG actually is on screen. k converts a wanted screen
+     size into viewBox units, so type stays legible at any render width.     */
+  const px=Math.max(200,opts.px||W), k=Math.min(3.2,Math.max(.72,W/px));
+  const fL=(10*k), fA=(8.4*k), fG=(8.6*k), fT=(9.4*k);
+  const padT=opts.tall?(fT*3.4):22, padB=fG*2.4, padL=Math.max(24,fG*3.4), padR=8;
+  const plotH=H-padT-padB,plotW=W-padL-padR;
+  let total=0;const segs=segments.map(s=>{const len=s.pts[s.pts.length-1][0];const o={...s,offset:total,len};total+=len;return o;});
+  const x=km=>padL+(km/total)*plotW, y=a=>padT+plotH-((Math.max(ALT_MIN,Math.min(ALT_MAX,a))-ALT_MIN)/(ALT_MAX-ALT_MIN))*plotH;
+  let all=[];segs.forEach(s=>s.pts.forEach(p=>all.push({x:x(p[0]+s.offset),y:y(p[1]),p})));
+  all.sort((a,b)=>a.x-b.x);
+  const d='M'+all.map(pt=>pt.x.toFixed(1)+','+pt.y.toFixed(1)).join(' L');
+  const area=d+` L${(W-padR).toFixed(1)},${(padT+plotH).toFixed(1)} L${padL},${(padT+plotH).toFixed(1)} Z`;
+  const rungs = px<430 ? [1000,2000] : (px<620 ? [1000,2000,2500] : [500,1000,1500,2000,2500]);
+  let grid='';rungs.forEach(a=>{const yy=y(a).toFixed(1);
+    grid+=`<line class="grid-line" x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}"/><text class="grid-label" x="${(padL-4).toFixed(1)}" y="${(+yy+fG*.34).toFixed(1)}" text-anchor="end">${a}</text>`;});
+  let divs='';
+  if(opts.tall) segs.forEach((s,i)=>{
+    if(i>0){const xx=x(s.offset).toFixed(1);divs+=`<line class="day-div" x1="${xx}" y1="${(padT-fT*1.6).toFixed(1)}" x2="${xx}" y2="${padT+plotH}"/>`;}
+    divs+=`<text class="day-tag" x="${x(s.offset+s.len/2).toFixed(1)}" y="${(padT-fT*2).toFixed(1)}" text-anchor="middle" fill="${DAYC[i]}">${s.label}</text>`;});
+  const peaks=all.filter(o=>o.p[3]==='pass');
+  /* fewer names on a narrow screen — bigger type needs more room */
+  const cap = opts.tall ? (px<430?3:px<620?5:7) : (px<430?2:px<620?3:5);
+  const named=peaks.slice().sort((a,b)=>b.p[1]-a.p[1]).slice(0,cap).map(o=>o.p[2]);
+  const edge=fL*9;
+  let marks='';
+  peaks.forEach(o=>{
+    marks+=`<line class="peak-stem" x1="${o.x.toFixed(1)}" y1="${o.y.toFixed(1)}" x2="${o.x.toFixed(1)}" y2="${(padT+plotH).toFixed(1)}"/>`;
+    marks+=`<circle class="peak-dot" cx="${o.x.toFixed(1)}" cy="${o.y.toFixed(1)}" r="${(2.4*Math.min(k,1.7)).toFixed(1)}"><title>${esc(o.p[2])} — ${o.p[1]} m</title></circle>`;
+    if(named.includes(o.p[2])){
+      const a=o.x>W-edge?'end':(o.x<edge?'start':'middle');
+      marks+=`<text class="peak-alt" x="${o.x.toFixed(1)}" y="${(o.y-fA*1.15).toFixed(1)}" text-anchor="${a}">${o.p[1]}m</text>`;
+      marks+=`<text class="peak-label" x="${o.x.toFixed(1)}" y="${(o.y-fA*1.15-fL*1.08).toFixed(1)}" text-anchor="${a}">${esc(o.p[2].replace(/^Passo (dello |del |della |di )?/,'').replace(' tunnel',''))}</text>`;}
+  });
+  const vars=`--fl:${fL.toFixed(2)}px;--fa:${fA.toFixed(2)}px;--fg:${fG.toFixed(2)}px;--ft:${fT.toFixed(2)}px`;
+  return `<svg class="profile" viewBox="0 0 ${W} ${H}" style="${vars}" role="img" aria-label="Altitude profile">
+    <defs><linearGradient id="ridgefill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C2496A" stop-opacity=".26"/><stop offset="100%" stop-color="#C2496A" stop-opacity=".03"/>
+    </linearGradient></defs>${grid}<path class="ridge-path" d="${area}"/>${divs}${marks}</svg>`;
+}
+
+
+/* ---------- schematic map tooltips ---------- */
+function bindTips(){
+  const host=document.getElementById('mapHost'), tip=document.getElementById('mapTip');
+  if(!host||!tip) return;
+  const show=(id,ev)=>{
+    const t=TIPS[id]; if(!t) return;
+    const kind = t.kind==='pass' ? 'Pass / toll road' : (t.kind==='stop' ? 'Stop' : 'Waypoint');
+    tip.innerHTML = `<b>${esc(t.n)}</b><span class="tm">${t.a} m · km ${t.km} · Day ${t.day} · ${t.c}</span>`
+      + `<span class="tk">${kind}</span>` + (t.note?`<span class="tn">${esc(t.note)}</span>`:'');
+    tip.style.display='block'; move(ev);
+  };
+  const move=ev=>{
+    const b=host.getBoundingClientRect();
+    let x=ev.clientX-b.left+16, y=ev.clientY-b.top+16;
+    if(x+tip.offsetWidth>b.width-6) x=ev.clientX-b.left-tip.offsetWidth-14;
+    if(y+tip.offsetHeight>b.height-6) y=ev.clientY-b.top-tip.offsetHeight-14;
+    tip.style.left=Math.max(4,x)+'px'; tip.style.top=Math.max(4,y)+'px';
+  };
+  const idOf=el=>{ const g=el.closest?el.closest('.pin'):null; if(g) return g.id;
+                   return el.getAttribute && el.getAttribute('data-pin'); };
+  host.addEventListener('mouseover',e=>{const id=idOf(e.target); if(id){show(id,e);
+    const g=document.getElementById(id); if(g) g.classList.add('hot');}});
+  host.addEventListener('mousemove',e=>{ if(tip.style.display==='block') move(e); });
+  host.addEventListener('mouseout',e=>{const id=idOf(e.target);
+    if(id){const g=document.getElementById(id); if(g) g.classList.remove('hot');}
+    tip.style.display='none';});
+  host.addEventListener('click',e=>{const id=idOf(e.target); if(id) show(id,e);});
+}
+
+
+/* ---------- redraw the SVGs at whatever width they actually get ---------- */
+function paintProfiles(){
+  if(!CURRENT) return;
+  const hero=document.getElementById('heroRidge');
+  if(hero) hero.innerHTML=ridgeSVG(CURRENT.days.map(d=>({pts:d.pts,label:'DAY '+d.n})),
+                                   {w:900,h:200,tall:true,px:hero.clientWidth});
+  CURRENT.days.forEach(d=>{
+    const el=document.getElementById('ridge-d'+d.n); if(!el) return;
+    el.innerHTML=ridgeSVG([{pts:d.pts,label:'Day '+d.n}],{w:900,h:150,px:el.clientWidth});
+  });
+}
+function paintMap(){
+  if(!CURRENT) return;
+  const host=document.getElementById('mapHost');
+  host.innerHTML=buildMap(CURRENT,host.clientWidth); bindTips();
+}
+let rsz;
+window.addEventListener('resize',()=>{clearTimeout(rsz);rsz=setTimeout(()=>{paintProfiles();paintMap();},180);});
+
+function renderTabs(a){
+  document.getElementById('switch').innerHTML=Object.values(D).map(s=>`
+    <button class="tab" role="tab" aria-selected="${s.key===a}" data-k="${s.key}">
+      <span class="k">${s.tag.toUpperCase()}</span><span class="t">${s.title}</span><span class="s">${s.sub}</span></button>`).join('');
+  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>render(b.dataset.k));
+}
+
+let isolated=null;
+function applyIsolate(){
+  document.querySelectorAll('.rt,.pin,.map .lbl').forEach(el=>{
+    const d=el.getAttribute('data-day');
+    el.classList.toggle('dim', isolated!==null && d!==null && +d!==isolated);
+  });
+  document.querySelectorAll('.legchip').forEach(c=>{
+    c.classList.toggle('muted', isolated!==null && +c.dataset.day!==isolated);
+    c.setAttribute('aria-pressed', isolated!==null && +c.dataset.day===isolated);
+  });
+}
+
+function renderDays(s){
+  return s.days.map((day,di)=>{
+    const rows=day.pts.map((p,pi)=>{
+      const leg = pi>0 ? p[0]-day.pts[pi-1][0] : 0;
+      return `<div class="rb-row ${p[3]==='pass'?'is-pass':''}" data-pin="pin-${di}-${pi}">
+        <div class="rb-km">${p[0]}${leg>0?`<span class="lg">+${leg}</span>`:''}</div>
+        <div class="rb-name"><span class="flag f-${p[4]}">${p[4]}</span>${esc(p[2])}${p[5]?`<em>${esc(p[5])}</em>`:''}</div>
+        <div class="rb-alt">${p[1]} m</div></div>`;}).join('');
+    const stays=day.stays.length?`
+      <div class="aside"><h4>Where to sleep · ${esc(day.to)}</h4>
+        ${day.stays.map(h=>`<div class="stay ${h.pick?'pick':''}">
+            <div class="nm"><span><svg class="ic"><use href="#i-bed"/></svg>${esc(h.n)}</span>${h.pick?`<span class="pk">${h.pick.toUpperCase()}</span>`:''}</div>
+            <div class="loc">${esc(h.loc)}</div><div class="why">${esc(h.why)}</div>
+            <div class="acts">
+              <a href="${site(h)}" target="_blank" rel="noopener">Website ↗</a>
+              <a href="${bkg(h)}" target="_blank" rel="noopener">Booking.com ↗</a>
+              <a href="${gmap(h.pid)}" target="_blank" rel="noopener">Map &amp; photos ↗</a>
+              <a href="tel:${h.tel.replace(/\s/g,'')}">${h.tel}</a>
+            </div></div>`).join('')}
+        ${day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:''}</div>`
+      :`<div class="aside"><h4>End of trip</h4><div class="stay"><div class="nm"><span>Sixt return, Munich Airport</span></div>
+         <div class="loc">Terminalstr. Mitte, parking level P20</div>
+         <div class="why">Allow 30 minutes for the return inspection with a young driver on the contract. Refuel within 10 km or Sixt bills its own rate.</div></div></div>`;
+    return `<section class="sec day ${di%2?'alt':''}" id="sec-day${day.n}"><div class="daywrap">
+      <div class="day-head"><h3><i class="daydot" style="background:${DAYC[di]}"></i>Day ${day.n} · ${esc(day.from)} → ${esc(day.to)}</h3>
+        <span class="when mono">${esc(day.date)} · depart ${day.depart} · arrive ${day.arrive}</span></div>
+      <div class="day-metrics mono">
+        <span><svg class="ic"><use href="#i-road"/></svg> <b>${day.km} km</b> distance</span>
+        <span><svg class="ic"><use href="#i-clock"/></svg> <b>${day.time}</b> moving</span>
+        <span><svg class="ic"><use href="#i-peak"/></svg> <b>${day.passes}</b> ${day.passes===1?'pass':'passes'}</span>
+        <span><svg class="ic"><use href="#i-gauge"/></svg> <b>${Math.max(...day.pts.map(p=>p[1]))} m</b> high point</span></div>
+      <div class="day-note">${day.note}</div>
+      <div class="ridge-box"><div class="ridge-cap"><span>${esc(day.from)}</span><span>${esc(day.to)}</span></div>
+        <div id="ridge-d${day.n}"></div></div>
+      <div class="cols" style="margin-top:20px"><div class="rb">${rows}
+        <a class="gbtn" href="${gdir(day)}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-map"/></svg>Open Day ${day.n} in Google Maps ↗</a>
+        <p class="mnote" style="margin:8px 0 0">Passes are pinned as waypoints so Google routes over them rather than round them. Check that “avoid tolls” is off, or it will send you down the valley.</p>
+      </div>${stays}</div></div></section>`;
+  }).join('');
+}
+
+function render(k){
+  const s=D[k]; isolated=null;
+  renderTabs(k);
+  document.getElementById('heroTitle').innerHTML=s.heroTitle;
+  document.getElementById('heroBlurb').textContent=s.blurb;
+  document.getElementById('heroStats').innerHTML=s.stats.map(x=>`<div class="stat"><b>${x[0]}</b><span class="mono">${x[1]}</span></div>`).join('');
+  CURRENT=s;
+  paintMap();
+  buildNav(s);
+  if(LMAP && !terrainDead) drawLeaflet(s);
+  const lat=s.days.flatMap(d=>d.pts.map(p=>GEO[p[2]])).filter(Boolean);
+  const cy=(Math.min(...lat.map(g=>g[0]))+Math.max(...lat.map(g=>g[0])))/2;
+  const cx=(Math.min(...lat.map(g=>g[1]))+Math.max(...lat.map(g=>g[1])))/2;
+  document.getElementById('liveMap').href='https://opentopomap.org/#map=8/'+cy.toFixed(3)+'/'+cx.toFixed(3);
+  document.getElementById('mapKm').textContent=s.stats[0][0];
+  document.getElementById('legend').innerHTML=s.days.map((d,i)=>`
+    <button class="legchip" data-day="${i}" aria-pressed="false">
+      <i class="sw" style="background:${DAYC[i]}"></i><svg class="ic"><use href="#i-road"/></svg>
+      <span class="lt">Day ${d.n} · ${esc(d.from)} → ${esc(d.to)}<span class="ls">${d.km} km · ${d.time} · ${d.passes} ${d.passes===1?'pass':'passes'}</span></span></button>`).join('');
+  document.querySelectorAll('.legchip').forEach(c=>c.onclick=()=>{
+    isolated = isolated===+c.dataset.day ? null : +c.dataset.day; applyIsolate();});
+  document.getElementById('days').innerHTML=renderDays(s);
+  paintProfiles();
+  document.querySelectorAll('.rb-row').forEach(r=>{
+    const p=()=>document.getElementById(r.dataset.pin);
+    r.addEventListener('mouseenter',()=>p()&&p().classList.add('hot'));
+    r.addEventListener('mouseleave',()=>p()&&p().classList.remove('hot'));
+  });
+  document.getElementById('costTable').innerHTML=
+    `<tr><th>Item</th><th>When</th><th style="text-align:right">Cost</th></tr>`+
+    s.costs.map(c=>`<tr><td><svg class="ic costicon"><use href="#i-ticket"/></svg>${esc(c[0])}</td><td style="color:#63665F">${esc(c[1])}</td><td class="num">${c[2]}</td></tr>`).join('')+
+    `<tr class="total"><td>Roads and tolls, one car</td><td></td><td class="num">${s.total}</td></tr>`;
+  const hdr=document.getElementById('hdr');
+  if(hdr.classList.contains('compact')){
+    /* already past the hero — hold position just under the sticky bar */
+    const t=document.getElementById('sec-overview');
+    window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-hdr.offsetHeight+1,behavior:'instant'});
+  } else {
+    window.scrollTo({top:0,behavior:'instant'});
+  }
+  setTimeout(()=>{syncHeader();paintProfiles();paintMap();},40);
+}
+
+
+/* ---------- section nav, scrollspy and header compaction ---------- */
+function buildNav(s){
+  const items = s.days.map((d,i)=>({id:'sec-day'+d.n, label:'Day '+d.n, dot:DAYC[i]}))
+    .concat([{id:'sec-tolls',label:'Tolls',icon:'i-ticket'},
+             {id:'sec-book',label:'Book first',icon:'i-check'},
+             {id:'sec-car',label:'The car',icon:'i-car'},
+             {id:'sec-rules',label:'Rules',icon:'i-alert'}]);
+  document.getElementById('secnav').innerHTML =
+    `<a href="#sec-overview" data-t="sec-overview"><svg class="ic"><use href="#i-map"/></svg>Overview</a>` +
+    items.map(i=>`<a href="#${i.id}" data-t="${i.id}">`+
+      (i.dot?`<i class="dt" style="background:${i.dot}"></i>`:`<svg class="ic"><use href="#${i.icon}"/></svg>`)+
+      `${i.label}</a>`).join('');
+  document.querySelectorAll('#secnav a').forEach(a=>a.onclick=e=>{
+    e.preventDefault();
+    const t=document.getElementById(a.dataset.t); if(!t) return;
+    const h=document.getElementById('hdr').offsetHeight;
+    window.scrollTo({top: t.getBoundingClientRect().top + window.scrollY - h + 1, behavior:'smooth'});
+  });
+}
+function syncHeader(){
+  const hdr=document.getElementById('hdr');
+  const banner=document.querySelector('.banner');
+  hdr.classList.toggle('compact', window.scrollY > (banner?banner.offsetHeight*0.55:80));
+  document.documentElement.style.setProperty('--hdrH', hdr.offsetHeight+'px');
+  const h=hdr.offsetHeight+8; let active=null;
+  document.querySelectorAll('#secnav a').forEach(a=>{
+    const t=document.getElementById(a.dataset.t);
+    if(t && t.getBoundingClientRect().top <= h) active=a;
+  });
+  document.querySelectorAll('#secnav a').forEach(a=>a.classList.toggle('on', a===active));
+}
+let ticking=false;
+window.addEventListener('scroll',()=>{ if(!ticking){ticking=true;requestAnimationFrame(()=>{syncHeader();ticking=false;});} },{passive:true});
+window.addEventListener('resize',syncHeader);
+
+document.getElementById('todo').innerHTML=TODO.map(t=>`<li><label><input type="checkbox"><span class="txt">${esc(t.t)}<em>${esc(t.d)}</em></span></label></li>`).join('');
+
+/* ---------- light / dark ---------- */
+function setTheme(dark){
+  document.body.classList.toggle('dark',dark);
+  document.getElementById('themeIcon').setAttribute('href', dark?'#i-sun':'#i-moon');
+  document.getElementById('themeBtn').setAttribute('aria-pressed',dark);
+}
+setTheme(false);   /* light by default; the button switches it */
+document.getElementById('themeBtn').onclick=()=>setTheme(!document.body.classList.contains('dark'));
+
+render('A');
+syncHeader();
+</script>
+</body>
+</html>
