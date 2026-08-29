@@ -50,7 +50,7 @@
     padding:12px 16px 13px;cursor:pointer;color:var(--slate);font-family:inherit;transition:background .18s,color .18s}
   .tab:last-child{border-right:0}
   .tab .k{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase}
-  .tab .k .kw{font-style:normal}
+  .tab .k .optw{font-style:normal}
   .tab .t{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:15px;color:var(--ink)}
   .tab .s{display:block;font-size:12px;line-height:1.35;margin-top:2px}
   .tab[aria-selected="true"]{background:var(--ink);color:#B9B6AE}
@@ -91,6 +91,12 @@
   body.dark .daymap{background:#1C1F24}
   .daymap .pin{transition:transform .12s}
   .daymap .pin.hot polygon,.daymap .pin.hot circle,.daymap .pin.hot rect{stroke:var(--glow);stroke-width:2.4}
+  .dm-lbl{font-family:'IBM Plex Mono',monospace;font-size:7.4px;fill:var(--slate)}
+  .dm-lbl.pass{fill:var(--ink);font-weight:600}
+  .dm-lbl.end{fill:var(--ink);font-weight:600}
+  .osmlink{display:inline-block;margin:-6px 0 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;
+    letter-spacing:.04em;color:var(--slate)}
+  .osmlink:hover{color:var(--ink)}
   .stayIcon{background:#191A18;border:1.5px solid #fff;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
 
   /* hero sun: three rings drifting out of phase. transform+opacity only, so it
@@ -111,6 +117,10 @@
   /* landscape phones: keep enough sky above the ridgeline for the sun to show */
   @media (max-height:560px){ .banner{min-height:210px} }
 
+  #mapHost{touch-action:pan-y}
+  #mapHost.zoomed{cursor:grab}
+  #mapHost.zoomed:active{cursor:grabbing}
+  .zoomhint{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--slate);letter-spacing:.04em}
   .tileWarn{display:none;padding:10px 12px;background:#F7E9EC;border:1px solid #E3BFC8;font-size:13px;margin:6px 0 0}
 
   /* ── seven-day outlook ──────────────────────────────────────────── */
@@ -122,7 +132,8 @@
   .wx-btn:disabled{opacity:.42;cursor:default}
   .wx-stamp{font-size:11.5px;color:var(--slate);letter-spacing:.04em}
   .wx-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .wx-grid{width:100%;min-width:660px;border-collapse:collapse;font-size:13px}
+  .wx-grid{width:100%;min-width:660px;border-collapse:collapse;font-size:13px;table-layout:fixed}
+  .wx-grid thead th:first-child,.wx-grid tbody th{width:78px}
   .wx-grid th,.wx-grid td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:center;vertical-align:middle}
   .wx-grid thead th{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
     color:var(--slate);font-weight:500;padding-bottom:11px;vertical-align:bottom}
@@ -209,6 +220,14 @@
   .grid-label{font-family:'IBM Plex Mono',monospace;font-size:var(--fg,8px);fill:#9A968D}
   .ridge-path{fill:url(#ridgefill);stroke:var(--ink);stroke-width:1.4;stroke-linejoin:round;vector-effect:non-scaling-stroke}
   .peak-dot{fill:var(--glow)}
+  .peak-lead{stroke:var(--line);stroke-width:.8;stroke-dasharray:2 2}
+  .peak-label.stacked{font-size:calc(var(--fl,10px)*.92);fill:var(--ink)}
+  .peak-alt-in{fill:var(--glow);font-family:'IBM Plex Mono',monospace;font-size:calc(var(--fa,8px)*.92)}
+  .km-axis{font-family:'IBM Plex Mono',monospace;fill:var(--slate)}
+  .cty-band{fill:var(--ghost);opacity:.55}
+  .cty-lbl{font-family:'IBM Plex Mono',monospace;fill:var(--slate);letter-spacing:.1em}
+  .way-tick{stroke:var(--slate);stroke-width:.7;opacity:.5}
+  .way-lbl{font-family:'IBM Plex Mono',monospace;fill:var(--slate)}
   .p-hit{fill:transparent;cursor:crosshair}
   .p-hit:hover{fill:var(--glow);fill-opacity:.20}
   #profTip{position:fixed;z-index:1200;pointer-events:none;display:none;max-width:250px;
@@ -452,8 +471,8 @@
     .tab .t{font-size:13.5px}
   }
   /* the compact bar puts label and title on one line — no room for the word */
-  header.compact .tab .k .kw{display:none}
-  @media (max-width:760px),(max-height:560px){ .tab .k .kw{display:none} }
+  header.compact .tab .k .optw{display:none}
+  @media (max-height:560px){ .tab .k .optw{display:none} }
   @media (max-width:560px){
     .mast h1{font-size:15px}
   }
@@ -576,7 +595,7 @@
         <div id="mapHost"></div>
         <div id="mapTip" role="tooltip"></div>
         <div class="tileWarn" id="tileWarn"></div>
-        <div class="mapfoot"><span id="mapMode">Drawn from coordinates · no connection needed</span><span id="mapKm"></span></div>
+        <div class="mapfoot"><span id="mapMode">Drawn from coordinates · no connection needed</span><span class="zoomhint">scroll to zoom · drag to pan · double-click to reset</span><span id="mapKm"></span></div>
         <div class="keyrow">
           <span><i class="kd"></i> Pass or toll road</span>
           <span><i class="ks"></i> Overnight</span>
@@ -631,13 +650,6 @@
     <table class="costs" id="costTable"></table>
   </div></section>
 
-  <section class="sec t-rock" id="sec-book"><div class="wrap">
-    <div class="sechead"><svg class="ic"><use href="#i-check"/></svg><h3>Book before you fly</h3></div>
-    <p class="lede">Ordered by how badly it goes wrong if you skip it.</p>
-    <ul class="todo" id="todo"></ul>
-  </div></section>
-
-
   <section class="sec t-warm" id="sec-rules"><div class="wrap">
     <div class="sechead"><svg class="ic"><use href="#i-alert"/></svg><h3>Rules that will catch you out</h3></div>
     <div class="grid3">
@@ -653,8 +665,24 @@
         <p>Lago di Braies can't be driven to 09:00–16:00 without a reservation. Alpe di Siusi is closed to private traffic 09:00–17:00. Neither is on these routes.</p></div>
       <div class="card"><h5>Check the morning before</h5>
         <p>alpen-paesse.ch for Swiss and border passes, suedtirol.com/verkehr for South Tyrol, grossglockner.at webcams for the Glockner. Roadworks near Umbrail have run alternating closures — check before committing.</p></div>
+      <div class="card"><h5>Italian town ZTLs</h5>
+        <p>Garda, Riva, Sirmione, Malcesine, Bormio and most South Tyrol centres are camera-controlled. Fines arrive months later through the rental company with an admin fee on top. Park in a signed garage on the edge and walk in — it is never worth guessing.</p></div>
+      <div class="card"><h5>Livigno is duty-free</h5>
+        <p>Fuel in Livigno is roughly half the Italian price and it is the cheapest tank of the whole trip. There is a customs post at Foscagno; allowances are per person and they do check. Options E only.</p></div>
+      <div class="card"><h5>Switzerland without a vignette</h5>
+        <p>The CHF 40 sticker is only for motorways. Umbrail, Forcola, Bernina, the Ofenpass and the Engadin valley roads are all toll-free ordinary roads, so none of these routes needs one — unless you divert onto an autobahn.</p></div>
+      <div class="card"><h5>Gavia and Stelvio are seasonal</h5>
+        <p>Both are normally open into October but shut on the first serious snow, and the Gavia is single track in places with no barrier. In cloud or wet, drop to the Aprica and rejoin at Bormio — it costs an hour and no scenery you would have seen.</p></div>
     </div>
   </div></section>
+
+  <section class="sec t-rock" id="sec-book"><div class="wrap">
+    <div class="sechead"><svg class="ic"><use href="#i-check"/></svg><h3>Book before you fly</h3></div>
+    <p class="lede">Ordered by how badly it goes wrong if you skip it.</p>
+    <ul class="todo" id="todo"></ul>
+  </div></section>
+
+
 
 
 </main>
@@ -693,6 +721,9 @@ const GEO = {
  'Passo della Mendola':[46.418,11.198],'Passo di Costalunga':[46.409,11.596],
  'Passo Fedaia':[46.457,11.878],
  'Munich':[48.137,11.575],
+ 'Passo di Foscagno':[46.483,10.194],'Passo d\'Eira':[46.495,10.163],'Livigno':[46.538,10.135],
+ 'Forcola di Livigno':[46.437,10.072],'Passo del Bernina':[46.411,10.021],'Pontresina':[46.492,9.903],
+ 'St Moritz':[46.497,9.838],'Poschiavo':[46.326,10.059],'Tirano':[46.215,10.169],
  'Garda':[45.576,10.706],'Peschiera del Garda':[45.440,10.691],'Mantova':[45.156,10.791],
  'Brescia':[45.539,10.220],'Darfo Boario Terme':[45.888,10.184],'Edolo':[46.178,10.331],
  'Müstair':[46.629,10.449],'Ofenpass / Pass dal Fuorn':[46.629,10.291],'Zernez':[46.699,10.093],
@@ -794,7 +825,7 @@ A:{key:'A',tag:'Option A',title:'Glockner &amp; Dolomites',sub:'Recommended. Bes
    pts:[[0,1179,'Längenfeld','stop','AT',''],[55,828,'Imst','','AT','Fuel. Fill up in Austria — cheaper than Bavaria.'],
     [85,1894,'Hahntennjoch','pass','AT','Narrow, empty, technical. The best last road of the trip.'],
     [100,976,'Elmen / Lechtal','','AT',''],[130,854,'Reutte','','AT',''],[150,994,'Ehrwald','','AT','Zugspitze on your right.'],
-    [175,708,'Garmisch-Partenkirchen','','DE',''],[220,519,'Munich','stop','DE','Keep the car overnight and return it in the morning. Refuel before you park.']],
+    [175,708,'Garmisch-Partenkirchen','','DE',''],[220,519,'Munich','stop','DE','Same-day return, city centre. Refuel before you reach the ring road.']],
    evening:'',stays:[]}
  ]},
 
@@ -857,14 +888,14 @@ B:{key:'B',tag:'Option B',title:'Stelvio &amp; Dolomites',sub:'Take this if Stel
    evening:'',stays:[]}
  ]},
 
-C:{key:'C',tag:'Option C',title:'Everything',sub:'Stelvio and Glockner in one go. Day two has no slack.',
+C:{key:'C',tag:'Option C',title:'Max drive',sub:'Stelvio and Glockner in one go. Day two has no slack.',
  heroTitle:'Both headline roads, and a day two you will remember for the wrong reasons if anything slips.',
  blurb:'Option B for the first two days, then a 345 km day two that runs the Sellaronda, crosses the Dolomites to Lienz and comes over the Grossglockner northbound before the gate shuts. Day three is a two-hour run home. Only take this if you are happy to drop Tre Cime and Giau on the day.',
  stats:[['1,215 km','total distance'],['23h 30m','moving time'],['16','named passes'],['2,757 m','highest point'],['4','countries']],
  costs:[['Austrian 10-day digital vignette','Day 0','€12.80'],['Stelvio, Umbrail, Gavia, Tonale','No toll','€0'],
   ['Italian autostrada, Trento–Bolzano','Day 1','~€10'],['Grossglockner High Alpine Road','Day 2, Heiligenblut gate','€46.50'],
   ['Rossfeld Panoramastrasse','Day 3, optional','~€10'],['Parking and incidentals','','~€15']],
- total:'≈ €95',
+ total:'≈ €55',
  days:[
   {n:0,from:'Munich Airport',to:'Prad allo Stelvio',km:288,time:'4h 15m',passes:2,depart:'15:00',arrive:'≈20:30',
    note:'<strong>Identical to Option B.</strong> Fernpass then Reschen, sleeping at the foot of the Stelvio.',
@@ -967,19 +998,19 @@ D:{key:'D',tag:'Option D',title:'Valleys &amp; Lakes',sub:'The wet-weather route
     [130,1216,'Fernpass','pass','AT','Two lanes, no hairpins. Queues on a summer Sunday, not in the wet.'],
     [150,994,'Ehrwald','','AT','Zugspitze on your right if the cloud lifts.'],
     [175,708,'Garmisch-Partenkirchen','','DE','Partnachklamm gorge is a good hour if you are ahead of schedule, and it is better in the rain.'],
-    [245,519,'Munich','stop','DE','Keep the car overnight and return it in the morning. Refuel before you park.']],
+    [245,519,'Munich','stop','DE','Same-day return, city centre. Refuel before you reach the ring road.']],
    evening:'',stays:[]}
  ]},
 
 
 E:{key:'E',tag:'Option E',title:'Garda &amp; Stelvio',sub:'South to the lake and the plain, home through Switzerland.',
  heroTitle:'Down to the water, across the plain, and back over four countries.',
- blurb:'The long way south, with the extra evening built in. Day 0 runs the Brenner to the east shore of Garda, day 1 drops to Mantova on the plain and climbs back into the mountains at Ponte di Legno, day 2 is the Gavia and the Stelvio from a thermal spa above Bormio, and day 3 comes home through the Swiss Engadin. Nine passes, four countries, and no need to hurry the last day.',
- stats:[['1,285 km','total distance'],['20h 45m','moving time'],['9','named passes'],['2,757 m','highest point'],['4','countries']],
+ blurb:'The long way south, with the extra evening built in. Day 0 runs the Brenner to the east shore of Garda, day 1 drops to Mantova on the plain and climbs back into the mountains at Ponte di Legno, day 2 loops the Gavia, Livigno, the Bernina and St Moritz from a thermal spa above Bormio, and day 3 comes home through the Swiss Engadin. Eleven passes, four countries, and the Stelvio driven once, properly, on the last morning.',
+ stats:[['1,348 km','total distance'],['21h 45m','moving time'],['11','named passes'],['2,757 m','highest point'],['4','countries']],
  costs:[['Austrian 10-day digital vignette','Day 0, buy at a petrol station','€12.80'],
   ['Brenner autobahn, A13 and A22','Day 0','~€40'],
-  ['Swiss motorway vignette','Day 3, charged even for a short hop','CHF 40'],
-  ['Gavia, Stelvio, Umbrail, Ofenpass','Days 2 and 3, no toll','free']],
+  ['Swiss roads on this route','Days 2 and 3, no motorway used','free'],
+  ['Gavia, Bernina, Stelvio, Ofenpass','Days 2 and 3, no toll','free']],
  total:'≈ €95',
  days:[
   {n:0,from:'Munich Airport',to:'Garda',km:415,time:'4h 15m',passes:1,depart:'15:00',arrive:'≈20:00',
@@ -1005,17 +1036,24 @@ E:{key:'E',tag:'Option E',title:'Garda &amp; Stelvio',sub:'South to the lake and
    evening:'Ponte di Legno is a small ski town that empties in September — quiet, cheap, and the Gavia starts at the end of the street. Kitchens close early, so do not arrive after 20:00 expecting dinner.',
    staysNote:'Not researched. Anything in the village centre works; ask for a garage and confirm dinner is served, since half the places shut their kitchens out of season.',
    stays:[]},
-  {n:2,from:'Ponte di Legno',to:'Bormio',km:170,time:'5h 00m',passes:3,depart:'08:30',arrive:'≈17:30',
-   note:'<strong>The big one, and the shortest drive of the trip.</strong> Only 170 km but five hours of it: the Gavia first thing while it is empty, drop the bags at the spa, then the Stelvio and a loop into Switzerland over the Umbrail before dinner. Good weather only — the Gavia is single track in places with no barrier.',
+  {n:2,from:'Ponte di Legno',to:'Bormio',km:233,time:'6h 00m',passes:5,depart:'08:00',arrive:'≈18:00',
+   note:'<strong>The Engadin loop.</strong> Gavia first thing while it is empty, bags at the spa, then a full circle into Switzerland: Livigno, the Forcola, the Bernina and lunch in St Moritz, back down the Bernina\'s south side through Poschiavo and up the Valtellina. No road driven twice, and the Stelvio waits for tomorrow morning. Leave at 08:00 and you are back by six with the evening at the baths.',
    pts:[[0,1258,'Ponte di Legno','stop','IT',''],
     [25,2621,'Passo Gavia','pass','IT','Single track in places, no barrier, and the finest road on any of these five routes. Go early.'],
     [50,1225,'Bormio','','IT','Coffee and fuel.'],
     [55,1270,'Bagni Vecchi','stop','IT','Drop the bags — this is tonight.'],
-    [80,2757,'Passo dello Stelvio','pass','IT','Forty-eight numbered hairpins, and the climb starts at the hotel door.'],
-    [95,2501,'Umbrail Pass','pass','CH','Into Switzerland. Gravelled until recently, now paved throughout.'],
-    [110,1375,'Santa Maria Val Müstair','','CH','Turnaround. Engadine houses with sgraffito fronts.'],
-    [170,1270,'Bagni Vecchi','stop','IT','Back over the Umbrail. Overnight.']],
-   evening:'Bagni Vecchi is a thermal spa built into the hillside — Roman baths, a tunnel cut through the rock to a grotto, and an outdoor pool looking down the valley. Open late. After the Gavia and the Stelvio in one day, this is the correct decision.',
+    [78,2291,'Passo di Foscagno','pass','IT','Customs post at the top: Livigno beyond it is duty-free.'],
+    [85,2208,'Passo d\'Eira','pass','IT','Second of the pair, straight after the first.'],
+    [93,1816,'Livigno','','IT','Duty-free valley. Fill the tank here — it is the cheapest fuel of the entire trip.'],
+    [103,2315,'Forcola di Livigno','pass','CH','Into Switzerland. Bare, treeless and usually empty.'],
+    [113,2328,'Passo del Bernina','pass','CH','Glaciers on the left, the red Bernina Express crossing below.'],
+    [128,1774,'Pontresina','','CH',''],
+    [135,1822,'St Moritz','stop','CH','Lunch and the lake. Turn round here.'],
+    [170,1014,'Poschiavo','','CH','Back over the Bernina and down its south side — vineyards by the bottom.'],
+    [190,441,'Tirano','','IT','Border back into Italy, and the lowest point since the lake.'],
+    [230,1225,'Bormio','','IT','Up the Valtellina.'],
+    [233,1270,'Bagni Vecchi','stop','IT','Overnight.']],
+   evening:'Bagni Vecchi is a thermal spa built into the hillside — Roman baths, a tunnel cut through the rock to a grotto, and an outdoor pool looking down the valley. Open late, and the whole point of arriving at six rather than eight.',
    staysNote:'QC Terme Bagni Vecchi sits on the SS38 about 3 km above Bormio, at roughly 1,270 m, and the Stelvio climb starts at its door. Confirm the room and the spa entry together — details here are from memory and were not verified.',
    stays:[{n:'QC Terme Bagni Vecchi',pick:'Pick',loc:'Strada Statale dello Stelvio, Valdidentro, Bormio',
      why:'Thermal spa in the old baths above Bormio, with the Stelvio starting outside. Listing details deliberately left blank — not verified.'}]},
@@ -1034,7 +1072,7 @@ E:{key:'E',tag:'Option E',title:'Garda &amp; Stelvio',sub:'South to the lake and
     [215,816,'Landeck','','AT','Fuel. Cheaper than Bavaria.'],
     [260,1216,'Fernpass','pass','AT','Two lanes, no hairpins.'],
     [303,708,'Garmisch-Partenkirchen','','DE','Partnachklamm gorge is a good hour if you are ahead.'],
-    [390,519,'Munich','stop','DE','Keep the car overnight and return it in the morning. Refuel before you park.']],
+    [390,519,'Munich','stop','DE','Same-day return, city centre. Refuel before you reach the ring road.']],
    evening:'',stays:[]}
  ]},
 
@@ -1239,7 +1277,7 @@ function buildMap(s,PX){
   const mvars=`--fl:${fL.toFixed(2)}px;--fg:${fG.toFixed(2)}px;--fs:${fS.toFixed(2)}px`;
   return `<svg class="map" viewBox="0 0 ${MW} ${MH}" style="${mvars}" role="img" aria-label="Route map of the eastern Alps">
     <rect class="map-bg" x="0" y="0" width="${MW}" height="${MH}"/>
-    ${grat}${clab}${routes}${segs}${pins}${labels}${scale}</svg>`;
+    <g id="zoomG">${grat}${clab}${routes}${segs}${pins}${labels}</g>${scale}</svg>`;
 }
 
 /* ---------- Leaflet terrain map (OpenTopoMap / OpenStreetMap), best-effort ----------
@@ -1331,7 +1369,7 @@ function dayMapSVG(day,di){
   a0-=spanA*.16; a1+=spanA*.16; n0-=spanN*.16/kx; n1+=spanN*.16/kx;
   /* box aspect follows the day's own shape, clamped so it never dominates the column */
   const ratio=Math.min(.92,Math.max(.5,(a1-a0)/Math.max(1e-6,(n1-n0)*kx)));
-  const W=340,H=Math.round(W*ratio),P=16;
+  const W=340,H=Math.round(W*ratio),P=26;
   const sc=Math.min((W-2*P)/((n1-n0)*kx),(H-2*P)/(a1-a0));
   const ox=P+((W-2*P)-(n1-n0)*kx*sc)/2, oy=P+((H-2*P)-(a1-a0)*sc)/2;
   const X=v=>ox+(v-n0)*kx*sc, Y=v=>oy+(a1-v)*sc;
@@ -1348,17 +1386,49 @@ function dayMapSVG(day,di){
     else
       marks+=`<g class="pin" id="${id}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.4" fill="#F3F1EC" stroke="${DAYC[di]}" stroke-width="1.4">${t}</circle></g>`;
   });
+  /* labels, pushed left or right of centre and spaced so they do not collide */
+  const seeds=pts.map((o,pi)=>({x:X(o.g[1]),y:Y(o.g[0]),p:o.p,pi,
+      pass:o.p[3]==='pass', end:pi===0||pi===pts.length-1}));
+  const cx=W/2, LS=[], RS=[];
+  const seen=new Set();
+  seeds.forEach(o=>{ if(seen.has(o.p[2]))return; seen.add(o.p[2]); (o.x<cx?LS:RS).push(o); });
+  const CHW=4.35;                                   /* 7.4px mono, near enough */
+  const trim=n=>n.split(' / ')[0].replace(/^Passo (dello |del |della |di )?/,'')
+                 .replace('Rifugio Auronzo · ','').replace(' tunnel','').replace(' toll gate','')
+                 .replace('Kaiser-Franz-Josefs-Höhe','Franz-Josefs-Höhe');
+  const lab=(arr,side)=>{
+    arr.sort((a,b)=>a.y-b.y); let last=-99; const gap=10;
+    return arr.map(o=>{
+      const ly=Math.max(o.y+3,last+gap); last=ly;
+      const nm=trim(o.p[2]), w=nm.length*CHW;
+      /* flip to the other side rather than run off the edge */
+      let an=side==='L'?'end':'start', lx=side==='L'?o.x-6:o.x+6;
+      if(an==='start' && lx+w>W-3){ an='end'; lx=o.x-6; }
+      if(an==='end' && lx-w<3){ an='start'; lx=o.x+6; }
+      const cls=o.pass?'dm-lbl pass':(o.end?'dm-lbl end':'dm-lbl');
+      return `<text class="${cls}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${an}">${esc(nm)}</text>`;
+    }).join('');
+  };
+  const labels=lab(LS,'L')+lab(RS,'R');
   return `<svg class="daymap" viewBox="0 0 ${W} ${H}" role="img" aria-label="Map of day ${day.n}">`+
-    `<path class="rt-case" d="${d}"/><path class="rt" d="${d}" stroke="${DAYC[di]}"/>${marks}</svg>`;
+    `<path class="rt-case" d="${d}"/><path class="rt" d="${d}" stroke="${DAYC[di]}"/>${marks}${labels}</svg>`;
+}
+/* same day, on real OpenStreetMap tiles, in a new tab */
+function osmDay(day){
+  const g=day.pts.map(p=>GEO[p[2]]).filter(Boolean);
+  if(!g.length) return '#';
+  const la=g.map(v=>v[0]), ln=g.map(v=>v[1]);
+  return 'https://www.openstreetmap.org/?bbox='+(Math.min(...ln)-.08).toFixed(3)+','+(Math.min(...la)-.05).toFixed(3)
+        +','+(Math.max(...ln)+.08).toFixed(3)+','+(Math.max(...la)+.05).toFixed(3);
 }
 
 function ridgeSVG(segments,opts){
-  const W=opts.w||900,H=opts.h||130;
+  const W=opts.w||900;let H=opts.h||130;
   /* px = how wide this SVG actually is on screen. k converts a wanted screen
      size into viewBox units, so type stays legible at any render width.     */
   const px=Math.max(200,opts.px||W), k=Math.min(3.2,Math.max(.72,W/px));
   const fL=(10*k), fA=(8.4*k), fG=(8.6*k), fT=(9.4*k);
-  const padT=opts.tall?(fT*3.4):22, padB=fG*2.4, padL=Math.max(24,fG*3.4), padR=8;
+  const padT=opts.tall?(fT*3.4):(opts.axis?fT*2.1:22), padB=fG*2.4, padL=Math.max(24,fG*3.4), padR=8;
   const plotH=H-padT-padB,plotW=W-padL-padR;
   let total=0;const segs=segments.map(s=>{const len=s.pts[s.pts.length-1][0];const o={...s,offset:total,len};total+=len;return o;});
   const x=km=>padL+(km/total)*plotW, y=a=>padT+plotH-((Math.max(ALT_MIN,Math.min(ALT_MAX,a))-ALT_MIN)/(ALT_MAX-ALT_MIN))*plotH;
@@ -1374,19 +1444,45 @@ function ridgeSVG(segments,opts){
     if(i>0){const xx=x(s.offset).toFixed(1);divs+=`<line class="day-div" x1="${xx}" y1="${(padT-fT*1.6).toFixed(1)}" x2="${xx}" y2="${padT+plotH}"/>`;}
     divs+=`<text class="day-tag" x="${x(s.offset+s.len/2).toFixed(1)}" y="${(padT-fT*2).toFixed(1)}" text-anchor="middle" fill="${DAYC[i]}">${s.label}</text>`;});
   const peaks=all.filter(o=>o.p[3]==='pass');
-  /* fewer names on a narrow screen — bigger type needs more room */
-  const cap = opts.tall ? (px<430?3:px<620?5:7) : (px<430?2:px<620?3:5);
+  const shortName=n=>n.replace(/^Passo (dello |del |della |di )?/,'').replace(' tunnel','')
+                      .replace(' / Passo del Rombo','').replace(' · Tre Cime','').replace(' / Pass dal Fuorn','');
+  /* below ~620px the peaks are too close together to label in place, so the
+     names go under the plot in staggered rows and the peak keeps a stem only */
+  const stack = px<620;
+  const cap = stack ? 99 : (opts.tall?7:5);
   const named=peaks.slice().sort((a,b)=>b.p[1]-a.p[1]).slice(0,cap).map(o=>o.p[2]);
   const edge=fL*9;
   let marks='';
   peaks.forEach(o=>{
     marks+=`<line class="peak-stem" x1="${o.x.toFixed(1)}" y1="${o.y.toFixed(1)}" x2="${o.x.toFixed(1)}" y2="${(padT+plotH).toFixed(1)}"/>`;
     marks+=`<circle class="peak-dot" cx="${o.x.toFixed(1)}" cy="${o.y.toFixed(1)}" r="${(2.4*Math.min(k,1.7)).toFixed(1)}"><title>${esc(o.p[2])} — ${o.p[1]} m</title></circle>`;
-    if(named.includes(o.p[2])){
+    if(!stack && named.includes(o.p[2])){
       const a=o.x>W-edge?'end':(o.x<edge?'start':'middle');
       marks+=`<text class="peak-alt" x="${o.x.toFixed(1)}" y="${(o.y-fA*1.15).toFixed(1)}" text-anchor="${a}">${o.p[1]}m</text>`;
-      marks+=`<text class="peak-label" x="${o.x.toFixed(1)}" y="${(o.y-fA*1.15-fL*1.08).toFixed(1)}" text-anchor="${a}">${esc(o.p[2].replace(/^Passo (dello |del |della |di )?/,'').replace(' tunnel',''))}</text>`;}
+      marks+=`<text class="peak-label" x="${o.x.toFixed(1)}" y="${(o.y-fA*1.15-fL*1.08).toFixed(1)}" text-anchor="${a}">${esc(shortName(o.p[2]))}</text>`;}
   });
+  /* staggered stack under the plot: leader down to its own row, then the name */
+  let stackH=0;
+  if(stack && peaks.length){
+    const rowH=fL*1.5, top=padT+plotH+fG*1.0, chW=fL*.50, gap=fL*.9;
+    const rowEnd=[];                                  /* right edge used so far, per row */
+    const placed=peaks.slice().sort((a,b)=>a.x-b.x).map(o=>{
+      const label=shortName(o.p[2]), w=(label.length+5)*chW;
+      let anchor='middle', x0=o.x-w/2, x1=o.x+w/2;
+      if(x1>W-2){ anchor='end'; x0=o.x-w; x1=o.x; }
+      if(x0<2){ anchor='start'; x0=o.x; x1=o.x+w; }
+      let r=0; while(r<6 && rowEnd[r]!==undefined && x0<rowEnd[r]+gap) r++;
+      rowEnd[r]=x1;
+      return {o,label,r,anchor};
+    });
+    const rows=Math.max(...placed.map(q=>q.r))+1;
+    stackH=rows*rowH+fL*.7;
+    placed.forEach(q=>{
+      const ly=top+q.r*rowH+fL*.85;
+      marks+=`<line class="peak-lead" x1="${q.o.x.toFixed(1)}" y1="${(padT+plotH).toFixed(1)}" x2="${q.o.x.toFixed(1)}" y2="${(ly-fL*.72).toFixed(1)}"/>`;
+      marks+=`<text class="peak-label stacked" x="${q.o.x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${q.anchor}">${esc(q.label)} <tspan class="peak-alt-in">${q.o.p[1]}m</tspan></text>`;
+    });
+  }
   /* one invisible target per point so the whole profile is hoverable, not just the passes */
   let hits='';
   all.forEach(o=>{
@@ -1394,11 +1490,52 @@ function ridgeSVG(segments,opts){
       ` data-n="${esc(o.p[2])}" data-a="${o.p[1]}" data-km="${o.p[0]}" data-c="${esc(o.p[4]||'')}"`+
       ` data-k="${esc(o.p[3]||'')}" data-note="${esc(o.p[5]||'')}"><title>${esc(o.p[2])} — ${o.p[1]} m</title></circle>`;
   });
+  /* day profiles: country bands along the top, waypoint ticks, and a km axis */
+  let extra='';
+  if(opts.axis){
+    const CN={DE:'Germany',AT:'Austria',IT:'Italy',CH:'Switzerland',LI:'Liechtenstein'};
+    const bandY=padT-fT*1.5, bandH=fT*1.05;
+    let run=null;
+    all.forEach((o,i)=>{
+      const c=o.p[4]||'';
+      if(!run||run.c!==c){ if(run) run.x1=o.x; if(run&&run.x1-run.x0>2) extra+=band(run);
+                           run={c,x0:o.x,x1:o.x}; }
+      else run.x1=o.x;
+      if(i===all.length-1&&run){ run.x1=o.x; if(run.x1-run.x0>2) extra+=band(run); }
+    });
+    function band(r){
+      const w=r.x1-r.x0;
+      let t=`<rect class="cty-band" x="${r.x0.toFixed(1)}" y="${bandY.toFixed(1)}" width="${w.toFixed(1)}" height="${bandH.toFixed(1)}"/>`;
+      const nm=CN[r.c]||r.c;
+      if(w>nm.length*fG*.62)
+        t+=`<text class="cty-lbl" x="${(r.x0+w/2).toFixed(1)}" y="${(bandY+bandH*.76).toFixed(1)}" text-anchor="middle" style="font-size:${(fG*.82).toFixed(2)}px">${esc(nm)}</text>`;
+      return t;
+    }
+    /* every waypoint gets a tick; the two ends get named */
+    all.forEach(o=>{ if(o.p[3]==='pass') return;
+      extra+=`<line class="way-tick" x1="${o.x.toFixed(1)}" y1="${(padT+plotH).toFixed(1)}" x2="${o.x.toFixed(1)}" y2="${(padT+plotH+fG*.5).toFixed(1)}"/>`;});
+    const baseY=padT+plotH+stackH;
+    const ends=[all[0],all[all.length-1]];
+    ends.forEach((o,ix)=>{
+      extra+=`<text class="way-lbl" x="${(ix?W-padR:padL).toFixed(1)}" y="${(baseY+fG*1.25).toFixed(1)}" text-anchor="${ix?'end':'start'}" style="font-size:${(fG*.9).toFixed(2)}px">${esc(o.p[2].split(' / ')[0])}</text>`;});
+    /* km ticks at round intervals */
+    const step = total>320?100:(total>160?50:25);
+    const axisY=baseY+fG*2.6;
+    let axis='';
+    for(let km=0;km<=total+.01;km+=step){
+      const xx=x(km);
+      axis+=`<line class="way-tick" x1="${xx.toFixed(1)}" y1="${(axisY-fG*.75).toFixed(1)}" x2="${xx.toFixed(1)}" y2="${(axisY-fG*.2).toFixed(1)}"/>`;
+      axis+=`<text class="km-axis" x="${xx.toFixed(1)}" y="${(axisY+fG*.75).toFixed(1)}" text-anchor="middle" style="font-size:${(fG*.86).toFixed(2)}px">${km}</text>`;
+    }
+    axis+=`<text class="km-axis" x="${(W-padR).toFixed(1)}" y="${(axisY+fG*.75).toFixed(1)}" text-anchor="end" style="font-size:${(fG*.82).toFixed(2)}px">km</text>`;
+    extra+=axis;
+  }
+  const H2=H+stackH+(opts.axis?fG*4.2:0);
   const vars=`--fl:${fL.toFixed(2)}px;--fa:${fA.toFixed(2)}px;--fg:${fG.toFixed(2)}px;--ft:${fT.toFixed(2)}px`;
-  return `<svg class="profile" viewBox="0 0 ${W} ${H}" style="${vars}" role="img" aria-label="Altitude profile">
+  return `<svg class="profile" viewBox="0 0 ${W} ${H2}" style="${vars}" role="img" aria-label="Altitude profile">
     <defs><linearGradient id="ridgefill" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#C2496A" stop-opacity=".26"/><stop offset="100%" stop-color="#C2496A" stop-opacity=".03"/>
-    </linearGradient></defs>${grid}<path class="ridge-path" d="${area}"/>${divs}${marks}${hits}</svg>`;
+    </linearGradient></defs>${grid}<path class="ridge-path" d="${area}"/>${divs}${extra||''}${marks}${hits}</svg>`;
 }
 
 
@@ -1440,7 +1577,7 @@ function paintProfiles(){
                                    {w:900,h:200,tall:true,px:hero.clientWidth});
   CURRENT.days.forEach(d=>{
     const el=document.getElementById('ridge-d'+d.n); if(!el) return;
-    el.innerHTML=ridgeSVG([{pts:d.pts,label:'Day '+d.n}],{w:900,h:150,px:el.clientWidth});
+    el.innerHTML=ridgeSVG([{pts:d.pts,label:'Day '+d.n}],{w:900,h:150,px:el.clientWidth,axis:true});
   });
 }
 function paintMap(){
@@ -1454,7 +1591,7 @@ window.addEventListener('resize',()=>{clearTimeout(rsz);rsz=setTimeout(()=>{pain
 function renderTabs(a){
   document.getElementById('switch').innerHTML=Object.values(D).map(s=>`
     <button class="tab" role="tab" aria-selected="${s.key===a}" data-k="${s.key}">
-      <span class="k"><i class="kw">Option</i> ${s.key}</span><span class="t">${s.title}</span><span class="s">${s.sub}</span></button>`).join('');
+      <span class="k"><i class="optw">Option</i> ${s.key}</span><span class="t">${s.title}</span><span class="s">${s.sub}</span></button>`).join('');
   document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>render(b.dataset.k));
 }
 
@@ -1479,7 +1616,7 @@ function renderDays(s){
         <div class="rb-name"><span class="flag f-${p[4]}">${p[4]}</span>${esc(p[2])}${p[5]?`<em>${esc(p[5])}</em>`:''}</div>
         <div class="rb-alt">${p[1]} m</div></div>`;}).join('');
     const stays=day.stays.length?`
-      <div class="aside">${dayMapSVG(day,di)}<h4>Where to sleep · ${esc(day.to)}</h4>
+      <div class="aside">${dayMapSVG(day,di)}<a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} on OpenStreetMap ↗</a><h4>Where to sleep · ${esc(day.to)}</h4>
         ${day.stays.map(h=>`<div class="stay ${h.pick?'pick':''}">
             <div class="nm"><span><svg class="ic"><use href="#i-bed"/></svg>${esc(h.n)}</span>${h.pick?`<span class="pk">${h.pick.toUpperCase()}</span>`:''}</div>
             <div class="loc">${esc(h.loc)}</div><div class="why">${esc(h.why)}</div>
@@ -1491,13 +1628,13 @@ function renderDays(s){
             </div></div>`).join('')}
         ${day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:''}</div>`
       : di<s.days.length-1 ? `
-      <div class="aside">${dayMapSVG(day,di)}<h4>Where to sleep · ${esc(day.to)}</h4>
+      <div class="aside">${dayMapSVG(day,di)}<a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} on OpenStreetMap ↗</a><h4>Where to sleep · ${esc(day.to)}</h4>
         <div class="stay"><div class="nm"><span><svg class="ic"><use href="#i-bed"/></svg>Not chosen yet</span></div>
           <div class="why">${esc(day.staysNote||'No hotels researched for this stop.')}</div></div>
         ${day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:''}</div>`
       :`<div class="aside"><h4>End of trip</h4><div class="stay"><div class="nm"><span>Munich, city centre</span></div>
-         <div class="loc">Due back 20:00 · car kept overnight</div>
-         <div class="why">The car stays with you overnight and goes back the next morning, so the target is only to be in Munich by 20:00. Refuel before you park — city rates are the worst you will pay all trip.</div></div></div>`;
+         <div class="loc">Due back 20:00, city centre</div>
+         <div class="why">Same-day return in the city rather than the airport, so the target is to be there by 20:00 with the tank full. Refuel outside the ring — city forecourts are the worst rates you will pay all trip.</div></div></div>`;
     return `<section class="sec day ${di%2?'alt':''}" id="sec-day${day.n}"><div class="daywrap">
       <div class="day-head"><h3><i class="daydot" style="background:${DAYC[di]}"></i>Day ${day.n} · ${esc(day.from)} → ${esc(day.to)}</h3>
         <span class="when mono">depart ${day.depart} · arrive ${day.arrive}</span></div>
@@ -1567,8 +1704,8 @@ function buildNav(s){
   const items = s.days.map((d,i)=>({id:'sec-day'+d.n, label:'Day '+d.n, dot:DAYC[i]}))
     .concat([{id:'sec-weather',label:'Weather',icon:'i-w-part'},
              {id:'sec-tolls',label:'Tolls',icon:'i-ticket'},
-             {id:'sec-book',label:'Book first',icon:'i-check'},
-             {id:'sec-rules',label:'Rules',icon:'i-alert'}]);
+             {id:'sec-rules',label:'Rules',icon:'i-alert'},
+             {id:'sec-book',label:'Book first',icon:'i-check'}]);
   document.getElementById('secnav').innerHTML =
     `<a href="#sec-overview" data-t="sec-overview"><svg class="ic"><use href="#i-map"/></svg>Overview</a>` +
     items.map(i=>`<a href="#${i.id}" data-t="${i.id}">`+
@@ -1621,7 +1758,7 @@ document.getElementById('themeBtn').onclick=()=>setTheme(!document.body.classLis
 function wxSpots(s){
   const out=[], seen=new Set(), last=s.days.length-1;
   const add=p=>{ if(!p||!GEO[p[2]]||seen.has(p[2])) return; seen.add(p[2]);
-    out.push({n:p[2],alt:p[1],cc:p[4],lat:GEO[p[2]][0],lon:GEO[p[2]][1]}); };
+    out.push({n:p[2].replace(' Airport',''),alt:p[1],cc:p[4],lat:GEO[p[2]][0],lon:GEO[p[2]][1]}); };
   s.days.forEach((day,di)=>{
     const pts=day.pts; if(!pts.length) return;
     if(di===0) add(pts[0]);
@@ -1774,6 +1911,36 @@ function wxLoad(k){
 (function wxInit(){
   const btn=document.getElementById('wxBtn'); if(!btn) return;
   btn.addEventListener('click',()=>wxFetch(true));
+})();
+
+/* ---------- schematic map: zoom and pan ---------- */
+(function mapZoom(){
+  const host=document.getElementById('mapHost'); if(!host) return;
+  let z=1,tx=0,ty=0,drag=null;
+  const svg=()=>host.querySelector('svg.map');
+  const apply=()=>{const g=host.querySelector('#zoomG'); if(g) g.setAttribute('transform',`translate(${tx} ${ty}) scale(${z})`);
+    host.classList.toggle('zoomed',z>1.01);};
+  window.mapZoomReset=()=>{z=1;tx=0;ty=0;apply();};
+  host.addEventListener('wheel',e=>{
+    const el=svg(); if(!el) return;
+    e.preventDefault();
+    const r=el.getBoundingClientRect(), vb=el.viewBox.baseVal;
+    const mx=(e.clientX-r.left)/r.width*vb.width, my=(e.clientY-r.top)/r.height*vb.height;
+    const nz=Math.min(6,Math.max(1,z*(e.deltaY<0?1.16:1/1.16)));
+    tx=mx-(mx-tx)*(nz/z); ty=my-(my-ty)*(nz/z); z=nz;
+    if(z<=1.01){tx=0;ty=0;z=1;}
+    apply();
+  },{passive:false});
+  host.addEventListener('pointerdown',e=>{ if(z<=1.01) return;
+    drag={x:e.clientX,y:e.clientY,tx,ty}; host.setPointerCapture(e.pointerId); });
+  host.addEventListener('pointermove',e=>{ if(!drag) return;
+    const el=svg(); if(!el) return;
+    const r=el.getBoundingClientRect(), vb=el.viewBox.baseVal;
+    tx=drag.tx+(e.clientX-drag.x)/r.width*vb.width;
+    ty=drag.ty+(e.clientY-drag.y)/r.height*vb.height; apply(); });
+  const stop=()=>drag=null;
+  host.addEventListener('pointerup',stop); host.addEventListener('pointercancel',stop);
+  host.addEventListener('dblclick',()=>window.mapZoomReset());
 })();
 
 /* ---------- altitude-profile tooltip ---------- */
