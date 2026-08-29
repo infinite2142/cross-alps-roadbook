@@ -372,7 +372,22 @@
   /* ── icons ─────────────────────────────── */
   .ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.14em;flex:0 0 auto}
   .ic-x{width:1.1em;height:1.1em}
-  .sechead{display:flex;align-items:center;gap:11px;margin-bottom:4px}
+  .sechead{display:flex;align-items:center;gap:11px;margin-bottom:4px;
+    position:sticky;top:calc(var(--hdrH,60px) - 1px);z-index:900;padding:10px 0 8px;
+    box-shadow:0 10px 12px -12px rgba(0,0,0,.35)}
+  .t-rock .sechead{background:var(--rock)}
+  .t-warm .sechead{background:#EAE6DD}
+  .t-cool .sechead{background:#E1E4E1}
+  .t-ink  .sechead{background:#1B1D1A}
+  body.dark .t-rock .sechead{background:#141619}
+  body.dark .t-warm .sechead{background:#191C21}
+  body.dark .t-cool .sechead{background:#171A20}
+  body.dark .t-ink  .sechead{background:#0B0D10}
+  @media (max-width:760px),(max-height:560px){
+    .sechead{padding:7px 0 6px}
+    .sechead h3{font-size:16px}
+    .sechead .ic{width:17px;height:17px}
+  }
   .sechead h3{margin:0}
   .sechead .ic{color:var(--glow);width:22px;height:22px;stroke-width:1.5}
 
@@ -856,7 +871,7 @@ const GEO = {
  'Brescia':[45.539,10.220],'Darfo Boario Terme':[45.888,10.184],'Edolo':[46.178,10.331],
  'Müstair':[46.629,10.449],'Ofenpass / Pass dal Fuorn':[46.629,10.291],'Zernez':[46.699,10.093],
  'Scuol':[46.797,10.298],'Martina':[46.881,10.462],'Norbertshöhe':[46.900,10.503],
-'Trento':[46.067,11.121],'Riva del Garda':[45.886,10.841],'Limone sul Garda':[45.813,10.792],
+'Kufstein':[47.583,12.167],'Trento':[46.067,11.121],'Riva del Garda':[45.886,10.841],'Limone sul Garda':[45.813,10.792],
  'Gargnano':[45.688,10.661],'Salò':[45.606,10.521],'Desenzano del Garda':[45.470,10.535],
  'Sirmione':[45.494,10.607],'Bardolino':[45.548,10.719],'Malcesine':[45.765,10.809],
  'Passo Ballino':[45.966,10.833],'Tione di Trento':[46.032,10.727],'Madonna di Campiglio':[46.229,10.826],
@@ -967,8 +982,9 @@ A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',short:'Garda',sub:'South t
  total:'≈ €95',
  days:[
   {n:0,from:'Munich Airport',to:'Garda',km:415,time:'4h 15m',passes:1,depart:'15:00',arrive:'≈20:00',
-   note:'<strong>Motorway the whole way, and no apologies for it.</strong> Four hours of autobahn and autostrada to buy three days of proper roads. The Brenner is the only crossing and it is four lanes the whole way over — buy the Austrian vignette before Kufstein and keep moving. Innsbruck is the last cheap fuel before Italy. South of the pass the Eisack valley narrows through Bolzano and Trento with vineyards on both walls, and then the lake opens out. Garda sits on the quieter east shore, twenty minutes off the motorway at Affi, with olive terraces behind the town and the water in front.',
+   note:'<strong>Motorway the whole way, and no apologies for it.</strong> Four hours of autobahn and autostrada to buy three days of proper roads, and it does not run straight south: the A8 and A93 swing southeast through Rosenheim to the Inn at Kufstein, then west up the valley to Innsbruck. <strong>On the limits.</strong> Germany has no general motorway limit, only the 130 km/h advisory — but most of the roughly 100 km to Kufstein is posted at 120 or 100, and the genuinely derestricted stretches add up to well under half of it. Treat it as an hour of ordinary motorway rather than an autobahn run, and read the gantries: they change with traffic and roadworks. Austria is the sharper trap. The A12 Inntal carries a permanent 100 km/h air-quality limit over long sections rather than the usual 130, and the A13 up to the Brenner is 100 in places; both are camera-enforced and the fines follow you home. Italy is 130 on the autostrada. Buy the Austrian vignette before Kufstein. Innsbruck is the last cheap fuel before Italy. South of the pass the Eisack valley narrows through Bolzano and Trento with vineyards on both walls, and then the lake opens out — Garda sits on the quieter east shore, twenty minutes off the motorway at Affi.',
    pts:[[0,448,'Munich Airport','stop','DE','Car rental, Terminalstr. Mitte. Allow 45 min for the desk and the paperwork.'],
+    [100,499,'Kufstein','','AT','Border and the vignette check. The road swings east to the Inn here rather than running straight south.'],
     [165,574,'Innsbruck','','AT','Last cheap fuel before Italy.'],
     [203,1370,'Brenner Pass','pass','AT','Motorway crossing. Austrian vignette plus the A13 toll.'],
     [283,262,'Bolzano','','IT',''],[340,194,'Trento','','IT',''],
