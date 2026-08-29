@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Three-day driving route across the Austrian and Italian Alps, plus an arrival evening. Three route options, 12-16 passes, roadbook, altitude profiles, tolls and hotels.">
+<meta name="description" content="Three-day driving route across the Austrian and Italian Alps, plus an arrival evening. Five route options, 2-16 passes, roadbook, altitude profiles, tolls and hotels.">
 <meta name="theme-color" content="#141619">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Cross-Alps Trip (short version)">
-<meta property="og:description" content="Munich to the Alps and back in four days. Three route options, 12-16 passes, full roadbook with altitude profiles, tolls and hotels.">
+<meta property="og:description" content="Munich to the Alps and back. Five route options, 2-16 passes, full roadbook with altitude profiles, tolls and hotels.">
 <meta property="og:url" content="https://infinite2142.github.io/cross-alps-roadbook/">
 <meta property="og:image" content="https://infinite2142.github.io/cross-alps-roadbook/og.png">
 <meta property="og:image:width" content="1200">
@@ -414,12 +414,11 @@
     .tab .k{font-size:9.5px} .tab .t{font-size:12.5px;display:inline}
     .secnav a{padding:6px 11px;font-size:10px}
   }
-  /* portrait phones: four options will not fit one row legibly — use two */
+  /* portrait phones: the options will not fit one row legibly, so let them wrap.
+     header.compact .tab outranks a bare .tab, so both states are set explicitly. */
   @media (max-width:720px) and (orientation:portrait){
-    .switch{flex-wrap:wrap;overflow-x:hidden}
-    .tab{flex:0 0 50%;min-width:0;border-bottom:1px solid var(--line)}
-    .tab:nth-child(2n){border-right:0}
-    .tab:nth-last-child(-n+2){border-bottom:0}
+    .switch,header.compact .switch{flex-wrap:wrap;overflow-x:hidden}
+    .tab,header.compact .tab{flex:1 1 auto;min-width:0;border-bottom:1px solid var(--line)}
     .tab .s{display:none}
     .tab .t{font-size:13.5px}
   }
@@ -496,7 +495,7 @@
     <circle class="s-core" cx="1108" cy="112" r="25" fill="#F6E6DA"/>
   </g></svg>
   <div class="banner-copy"><div class="inner">
-    <p class="eyebrow"><svg class="ic"><use href="#i-peak"/></svg> Three days · three options · 12–16 passes</p>
+    <p class="eyebrow"><svg class="ic"><use href="#i-peak"/></svg> Three days · five options · 2–16 passes</p>
     <h1>Cross-Alps Trip <span style="opacity:.62;font-weight:400">(short&nbsp;version)</span></h1>
   </div></div>
 </div>
@@ -659,6 +658,11 @@ const GEO = {
  'Ponte di Legno':[46.259,10.510],'Passo del Tonale':[46.259,10.585],'Cles / Val di Non':[46.364,11.034],
  'Passo della Mendola':[46.418,11.198],'Passo di Costalunga':[46.409,11.596],
  'Passo Fedaia':[46.457,11.878],
+ 'Trento':[46.067,11.121],'Riva del Garda':[45.886,10.841],'Limone sul Garda':[45.813,10.792],
+ 'Gargnano':[45.688,10.661],'Salò':[45.606,10.521],'Desenzano del Garda':[45.470,10.535],
+ 'Sirmione':[45.494,10.607],'Bardolino':[45.548,10.719],'Malcesine':[45.765,10.809],
+ 'Passo Ballino':[45.966,10.833],'Tione di Trento':[46.032,10.727],'Madonna di Campiglio':[46.229,10.826],
+ 'Passo Campo Carlo Magno':[46.246,10.832],'Dimaro':[46.325,10.871],'Bagni Vecchi':[46.481,10.342],
  'St Jakob in Defereggen':[46.918,12.345],'Staller Sattel':[46.917,12.220],
  'Anterselva / Antholz':[46.868,12.113],'Passo delle Palade':[46.585,11.132],
  'Mittersill':[47.279,12.484],'Felbertauern tunnel':[47.133,12.510],'Matrei in Osttirol':[46.999,12.539],
@@ -667,6 +671,7 @@ const GEO = {
  'Brenner Pass':[47.005,11.506],'Innsbruck':[47.269,11.404]
 };
 const gmap = id => 'https://www.google.com/maps/place/?q=place_id:'+id;
+const gsearch = h => 'https://www.google.com/maps/search/?api=1&query='+enc(h.n+' '+h.loc);
 const enc = encodeURIComponent;
 /* Official sites for these 19 hotels aren't reliably resolvable — search engines return OTA pages,
    and a guessed domain is worse than no link. These two resolve every time. */
@@ -792,7 +797,7 @@ B:{key:'B',tag:'Option B',title:'Stelvio &amp; Dolomites',sub:'Take this if Stel
     {n:'Hotel Sas Morin',loc:'Via Donato Zeni 6, Pozza di Fassa',why:'Smaller, outdoor jacuzzi and sauna, easy parking. Quieter than staying in Canazei itself.',tel:'+39 0462 764419',pid:'ChIJdWQiHz1peEcRjq38u-EKGeM'},
     {n:'Hotel Renè',loc:'Strada de la Veisc 69, San Giovanni di Fassa',why:'Recently renovated, big free car park, strong half board.',tel:'+39 0462 764258',pid:'ChIJcUD0etDkLhMR9-e_Z0hEHIE'}]},
   {n:2,from:'Canazei',to:'Bruneck',km:230,time:'6h 00m',passes:7,depart:'08:00',arrive:'≈18:00',
-   note:'<strong>The best driving day of any of the three options.</strong> Full Sellaronda loop from Canazei, then Fedaia under the Marmolada, then the Giau — the finest single pass in the Dolomites and considerably better than Falzarego next door.',
+   note:'<strong>The best driving day on any of these routes.</strong> Full Sellaronda loop from Canazei, then Fedaia under the Marmolada, then the Giau — the finest single pass in the Dolomites and considerably better than Falzarego next door.',
    pts:[[0,1465,'Canazei','stop','IT',''],[12,2240,'Passo Sella','pass','IT',''],[25,2121,'Passo Gardena','pass','IT','Open.'],
     [35,1568,'Corvara in Badia','','IT',''],[42,1875,'Passo Campolongo','pass','IT',''],[48,1602,'Arabba','','IT',''],
     [58,2239,'Passo Pordoi','pass','IT','Sellaronda loop closes here.'],
@@ -927,6 +932,72 @@ D:{key:'D',tag:'Option D',title:'Valleys &amp; Lakes',sub:'The wet-weather route
    evening:'',stays:[]}
  ]},
 
+
+E:{key:'E',tag:'Option E',title:'Garda &amp; Stelvio',sub:'South to the lake, back over the big ones. Good weather only.',
+ heroTitle:'Down to the water, and back over the Gavia and the Stelvio.',
+ blurb:'The long way south. Day 0 runs the Brenner down to the head of Lake Garda, day 1 is the full circuit of the lake at walking pace, and day 2 turns north through the Val Rendena and over the Tonale and the Gavia to a thermal spa at the foot of the Stelvio. Day 3 opens with the Stelvio itself. Eight passes, and the only one that needs an early start is the last day.',
+ stats:[['1,085 km','total distance'],['18h 30m','moving time'],['8','named passes'],['2,757 m','highest point'],['3','countries']],
+ costs:[['Austrian 10-day digital vignette','Day 0, buy at a petrol station','€12.80'],
+  ['Brenner autobahn, A13 and A22','Day 0, each way','~€40'],
+  ['Lake Garda town parking','Day 1, allow for it','~€15'],
+  ['Passo Gavia and Passo dello Stelvio','Days 2 and 3, no toll','free']],
+ total:'≈ €70',
+ days:[
+  {n:0,from:'Munich Airport',to:'Riva del Garda',km:385,time:'4h 00m',passes:1,depart:'16:00',arrive:'≈20:45',
+   note:'<strong>Motorway the whole way, and worth it.</strong> The Brenner is the only crossing and it is four lanes. Buy the Austrian vignette before Kufstein. If the flight slips badly, stop in Bolzano and add the last hour to day 1 — the lake is not going anywhere.',
+   pts:[[0,448,'Munich Airport','stop','DE','Car rental, Terminalstr. Mitte. Allow 45 min for the desk and the paperwork.'],
+    [165,574,'Innsbruck','','AT','Last cheap fuel before Italy.'],
+    [203,1370,'Brenner Pass','pass','AT','Motorway crossing. Austrian vignette plus the A13 toll.'],
+    [283,262,'Bolzano','','IT',''],[340,194,'Trento','','IT',''],
+    [385,73,'Riva del Garda','stop','IT','Overnight. The cliffs at the head of the lake.']],
+   evening:'Riva has the only proper old town on the lake and it is two minutes from the water. Kitchens run to 22:00 in September. Note the ZTL — the centre is camera-controlled, so use a signed garage rather than guessing.',
+   staysNote:'Riva del Garda has hundreds of beds and none of them are researched yet. Pick one near Piazza III Novembre with its own garage — the ZTL makes street parking a false economy.',
+   stays:[]},
+  {n:1,from:'Riva del Garda',to:'Riva del Garda',km:190,time:'4h 15m',passes:0,depart:'09:00',arrive:'≈17:00',
+   note:'<strong>The slow day, deliberately.</strong> No passes and only 190 km, but the Gardesana is narrow, tunnelled and busy, so it eats hours. Go clockwise: the west shore is better driven southbound and the light is behind you. Every lake town has a ZTL — park outside and walk in.',
+   pts:[[0,73,'Riva del Garda','stop','IT',''],
+    [20,66,'Limone sul Garda','','IT','Lemon terraces stacked against the cliff. The old centre is car-free.'],
+    [45,75,'Gargnano','','IT','The quietest of the west-shore towns.'],
+    [70,75,'Salò','','IT','Long promenade, good coffee, easy parking for once.'],
+    [95,68,'Desenzano del Garda','','IT','South-west corner. Busy.'],
+    [110,68,'Sirmione','','IT','The peninsula and the Roman villa. Leave the car at the gate — the old town is closed to traffic.'],
+    [135,68,'Bardolino','','IT','East shore, wine country.'],
+    [165,89,'Malcesine','','IT','Castle on the water and the rotating cable car up Monte Baldo, 1,760 m in ten minutes.'],
+    [190,73,'Riva del Garda','stop','IT','Second night, same hotel.']],
+   evening:'Second night in Riva means nothing to pack. If the afternoon ran short, the Ponale path above the lake is an hour on foot and is the best view of the trip that does not involve the car.',
+   staysNote:'Same room as the night before — book both nights together.',
+   stays:[]},
+  {n:2,from:'Riva del Garda',to:'Bormio',km:195,time:'4h 45m',passes:4,depart:'08:00',arrive:'≈17:00',
+   note:'<strong>The big one.</strong> Four passes climbing from 73 m to 2,621 m. The Gavia is the narrow one — single track in places with no barrier, and it is the reason to do this in good weather only. If cloud sits on it, drop to the Aprica and rejoin at Bormio.',
+   pts:[[0,73,'Riva del Garda','stop','IT',''],
+    [22,763,'Passo Ballino','pass','IT','Gentle opener out of the lake basin.'],
+    [50,565,'Tione di Trento','','IT','Fuel before the Val Rendena.'],
+    [85,1522,'Madonna di Campiglio','','IT','Coffee stop under the Brenta Dolomites.'],
+    [92,1682,'Passo Campo Carlo Magno','pass','IT','Short and wide, straight out of Campiglio.'],
+    [110,766,'Dimaro','','IT','Into the Val di Sole.'],
+    [145,1883,'Passo del Tonale','pass','IT','Broad, fast, open. The warm-up for the Gavia.'],
+    [155,1258,'Ponte di Legno','','IT','Last fuel and the turn for the Gavia.'],
+    [180,2621,'Passo Gavia','pass','IT','Single track in places, no barrier, and the finest road on any of these five routes. Not in cloud.'],
+    [195,1270,'Bagni Vecchi','stop','IT','Overnight, on the Stelvio road just above Bormio.']],
+   evening:'Bagni Vecchi is a thermal spa built into the hillside — Roman baths, a tunnel cut through the rock to a grotto, and an outdoor pool looking down the valley. Open late. After the Gavia this is the correct decision.',
+   staysNote:'QC Terme Bagni Vecchi sits on the SS38 about 3 km above Bormio, at roughly 1,270 m, and the Stelvio climb starts at its door. Confirm the room and the spa entry together — details here are from memory and were not verified.',
+   stays:[{n:'QC Terme Bagni Vecchi',pick:'Pick',loc:'Strada Statale dello Stelvio, Valdidentro, Bormio',
+     why:'Thermal spa in the old baths above Bormio, with the Stelvio starting outside. Phone number and listing deliberately left blank — not verified.'}]},
+  {n:3,from:'Bormio',to:'Munich Airport',km:315,time:'5h 30m',passes:3,depart:'08:00',arrive:'≈15:30',
+   note:'<strong>The Stelvio before breakfast settles.</strong> Forty-eight hairpins from the door. After that it is Reschen and Fernpass, both easy. If you are behind, buy the extra rental day rather than hurrying this one — there is nothing to gain by rushing the last good road of the trip.',
+   pts:[[0,1270,'Bagni Vecchi','stop','IT',''],
+    [20,2757,'Passo dello Stelvio','pass','IT','Forty-eight numbered hairpins on the north side. Go early — coaches and cyclists own it by ten.'],
+    [45,915,'Prad allo Stelvio','','IT','Coffee at the bottom.'],
+    [73,1520,'Lago di Resia','stop','IT','The submerged bell tower standing in the lake.'],
+    [78,1504,'Reschenpass','pass','IT','Broad and gentle. Back into Austria.'],
+    [120,816,'Landeck','','AT','Fuel. Cheaper than Bavaria.'],[145,828,'Imst','','AT',''],
+    [175,1216,'Fernpass','pass','AT','Two lanes, no hairpins.'],
+    [195,994,'Ehrwald','','AT','Zugspitze on your right.'],
+    [220,708,'Garmisch-Partenkirchen','','DE',''],
+    [315,448,'Munich Airport','stop','DE','Refuel within 10 km of the return or the rental company charges its own rate.']],
+   evening:'',stays:[]}
+ ]},
+
 };
 
 
@@ -1007,10 +1078,16 @@ const TODO=[
 /* ============================================================ RENDER ========= */
 const DAYC=['#26557F','#6E4A87','#A8467E','#C24966'];
 const esc=s=>String(s).replace(/&(?!\w+;)/g,'&amp;').replace(/</g,'&lt;');
-const ALT_MIN=150,ALT_MAX=2850;
+const ALT_MIN=40,ALT_MAX=2850;
 
-/* fixed frame across all three routes so switching tabs doesn't jump */
-const LAT0=48.42,LAT1=46.22,LNG0=10.33,LNG1=13.13,KX=Math.cos(47.3*Math.PI/180);
+/* One frame shared by every route so switching tabs doesn't jump — computed
+   from all of them rather than hardcoded, so adding an option just works. */
+const _fp=Object.values(D).flatMap(o=>o.days.flatMap(d=>d.pts.map(q=>GEO[q[2]]))).filter(Boolean);
+const _fla=_fp.map(g=>g[0]), _fln=_fp.map(g=>g[1]);
+const LAT0=Math.max(..._fla)+.20, LAT1=Math.min(..._fla)-.20,
+      LNG0=Math.min(..._fln)-.25, LNG1=Math.max(..._fln)+.25,
+      KX=Math.cos(((LAT0+LAT1)/2)*Math.PI/180);
+const _ticks=(a,b,step)=>{const o=[];for(let v=Math.ceil(a/step)*step;v<=b;v+=step)o.push(+v.toFixed(2));return o;};
 const MW=540,MH=600,MP=30;
 const _sx=(MW-2*MP)/((LNG1-LNG0)*KX), _sy=(MH-2*MP)/(LAT0-LAT1);
 const SC=Math.min(_sx,_sy);
@@ -1022,14 +1099,16 @@ function buildMap(s,PX){
   const mk=Math.min(2.6,Math.max(.8,MW/Math.max(220,PX||MW)));
   const fL=9.6*mk, fA=8*mk, fG=7.4*mk, fS=8*mk;
   let grat='';
-  for(let lg=10.5;lg<=13;lg+=.5){const x=px(lg).toFixed(1);
+  const _gs=LNG1-LNG0>3.4?1:.5, _as=LAT0-LAT1>2.8?1:.5;
+  const _lbl=(v,st)=>st<1?v.toFixed(1):v.toFixed(0);
+  for(const lg of _ticks(LNG0,LNG1,_gs)){const x=px(lg).toFixed(1);
     grat+=`<line class="grat" x1="${x}" y1="${MP}" x2="${x}" y2="${MH-MP}"/>`+
-          `<text class="grat-lbl" x="${x}" y="${MH-MP+9}" text-anchor="middle">${lg.toFixed(1)}°E</text>`;}
-  for(let la=46.5;la<=48.5;la+=.5){const y=py(la).toFixed(1);
+          `<text class="grat-lbl" x="${x}" y="${MH-MP+9}" text-anchor="middle">${_lbl(lg,_gs)}°E</text>`;}
+  for(const la of _ticks(LAT1,LAT0,_as)){const y=py(la).toFixed(1);
     grat+=`<line class="grat" x1="${MP}" y1="${y}" x2="${MW-MP}" y2="${y}"/>`+
-          `<text class="grat-lbl" x="${MP-4}" y="${(+y+2.4).toFixed(1)}" text-anchor="end">${la.toFixed(1)}°N</text>`;}
+          `<text class="grat-lbl" x="${MP-4}" y="${(+y+2.4).toFixed(1)}" text-anchor="end">${_lbl(la,_as)}°N</text>`;}
 
-  const countries=[['GERMANY',48.20,11.55],['AUSTRIA',47.60,12.05],['ITALY',46.40,11.05],['SWITZ.',46.72,10.40]];
+  const countries=[['GERMANY',48.20,11.55],['AUSTRIA',47.60,12.05],['ITALY',45.80,11.85],['SWITZ.',46.72,10.40]];
   let clab=countries.map(c=>`<text class="country" x="${px(c[2]).toFixed(1)}" y="${py(c[1]).toFixed(1)}" text-anchor="middle">${c[0]}</text>`).join('');
 
   let routes='',pins='',labelSeeds=[];
@@ -1316,9 +1395,14 @@ function renderDays(s){
             <div class="acts">
               <a href="${site(h)}" target="_blank" rel="noopener">Website ↗</a>
               <a href="${bkg(h)}" target="_blank" rel="noopener">Booking.com ↗</a>
-              <a href="${gmap(h.pid)}" target="_blank" rel="noopener">Map &amp; photos ↗</a>
-              <a href="tel:${h.tel.replace(/\s/g,'')}">${h.tel}</a>
+              <a href="${h.pid?gmap(h.pid):gsearch(h)}" target="_blank" rel="noopener">Map &amp; photos ↗</a>
+              ${h.tel?`<a href="tel:${h.tel.replace(/\s/g,'')}">${h.tel}</a>`:''}
             </div></div>`).join('')}
+        ${day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:''}</div>`
+      : di<s.days.length-1 ? `
+      <div class="aside"><h4>Where to sleep · ${esc(day.to)}</h4>
+        <div class="stay"><div class="nm"><span><svg class="ic"><use href="#i-bed"/></svg>Not chosen yet</span></div>
+          <div class="why">${esc(day.staysNote||'No hotels researched for this stop.')}</div></div>
         ${day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:''}</div>`
       :`<div class="aside"><h4>End of trip</h4><div class="stay"><div class="nm"><span>Car return, Munich Airport</span></div>
          <div class="loc">Terminalstr. Mitte, parking level P20</div>

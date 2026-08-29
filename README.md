@@ -2,7 +2,7 @@
 
 Single-page roadbook for a three-day drive from Munich Airport across Austria and Italy,
 plus an arrival evening.
-Three switchable route options, per-day roadbooks with altitude
+Five switchable route options, per-day roadbooks with altitude
 profiles, a schematic and a terrain map, tolls, hotels and a pre-departure checklist.
 
 ## Files
@@ -102,7 +102,7 @@ disabled in the Claude artifact sandbox, which is why it isn't already in there.
 
 Everything lives in `index.html`. The parts you'll actually want to change:
 
-- `const D = {…}` — the three route options. Each day is `pts: [[km, altitude, name, kind,
+- `const D = {…}` — the five route options. Each day is `pts: [[km, altitude, name, kind,
   country, note], …]` where `kind` is `'pass'`, `'stop'` or empty. Add a waypoint and the
   roadbook, both maps and the altitude profile all pick it up.
 - `const GEO = {…}` — latitude/longitude per waypoint name. **Any new waypoint needs an entry
