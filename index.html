@@ -91,7 +91,12 @@
   body.dark .daymap{background:#1C1F24}
   .daymap .pin{transition:transform .12s}
   .daymap .pin.hot polygon,.daymap .pin.hot circle,.daymap .pin.hot rect{stroke:var(--glow);stroke-width:2.4}
+  .daymap .pin.hot::after{content:''}
+  .daymap .pin.hot .dm-halo{opacity:1}
+  .dm-halo{fill:var(--glow);opacity:0;transition:opacity .12s}
   .dm-lbl{font-family:'IBM Plex Mono',monospace;font-size:7.4px;fill:var(--slate)}
+  .dm-sub{font-family:'IBM Plex Mono',monospace;font-size:6.2px;fill:var(--slate);opacity:.75}
+  .dm-sub.end{fill:var(--glow);opacity:1}
   .dm-lbl.pass{fill:var(--ink);font-weight:600}
   .dm-lbl.end{fill:var(--ink);font-weight:600}
   .segtog{margin:0 0 10px}
@@ -134,10 +139,12 @@
   /* landscape phones: keep enough sky above the ridgeline for the sun to show */
   @media (max-height:560px){ .banner{min-height:210px} }
 
-  #mapHost{touch-action:pan-y}
+  #mapHost{touch-action:none}
+
   #mapHost.zoomed{cursor:grab}
   #mapHost.zoomed:active{cursor:grabbing}
   .zoomhint{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--slate);letter-spacing:.04em}
+  @media(max-width:820px){ .mapbox .mapfoot,.mapbox .zoomhint{display:none} }
   .tileWarn{display:none;padding:10px 12px;background:#F7E9EC;border:1px solid #E3BFC8;font-size:13px;margin:6px 0 0}
 
   /* ── seven-day outlook ──────────────────────────────────────────── */
@@ -247,6 +254,8 @@
   body.dark .way-dot{fill:var(--rock)}
   .way-label.stacked{font-family:'IBM Plex Mono',monospace;font-size:calc(var(--fl,10px)*.80);
     fill:var(--slate);font-style:italic}
+  .way-label.endpt{fill:var(--ink);font-style:normal;font-weight:600}
+  .endtime{fill:var(--glow);font-weight:600}
   .peak-label.stacked{font-size:calc(var(--fl,10px)*.92);fill:var(--ink)}
   .peak-alt-in{fill:var(--glow);font-family:'IBM Plex Mono',monospace;font-size:calc(var(--fa,8px)*.92)}
   .peak-label.stacked{paint-order:stroke;stroke:var(--panel);stroke-width:2.6px;stroke-linejoin:round}
@@ -500,7 +509,9 @@
      header.compact .tab outranks a bare .tab, so both states are set explicitly. */
   @media (max-width:720px) and (orientation:portrait){
     .switch,header.compact .switch{flex-wrap:wrap;overflow-x:hidden}
-    .tab,header.compact .tab{flex:1 1 auto;min-width:0;border-bottom:1px solid var(--line)}
+    .tab,header.compact .tab{flex:1 1 30%;min-width:0;border-bottom:1px solid var(--line)}
+    .tab .t{font-size:12px;line-height:1.2}
+    .tab .k{font-size:9px}
     .tab .s{display:none}
     .tab .t{font-size:13.5px}
   }
@@ -572,35 +583,44 @@
 
 <div class="banner">
   <svg class="pano" viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Stylised alpine ridgelines with a switchback road"><use href="#pano"/>
-    <g class="goat g1" transform="translate(580.7 160.6) scale(1.55)" aria-hidden="true">
-      <ellipse cx="6" cy="6.5" rx="3.5" ry="2.05"/>
-      <rect x="3.3" y="8.1" width=".78" height="3.5" rx=".38"/>
-      <rect x="5.1" y="8.1" width=".78" height="3.5" rx=".38"/>
-      <rect x="6.9" y="8.1" width=".78" height="3.5" rx=".38"/>
-      <rect x="8.5" y="8.1" width=".78" height="3.5" rx=".38"/>
-      <path d="M9.1 5.5 L11.5 4.5 L12 5.4 L11.2 6.6 L9.4 6.9 Z"/>
-      <path d="M10.7 4.2 C11.8 3.3 12.1 2 11.2 1.2" fill="none" stroke="currentColor" stroke-width=".85" stroke-linecap="round"/>
-      <path d="M2.6 5.3 L1.2 3.4" fill="none" stroke="currentColor" stroke-width=".8" stroke-linecap="round"/>
+    <g class="goat g1" transform="translate(574.8 155.3) scale(2.20)" aria-hidden="true">
+      <path d="M2.3 7.3 C2.3 6.0 3.4 5.4 4.8 5.4 L7.3 5.4 C8.5 5.4 9.2 6.0 9.3 6.9 C9.4 7.8 8.8 8.3 7.7 8.3 L3.9 8.3 C2.8 8.3 2.3 8.1 2.3 7.3 Z"/>
+      <path d="M8.5 6.6 L9.7 4.4 L10.9 4.9 L9.9 7.1 Z"/>
+      <path d="M9.8 4.9 C10.2 4.0 11.0 3.6 11.8 3.8 L13.1 4.2 L13.3 5.0 L11.9 5.7 L10.4 5.9 Z"/>
+      <path d="M11.6 5.6 L11.3 7.0 L12.1 5.8 Z"/>
+      <path d="M10.4 4.0 L9.7 3.3 L10.8 3.5 Z"/>
+      <path d="M11.3 3.7 C12.6 3.0 12.9 1.7 11.7 0.9" fill="none" stroke="currentColor" stroke-width=".85" stroke-linecap="round"/>
+      <rect x="3.3" y="8.1" width=".72" height="3.4" rx=".34"/>
+      <rect x="4.9" y="8.1" width=".72" height="3.4" rx=".34"/>
+      <rect x="6.8" y="8.1" width=".72" height="3.4" rx=".34"/>
+      <rect x="8.2" y="8.1" width=".72" height="3.4" rx=".34"/>
+      <path d="M2.4 5.8 L1.2 4.4" fill="none" stroke="currentColor" stroke-width=".75" stroke-linecap="round"/>
     </g>
-    <g class="goat g2" transform="translate(735.7 168.6) scale(1.55)" aria-hidden="true">
-      <ellipse cx="6" cy="6.5" rx="3.5" ry="2.05"/>
-      <rect x="3.3" y="8.1" width=".78" height="3.5" rx=".38"/>
-      <rect x="5.1" y="8.1" width=".78" height="3.5" rx=".38"/>
-      <rect x="6.9" y="8.1" width=".78" height="3.5" rx=".38"/>
-      <rect x="8.5" y="8.1" width=".78" height="3.5" rx=".38"/>
-      <path d="M9.1 5.5 L11.5 4.5 L12 5.4 L11.2 6.6 L9.4 6.9 Z"/>
-      <path d="M10.7 4.2 C11.8 3.3 12.1 2 11.2 1.2" fill="none" stroke="currentColor" stroke-width=".85" stroke-linecap="round"/>
-      <path d="M2.6 5.3 L1.2 3.4" fill="none" stroke="currentColor" stroke-width=".8" stroke-linecap="round"/>
+    <g class="goat g2" transform="translate(729.8 163.3) scale(2.20)" aria-hidden="true">
+      <path d="M2.3 7.3 C2.3 6.0 3.4 5.4 4.8 5.4 L7.3 5.4 C8.5 5.4 9.2 6.0 9.3 6.9 C9.4 7.8 8.8 8.3 7.7 8.3 L3.9 8.3 C2.8 8.3 2.3 8.1 2.3 7.3 Z"/>
+      <path d="M8.5 6.6 L9.7 4.4 L10.9 4.9 L9.9 7.1 Z"/>
+      <path d="M9.8 4.9 C10.2 4.0 11.0 3.6 11.8 3.8 L13.1 4.2 L13.3 5.0 L11.9 5.7 L10.4 5.9 Z"/>
+      <path d="M11.6 5.6 L11.3 7.0 L12.1 5.8 Z"/>
+      <path d="M10.4 4.0 L9.7 3.3 L10.8 3.5 Z"/>
+      <path d="M11.3 3.7 C12.6 3.0 12.9 1.7 11.7 0.9" fill="none" stroke="currentColor" stroke-width=".85" stroke-linecap="round"/>
+      <rect x="3.3" y="8.1" width=".72" height="3.4" rx=".34"/>
+      <rect x="4.9" y="8.1" width=".72" height="3.4" rx=".34"/>
+      <rect x="6.8" y="8.1" width=".72" height="3.4" rx=".34"/>
+      <rect x="8.2" y="8.1" width=".72" height="3.4" rx=".34"/>
+      <path d="M2.4 5.8 L1.2 4.4" fill="none" stroke="currentColor" stroke-width=".75" stroke-linecap="round"/>
     </g>
-    <g class="goat g3" transform="translate(890.7 144.6) scale(1.55)" aria-hidden="true">
-      <ellipse cx="6" cy="6.5" rx="3.5" ry="2.05"/>
-      <rect x="3.3" y="8.1" width=".78" height="3.5" rx=".38"/>
-      <rect x="5.1" y="8.1" width=".78" height="3.5" rx=".38"/>
-      <rect x="6.9" y="8.1" width=".78" height="3.5" rx=".38"/>
-      <rect x="8.5" y="8.1" width=".78" height="3.5" rx=".38"/>
-      <path d="M9.1 5.5 L11.5 4.5 L12 5.4 L11.2 6.6 L9.4 6.9 Z"/>
-      <path d="M10.7 4.2 C11.8 3.3 12.1 2 11.2 1.2" fill="none" stroke="currentColor" stroke-width=".85" stroke-linecap="round"/>
-      <path d="M2.6 5.3 L1.2 3.4" fill="none" stroke="currentColor" stroke-width=".8" stroke-linecap="round"/>
+    <g class="goat g3" transform="translate(884.8 139.3) scale(2.20)" aria-hidden="true">
+      <path d="M2.3 7.3 C2.3 6.0 3.4 5.4 4.8 5.4 L7.3 5.4 C8.5 5.4 9.2 6.0 9.3 6.9 C9.4 7.8 8.8 8.3 7.7 8.3 L3.9 8.3 C2.8 8.3 2.3 8.1 2.3 7.3 Z"/>
+      <path d="M8.5 6.6 L9.7 4.4 L10.9 4.9 L9.9 7.1 Z"/>
+      <path d="M9.8 4.9 C10.2 4.0 11.0 3.6 11.8 3.8 L13.1 4.2 L13.3 5.0 L11.9 5.7 L10.4 5.9 Z"/>
+      <path d="M11.6 5.6 L11.3 7.0 L12.1 5.8 Z"/>
+      <path d="M10.4 4.0 L9.7 3.3 L10.8 3.5 Z"/>
+      <path d="M11.3 3.7 C12.6 3.0 12.9 1.7 11.7 0.9" fill="none" stroke="currentColor" stroke-width=".85" stroke-linecap="round"/>
+      <rect x="3.3" y="8.1" width=".72" height="3.4" rx=".34"/>
+      <rect x="4.9" y="8.1" width=".72" height="3.4" rx=".34"/>
+      <rect x="6.8" y="8.1" width=".72" height="3.4" rx=".34"/>
+      <rect x="8.2" y="8.1" width=".72" height="3.4" rx=".34"/>
+      <path d="M2.4 5.8 L1.2 4.4" fill="none" stroke="currentColor" stroke-width=".75" stroke-linecap="round"/>
     </g>
   <g class="sun">
     <circle class="s-halo" cx="1108" cy="112" r="66" fill="#C2496A"/>
@@ -847,7 +867,7 @@ function gdir(day){
 
 /* ============================================================ DATA =========== */
 const D = {
-A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',sub:'South to the lake and the plain, home through Switzerland.',
+A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',sub:'South to the lake, home through Switzerland. Longest drive.',
  heroTitle:'Down to the water, across the plain, and back over four countries.',
  blurb:'The long way south, with the extra evening built in. Day 0 runs the Brenner to the east shore of Garda, day 1 drops to Mantova on the plain and climbs back into the mountains at Ponte di Legno, day 2 loops the Gavia, Livigno, the Bernina and St Moritz from a thermal spa above Bormio, and day 3 comes home through the Swiss Engadin. Eleven passes, four countries, and the Stelvio driven once, properly, on the last morning.',
  stats:[['1,348 km','total distance'],['21h 45m','moving time'],['11','named passes'],['2,757 m','highest point'],['4','countries']],
@@ -1471,25 +1491,30 @@ function dayMapSVG(day,di){
   pts.forEach((o,pi)=>{
     const x=X(o.g[1]),y=Y(o.g[0]),id='dm-'+di+'-'+day.pts.indexOf(o.p);
     const t=`<title>${esc(o.p[2])} — ${o.p[1]} m</title>`;
+    marks+=`<circle class="dm-hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="transparent"/>`;
+    const halo=`<circle class="dm-halo" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7" fill-opacity=".26"/>`;
     if(o.p[3]==='pass')
-      marks+=`<g class="pin" id="${id}"><polygon points="${x},${(y-4).toFixed(1)} ${(x+4).toFixed(1)},${y} ${x},${(y+4).toFixed(1)} ${(x-4).toFixed(1)},${y}" fill="${DAYC[di]}" stroke="#F3F1EC" stroke-width=".9">${t}</polygon></g>`;
+      marks+=`<g class="pin" id="${id}">${halo}<polygon points="${x},${(y-4).toFixed(1)} ${(x+4).toFixed(1)},${y} ${x},${(y+4).toFixed(1)} ${(x-4).toFixed(1)},${y}" fill="${DAYC[di]}" stroke="#F3F1EC" stroke-width=".9">${t}</polygon></g>`;
     else if(pi===0||pi===pts.length-1)
-      marks+=`<g class="pin" id="${id}"><rect x="${(x-3.8).toFixed(1)}" y="${(y-3.8).toFixed(1)}" width="7.6" height="7.6" rx="1" fill="#191A18" stroke="#F3F1EC" stroke-width="1">${t}</rect></g>`;
+      marks+=`<g class="pin" id="${id}">${halo}<rect x="${(x-3.8).toFixed(1)}" y="${(y-3.8).toFixed(1)}" width="7.6" height="7.6" rx="1" fill="#191A18" stroke="#F3F1EC" stroke-width="1">${t}</rect></g>`;
     else
-      marks+=`<g class="pin" id="${id}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.4" fill="#F3F1EC" stroke="${DAYC[di]}" stroke-width="1.4">${t}</circle></g>`;
+      marks+=`<g class="pin" id="${id}">${halo}<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.4" fill="#F3F1EC" stroke="${DAYC[di]}" stroke-width="1.4">${t}</circle></g>`;
   });
   /* labels, pushed left or right of centre and spaced so they do not collide */
   const seeds=pts.map((o,pi)=>({x:X(o.g[1]),y:Y(o.g[0]),p:o.p,pi,
-      pass:o.p[3]==='pass', end:pi===0||pi===pts.length-1}));
+      pass:o.p[3]==='pass', end:pi===0||pi===pts.length-1,
+      tm:pi===0?day.depart:(pi===pts.length-1?String(day.arrive).replace('≈',''):'')}));
   const cx=W/2, LS=[], RS=[];
   const seen=new Set();
-  seeds.forEach(o=>{ if(seen.has(o.p[2]))return; seen.add(o.p[2]); (o.x<cx?LS:RS).push(o); });
+  /* ends first, so a day that returns to its start keeps the arrival label */
+  seeds.slice().sort((a,b)=>(b.end?1:0)-(a.end?1:0)).forEach(o=>{
+    if(seen.has(o.p[2]))return; seen.add(o.p[2]); (o.x<cx?LS:RS).push(o); });
   const CHW=4.35;                                   /* 7.4px mono, near enough */
   const trim=n=>n.split(' / ')[0].replace(/^Passo (dello |del |della |di )?/,'')
                  .replace('Rifugio Auronzo · ','').replace(' tunnel','').replace(' toll gate','')
                  .replace('Kaiser-Franz-Josefs-Höhe','Franz-Josefs-Höhe');
   const lab=(arr,side)=>{
-    arr.sort((a,b)=>a.y-b.y); let last=-99; const gap=10;
+    arr.sort((a,b)=>a.y-b.y); let last=-99; const gap=15;
     return arr.map(o=>{
       const ly=Math.max(o.y+3,last+gap); last=ly;
       const nm=trim(o.p[2]), w=nm.length*CHW;
@@ -1498,7 +1523,9 @@ function dayMapSVG(day,di){
       if(an==='start' && lx+w>W-3){ an='end'; lx=o.x-6; }
       if(an==='end' && lx-w<3){ an='start'; lx=o.x+6; }
       const cls=o.pass?'dm-lbl pass':(o.end?'dm-lbl end':'dm-lbl');
-      return `<text class="${cls}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${an}">${esc(nm)}</text>`;
+      const sub=(o.end&&o.tm? o.tm+' · ':'')+o.p[1]+' m'+(o.p[0]?' · '+o.p[0]+' km':'');
+      return `<text class="${cls}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${an}">${esc(nm)}</text>`
+           + `<text class="dm-sub${o.end?' end':''}" x="${lx.toFixed(1)}" y="${(ly+5.2).toFixed(1)}" text-anchor="${an}">${esc(sub)}</text>`;
     }).join('');
   };
   const labels=lab(LS,'L')+lab(RS,'R');
@@ -1570,9 +1597,13 @@ function ridgeSVG(segments,opts){
   let stackH=0;
   {
     const seenN=new Set();
-    const cand=[...peaks.map(o=>({o,pass:true})), ...ways.map(o=>({o,pass:false}))]
-      .filter(q=>{const n=q.o.p[2]; if(seenN.has(n))return false; seenN.add(n); return true;});
-    cand.sort((a,b)=>(b.pass-a.pass)||(b.o.p[1]-a.o.p[1]));
+    const first=all[0], last=all[all.length-1];
+    let cand=[...peaks.map(o=>({o,pass:true})), ...ways.map(o=>({o,pass:false}))];
+    cand.forEach(q=>{ q.end = (q.o===first||q.o===last); });
+    /* a day that returns to where it started has the same name twice — keep the
+       endpoint occurrence, or the arrival label disappears */
+    cand.sort((a,b)=>(b.end-a.end)||(b.pass-a.pass)||(b.o.p[1]-a.o.p[1]));
+    cand=cand.filter(q=>{const n=q.o.p[2]; if(seenN.has(n))return false; seenN.add(n); return true;});
     const taken=[];
     const hit=r=>taken.some(q=>r.x0<q.x1+1&&q.x0<r.x1+1&&r.y0<q.y1+1&&q.y0<r.y1+1);
     const lineH=fL*1.06, top=padT-fL*.2, floor=padT+plotH-2;
@@ -1581,6 +1612,7 @@ function ridgeSVG(segments,opts){
       const chW=q.pass?fL*.53:fL*.47;
       const w=Math.max(label.length*chW, q.pass?(String(q.o.p[1]).length+1)*fA*.6:0);
       const h=lineH*(q.pass?2:1);
+      let done=false;
       /* straight up from the marker, then nudged sideways if still blocked */
       for(let step=0;step<26;step++){
         const dy=-(fL*1.0)-step*(lineH*0.92);
@@ -1598,8 +1630,16 @@ function ridgeSVG(segments,opts){
         marks+= q.pass
           ? `<text class="peak-label stacked" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}</text>`
             +`<text class="peak-alt-in stacked" x="${lx.toFixed(1)}" y="${(ly+fA*1.02).toFixed(1)}" text-anchor="${anchor}">${q.o.p[1]}m</text>`
-          : `<text class="way-label stacked" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}</text>`;
-        break;
+          : `<text class="way-label stacked${q.end?' endpt':''}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}${q.end?' <tspan class="endtime">'+(q.o===first?opts.depart||'':opts.arrive||'')+'</tspan>':''}</text>`;
+        done=true; break;
+      }
+      /* an endpoint is worth a slight clash — put it at the edge regardless */
+      if(!done && q.end){
+        const anchor = q.o.x > W/2 ? 'end' : 'start';
+        const lx=Math.min(Math.max(q.o.x,padL),W-3);
+        const ly=Math.min(Math.max(q.o.y-fL*1.2, padT+lineH), padT+plotH-lineH*.6);
+        const tm = q.o===first ? (opts.depart||'') : (q.o===last ? String(opts.arrive||'').replace('≈','') : '');
+        marks+=`<text class="way-label stacked endpt" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}${tm?' <tspan class="endtime">'+tm+'</tspan>':''}</text>`;
       }
     });
   }
@@ -1706,11 +1746,15 @@ function bindTips(){
 function paintProfiles(){
   if(!CURRENT) return;
   const hero=document.getElementById('heroRidge');
+  const cap=document.querySelector('.ridge-box .ridge-cap');
+  if(cap) cap.innerHTML='<span>Altitude profile · whole route</span><span>'+CURRENT.stats[0][0]
+    +' · '+CURRENT.stats[2][0]+' passes · '+CURRENT.stats[4][0]+' countries</span>';
   if(hero) hero.innerHTML=ridgeSVG(CURRENT.days.map(d=>({pts:d.pts,label:'DAY '+d.n})),
-                                   {w:900,h:200,tall:true,px:hero.clientWidth});
+                                   {w:900,h:200,tall:true,axis:true,px:hero.clientWidth,
+                                    depart:CURRENT.days[0].depart,arrive:CURRENT.days[CURRENT.days.length-1].arrive});
   CURRENT.days.forEach(d=>{
     const el=document.getElementById('ridge-d'+d.n); if(!el) return;
-    el.innerHTML=ridgeSVG([{pts:d.pts,label:'Day '+d.n}],{w:900,h:150,px:el.clientWidth,axis:true});
+    el.innerHTML=ridgeSVG([{pts:d.pts,label:'Day '+d.n}],{w:900,h:150,px:el.clientWidth,axis:true,depart:d.depart,arrive:d.arrive});
   });
 }
 function paintMap(){
@@ -2130,14 +2174,41 @@ document.addEventListener('click',e=>{
     if(z<=1.01){tx=0;ty=0;z=1;}
     apply();
   },{passive:false});
-  host.addEventListener('pointerdown',e=>{ if(z<=1.01) return;
-    drag={x:e.clientX,y:e.clientY,tx,ty}; host.setPointerCapture(e.pointerId); });
-  host.addEventListener('pointermove',e=>{ if(!drag) return;
+  const pts=new Map(); let pinch=null;
+  const toVB=(cx,cy)=>{const el=svg(); if(!el) return null;
+    const r=el.getBoundingClientRect(), vb=el.viewBox.baseVal;
+    return {x:(cx-r.left)/r.width*vb.width, y:(cy-r.top)/r.height*vb.height, r, vb};};
+  host.addEventListener('pointerdown',e=>{
+    pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    host.setPointerCapture(e.pointerId);
+    if(pts.size===2){
+      const [a,b]=[...pts.values()];
+      const mid=toVB((a.x+b.x)/2,(a.y+b.y)/2); if(!mid) return;
+      pinch={d:Math.hypot(a.x-b.x,a.y-b.y), z, mx:mid.x, my:mid.y, tx, ty};
+      drag=null;
+    } else if(pts.size===1 && z>1.01){
+      drag={x:e.clientX,y:e.clientY,tx,ty};
+    }
+  });
+  host.addEventListener('pointermove',e=>{
+    if(!pts.has(e.pointerId)) return;
+    pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pinch && pts.size>=2){
+      const [a,b]=[...pts.values()];
+      const d=Math.hypot(a.x-b.x,a.y-b.y);
+      const nz=Math.min(6,Math.max(1,pinch.z*(d/(pinch.d||1))));
+      tx=pinch.mx-(pinch.mx-pinch.tx)*(nz/pinch.z);
+      ty=pinch.my-(pinch.my-pinch.ty)*(nz/pinch.z);
+      z=nz; if(z<=1.01){z=1;tx=0;ty=0;}
+      apply(); e.preventDefault(); return;
+    }
+    if(!drag) return;
     const el=svg(); if(!el) return;
     const r=el.getBoundingClientRect(), vb=el.viewBox.baseVal;
     tx=drag.tx+(e.clientX-drag.x)/r.width*vb.width;
-    ty=drag.ty+(e.clientY-drag.y)/r.height*vb.height; apply(); });
-  const stop=()=>drag=null;
+    ty=drag.ty+(e.clientY-drag.y)/r.height*vb.height; apply(); e.preventDefault();
+  });
+  const stop=e=>{ pts.delete(e.pointerId); if(pts.size<2) pinch=null; if(!pts.size) drag=null; };
   host.addEventListener('pointerup',stop); host.addEventListener('pointercancel',stop);
   host.addEventListener('dblclick',()=>window.mapZoomReset());
 })();
