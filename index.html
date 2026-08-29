@@ -302,7 +302,8 @@
   body.dark .day.alt .day-head{background:#191C21}
   .day-head h3{font-size:clamp(19px,3.2vw,27px)}
   .daydot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:9px;vertical-align:1px}
-  .day-head .when{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
+  .day-head .when{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--slate);display:flex;gap:4px 16px}
   .day-metrics{display:flex;flex-wrap:wrap;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);margin-bottom:16px}
   .day-metrics b{color:var(--ink);font-weight:600}
   .day-note{background:var(--panel);border-left:3px solid var(--glow);padding:10px 14px;font-size:14px;margin:0 0 18px;max-width:80ch}
@@ -531,6 +532,22 @@
     .tab .k{font-size:9.5px} .tab .t{font-size:12.5px;display:inline}
     .secnav a{padding:6px 11px;font-size:10px}
   }
+  /* the sticky day heading is overhead on a phone — shrink it and stack the
+     times against the right edge so it stays one line */
+  @media (max-width:760px),(max-height:560px){
+    .day-head{flex-wrap:nowrap;align-items:center;gap:10px;padding:6px 0 5px}
+    .day-head h3{font-size:16px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .day-head .when{flex-direction:column;align-items:flex-end;gap:0;margin-left:auto;flex:0 0 auto;
+      font-size:9px;letter-spacing:.07em;line-height:1.35}
+    .daydot{width:8px;height:8px;margin-right:6px}
+    /* the option strip has done its job once you are inside a day */
+    header.compact.inday .switch{display:none}
+  }
+  @media (max-height:560px){
+    .day-head h3{font-size:14.5px}
+    .day-head{padding:4px 0 3px}
+  }
+
   /* portrait phones: the options will not fit one row legibly, so let them wrap.
      header.compact .tab outranks a bare .tab, so both states are set explicitly. */
   @media (max-width:720px) and (orientation:portrait){
@@ -1961,7 +1978,7 @@ function renderDays(s){
          <div class="why">Park in a signed Parkhaus rather than on the street: the Altstadt is resident-permit only in the evening, and the Umweltzone inside the Mittlerer Ring needs a green sticker, which German plates carry as standard. Access is otherwise unrestricted.</div></div></div>`;
     return `<section class="sec day ${di%2?'alt':''}" id="sec-day${day.n}"><div class="daywrap">
       <div class="day-head"><h3><i class="daydot" style="background:${DAYC[di]}"></i>Day ${day.n} · ${esc(day.from)} → ${esc(day.to)}</h3>
-        <span class="when mono">depart ${day.depart} · arrive ${day.arrive}</span></div>
+        <span class="when mono"><span>depart ${day.depart}</span><span>arrive ${day.arrive}</span></span></div>
       <div class="day-metrics mono">
         <span><svg class="ic"><use href="#i-road"/></svg> <b>${day.km} km</b> distance</span>
         <span><svg class="ic"><use href="#i-clock"/></svg> <b>${day.time}</b> moving</span>
@@ -2065,6 +2082,15 @@ function syncHeader(){
   const hdr=document.getElementById('hdr');
   const banner=document.querySelector('.banner');
   hdr.classList.toggle('compact', window.scrollY > (banner?banner.offsetHeight*0.55:80));
+  /* inside a day section the day heading is the label that matters, so the
+     option strip can stand down and give the room back */
+  let inDay=false;
+  const probe=hdr.offsetHeight+8;
+  document.querySelectorAll('section.sec.day').forEach(sec=>{
+    const r=sec.getBoundingClientRect();
+    if(r.top<=probe && r.bottom>probe) inDay=true;
+  });
+  hdr.classList.toggle('inday', inDay);
   document.documentElement.style.setProperty('--hdrH', hdr.offsetHeight+'px');
   const h=hdr.offsetHeight+8; let active=null;
   document.querySelectorAll('#secnav a').forEach(a=>{
