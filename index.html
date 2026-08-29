@@ -87,6 +87,40 @@
   .leaflet-popup-content .nt{color:var(--slate);display:block;margin-top:4px}
   .stayIcon{background:#191A18;border:1.5px solid #fff;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
   .tileWarn{display:none;padding:10px 12px;background:#F7E9EC;border:1px solid #E3BFC8;font-size:13px;margin:6px 0 0}
+
+  /* ── seven-day outlook ──────────────────────────────────────────── */
+  .wx-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 16px}
+  .wx-btn{display:inline-flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;
+    letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--ink);background:var(--ink);color:var(--snow);
+    padding:7px 13px;cursor:pointer;transition:opacity .15s}
+  .wx-btn:hover:not(:disabled){opacity:.82}
+  .wx-btn:disabled{opacity:.42;cursor:default}
+  .wx-stamp{font-size:11.5px;color:var(--slate);letter-spacing:.04em}
+  .wx-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .wx-grid{width:100%;min-width:300px;border-collapse:collapse;font-size:13px}
+  .wx-grid th,.wx-grid td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:center;vertical-align:middle}
+  .wx-grid thead th{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--slate);font-weight:500;padding-bottom:11px}
+  .wx-grid thead th:first-child,.wx-grid tbody th{text-align:left}
+  .wx-grid tbody th{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:500;color:var(--slate);
+    letter-spacing:.05em;white-space:nowrap;width:1%}
+  .wx-grid tbody th b{display:block;color:var(--ink);font-weight:600;font-size:12.5px;letter-spacing:.02em}
+  .wx-grid tbody tr:hover{background:rgba(0,0,0,.028)}
+  body.dark .wx-grid tbody tr:hover{background:rgba(255,255,255,.045)}
+  .wx-cell .ic{width:21px;height:21px;color:var(--slate);display:block;margin:0 auto 3px}
+  .wx-t{font-family:'IBM Plex Mono',monospace;font-size:12.5px;white-space:nowrap}
+  .wx-t b{font-weight:600;color:var(--ink)}
+  .wx-t span{color:var(--slate)}
+  .wx-pop{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--signal);letter-spacing:.03em;margin-top:2px}
+  body.dark .wx-pop{color:#8FB8E0}
+  .wx-pop:empty{display:none}
+  .wx-skel{color:var(--slate);font-size:13px;padding:18px 0}
+  @media(max-width:520px){
+    .wx-grid th,.wx-grid td{padding:8px 4px}
+    .wx-grid tbody th b{font-size:11.5px}
+    .wx-cell .ic{width:19px;height:19px}
+    .wx-t{font-size:11.5px}
+  }
   .gbtn{display:inline-flex;align-items:center;gap:7px;margin:14px 0 0;font-family:'IBM Plex Mono',monospace;font-size:11.5px;
     letter-spacing:.05em;text-decoration:none;border:1px solid var(--ink);background:var(--ink);color:var(--snow);padding:7px 12px;transition:opacity .15s}
   .gbtn:hover{opacity:.82}
@@ -376,6 +410,13 @@
  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.4M12 19v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.6 12H5M19 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></symbol>
  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.2A8.4 8.4 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2Z"/></symbol>
  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5.5 21V3.6"/><path d="M5.5 4.6h12l-2.4 4 2.4 4h-12"/></symbol>
+ <symbol id="i-w-clear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.4v2.6M12 19v2.6M4 4l1.9 1.9M18.1 18.1L20 20M2.4 12H5M19 12h2.6M4 20l1.9-1.9M18.1 5.9L20 4"/></symbol>
+ <symbol id="i-w-part" viewBox="0 0 24 24"><circle cx="8.4" cy="8.4" r="3.2"/><path d="M8.4 2.2v1.8M8.4 12.8v1.2M3.4 3.4l1.3 1.3M12.1 12.1l.6.6M2.2 8.4H4M12.8 8.4h1.2"/><path d="M9.4 19.6h8.3a3 3 0 0 0 .3-6 4.3 4.3 0 0 0-8-1.5 3.8 3.8 0 0 0-.6 7.5Z"/></symbol>
+ <symbol id="i-w-cloud" viewBox="0 0 24 24"><path d="M7.2 19h9.9a3.4 3.4 0 0 0 .3-6.8 4.9 4.9 0 0 0-9.2-1.7A3.9 3.9 0 0 0 7.2 19Z"/></symbol>
+ <symbol id="i-w-fog" viewBox="0 0 24 24"><path d="M7.4 14.4h9.6a3.2 3.2 0 0 0 .3-6.4 4.7 4.7 0 0 0-8.8-1.6 3.7 3.7 0 0 0-1.1 8Z"/><path d="M4.6 18h14.8M6.8 21h10.4"/></symbol>
+ <symbol id="i-w-rain" viewBox="0 0 24 24"><path d="M7.4 15h9.6a3.2 3.2 0 0 0 .3-6.4 4.7 4.7 0 0 0-8.8-1.6 3.7 3.7 0 0 0-1.1 8Z"/><path d="M9 18.4l-1 2.8M13 18.4l-1 2.8M17 18.4l-1 2.8"/></symbol>
+ <symbol id="i-w-snow" viewBox="0 0 24 24"><path d="M7.4 14.6h9.6a3.2 3.2 0 0 0 .3-6.4 4.7 4.7 0 0 0-8.8-1.6 3.7 3.7 0 0 0-1.1 8Z"/><path d="M9.4 18.6v2.6M8.2 19.3l2.4 1.2M10.6 19.3l-2.4 1.2M15.4 18.6v2.6M14.2 19.3l2.4 1.2M16.6 19.3l-2.4 1.2"/></symbol>
+ <symbol id="i-w-storm" viewBox="0 0 24 24"><path d="M7.4 14.2h9.6a3.2 3.2 0 0 0 .3-6.4 4.7 4.7 0 0 0-8.8-1.6 3.7 3.7 0 0 0-1.1 8Z"/><path d="M13.2 16.6l-3.4 3.4h2.8l-1.4 2.6"/></symbol>
 </defs></svg>
 
 <!-- ═══ hero panorama: layered ridgelines, a switchback and a car ═══ -->
@@ -519,6 +560,19 @@
       <div class="card"><h5>Check the morning before</h5>
         <p>alpen-paesse.ch for Swiss and border passes, suedtirol.com/verkehr for South Tyrol, grossglockner.at webcams for the Glockner. Roadworks near Umbrail have run alternating closures — check before committing.</p></div>
     </div>
+  </div></section>
+
+  <section class="sec t-rock" id="sec-weather"><div class="wrap">
+    <div class="sechead"><svg class="ic"><use href="#i-w-part"/></svg><h3>Seven-day outlook</h3></div>
+    <p class="lede">The three points that decide the driving: the Glockner approach, the high west, and the Dolomite base.
+      Anything past three days out is a hint, not a plan — mountain forecasts move.</p>
+    <div class="wx-bar">
+      <button class="wx-btn" id="wxBtn" type="button"><svg class="ic"><use href="#i-clock"/></svg><span id="wxBtnTxt">Refresh</span></button>
+      <span class="wx-stamp mono" id="wxStamp">Loading…</span>
+    </div>
+    <div class="wx-scroll"><div id="wxWrap"><p class="wx-skel">Fetching the forecast…</p></div></div>
+    <div class="tileWarn" id="wxWarn"></div>
+    <p class="wx-stamp" style="margin-top:14px">Data: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · free, no account, no tracking.</p>
   </div></section>
 
 </main>
@@ -828,7 +882,6 @@ Object.values(D).forEach(sc=>sc.days.forEach(d=>d.pts.forEach(pt=>{
 })));
 
 const TODO=[
- {t:'Book the Sixt car',d:'Book online, then phone Munich Airport on +49 89 66 06 00 and ask for the top of the permitted group. Add every driver by name — unnamed drivers void the insurance entirely.'},
  {t:'Reserve the Tre Cime toll road slot',d:'auronzo.info · €40 · mandatory, no booking means no entry. You can book without a plate now and add it the day before. Options A and B only.'},
  {t:'Buy the Austrian 10-day digital vignette',d:'€12.80. Buy at a petrol station or ADAC office once you have the plate, not online — online purchases can have a delayed start. Fine is €200+.'},
  {t:'Call the three hotels',d:'Four days out, phone beats any booking site. Ask for half board and mention vegetarian at the time of booking, not on arrival.'},
@@ -1224,7 +1277,8 @@ function buildNav(s){
   const items = s.days.map((d,i)=>({id:'sec-day'+d.n, label:'Day '+d.n, dot:DAYC[i]}))
     .concat([{id:'sec-tolls',label:'Tolls',icon:'i-ticket'},
              {id:'sec-book',label:'Book first',icon:'i-check'},
-             {id:'sec-rules',label:'Rules',icon:'i-alert'}]);
+             {id:'sec-rules',label:'Rules',icon:'i-alert'},
+             {id:'sec-weather',label:'Weather',icon:'i-w-part'}]);
   document.getElementById('secnav').innerHTML =
     `<a href="#sec-overview" data-t="sec-overview"><svg class="ic"><use href="#i-map"/></svg>Overview</a>` +
     items.map(i=>`<a href="#${i.id}" data-t="${i.id}">`+
@@ -1266,6 +1320,139 @@ document.getElementById('themeBtn').onclick=()=>setTheme(!document.body.classLis
 
 render('A');
 syncHeader();
+
+/* ---------- seven-day outlook ──────────────────────────────────────
+   Static page, no backend: the browser talks to Open-Meteo directly.
+   No API key exists to leak, and there is no server of ours to flood —
+   so the throttling below is politeness and UX, not a security control.
+   It keeps a bot on Refresh from burning the VISITOR's own IP against
+   Open-Meteo's per-IP limits, and stops double-taps firing twice.      */
+const WX_SPOTS=[
+  {n:'Zell am See',  s:'Glockner approach', lat:47.323, lon:12.797},
+  {n:'Stelvio',      s:'High west, 2757 m', lat:46.529, lon:10.454},
+  {n:'Canazei',      s:'Dolomite base',     lat:46.477, lon:11.769}
+];
+const WX_KEY='wx-cache-v1', WX_TTL=30*60*1000, WX_COOLDOWN=60*1000;
+let wxBusy=false, wxLast=0, wxTimer=null;
+
+/* WMO code → icon + label. Grouped; anything unknown falls back to cloud. */
+function wxIcon(c){
+  if(c===0) return ['i-w-clear','Clear'];
+  if(c<=2)  return ['i-w-part','Partly cloudy'];
+  if(c===3) return ['i-w-cloud','Overcast'];
+  if(c<=48) return ['i-w-fog','Fog'];
+  if(c<=57) return ['i-w-rain','Drizzle'];
+  if(c<=67) return ['i-w-rain','Rain'];
+  if(c<=77) return ['i-w-snow','Snow'];
+  if(c<=82) return ['i-w-rain','Showers'];
+  if(c<=86) return ['i-w-snow','Snow showers'];
+  if(c<=99) return ['i-w-storm','Thunderstorm'];
+  return ['i-w-cloud','—'];
+}
+const wxStore={
+  get(){ try{ const r=localStorage.getItem(WX_KEY); return r?JSON.parse(r):null; }catch(e){ return null; } },
+  set(v){ try{ localStorage.setItem(WX_KEY,JSON.stringify(v)); }catch(e){} }
+};
+function wxWarn(msg){
+  const w=document.getElementById('wxWarn');
+  if(!w) return;
+  w.textContent=msg||''; w.style.display=msg?'block':'none';
+}
+function wxRenderCooldown(){
+  const btn=document.getElementById('wxBtn'), txt=document.getElementById('wxBtnTxt');
+  if(!btn||!txt) return;
+  const left=Math.ceil((WX_COOLDOWN-(Date.now()-wxLast))/1000);
+  if(wxBusy){ btn.disabled=true; txt.textContent='Fetching…'; return; }
+  if(left>0){
+    btn.disabled=true; txt.textContent='Wait '+left+'s';
+    if(!wxTimer) wxTimer=setInterval(wxRenderCooldown,1000);
+  } else {
+    btn.disabled=false; txt.textContent='Refresh';
+    if(wxTimer){ clearInterval(wxTimer); wxTimer=null; }
+  }
+}
+function wxPaint(data){
+  const wrap=document.getElementById('wxWrap'); if(!wrap||!data) return;
+  const days=data.days, rows=data.rows;
+  let h='<table class="wx-grid"><thead><tr><th>Day</th>';
+  for(const sp of WX_SPOTS) h+='<th>'+esc(sp.n)+'</th>';
+  h+='</tr></thead><tbody>';
+  days.forEach((d,i)=>{
+    h+='<tr><th><b>'+esc(d.wd)+'</b>'+esc(d.md)+'</th>';
+    rows.forEach(r=>{
+      const c=r[i];
+      if(!c){ h+='<td class="wx-cell">—</td>'; return; }
+      const [ic,lab]=wxIcon(c.code);
+      h+='<td class="wx-cell"><svg class="ic" role="img" aria-label="'+esc(lab)+'"><use href="#'+ic+'"/></svg>'+
+         '<div class="wx-t"><b>'+c.hi+'°</b> <span>'+c.lo+'°</span></div>'+
+         '<div class="wx-pop">'+(c.pop>=20?c.pop+'%':'')+'</div></td>';
+    });
+    h+='</tr>';
+  });
+  wrap.innerHTML=h+'</tbody></table>';
+  const st=document.getElementById('wxStamp');
+  if(st){
+    const age=Date.now()-data.at;
+    st.textContent='Updated '+(age<60000?'just now':new Date(data.at).toLocaleString([], {hour:'2-digit',minute:'2-digit'}))
+      + (data.stale?' · cached':'');
+  }
+}
+async function wxFetch(manual){
+  if(wxBusy) return;
+  if(manual && Date.now()-wxLast < WX_COOLDOWN){ wxRenderCooldown(); return; }
+  wxBusy=true; wxRenderCooldown(); wxWarn('');
+  const ctl=new AbortController();
+  const to=setTimeout(()=>ctl.abort(),12000);
+  try{
+    const url='https://api.open-meteo.com/v1/forecast'
+      +'?latitude='+WX_SPOTS.map(s=>s.lat).join(',')
+      +'&longitude='+WX_SPOTS.map(s=>s.lon).join(',')
+      +'&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max'
+      +'&timezone=Europe%2FBerlin&forecast_days=7';
+    const res=await fetch(url,{signal:ctl.signal});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    let js=await res.json();
+    if(!Array.isArray(js)) js=[js];
+    const first=js[0]&&js[0].daily;
+    if(!first) throw new Error('unexpected response');
+    const days=first.time.map(t=>{
+      const d=new Date(t+'T12:00:00');
+      return {wd:d.toLocaleDateString([],{weekday:'short'}), md:d.toLocaleDateString([],{day:'numeric',month:'short'})};
+    });
+    const rows=js.map(loc=>{
+      const dl=loc.daily;
+      return dl.time.map((_,i)=>({
+        code:dl.weather_code[i],
+        hi:Math.round(dl.temperature_2m_max[i]),
+        lo:Math.round(dl.temperature_2m_min[i]),
+        pop:dl.precipitation_probability_max?(dl.precipitation_probability_max[i]||0):0
+      }));
+    });
+    const data={at:Date.now(),days,rows};
+    wxStore.set(data); wxLast=Date.now(); wxPaint(data);
+  }catch(e){
+    const cached=wxStore.get();
+    if(cached){ cached.stale=true; wxPaint(cached); }
+    else { const w=document.getElementById('wxWrap'); if(w) w.innerHTML='<p class="wx-skel">No forecast available.</p>'; }
+    wxWarn(e.name==='AbortError'
+      ? 'The forecast request timed out. Showing the last saved reading if there is one.'
+      : 'Could not reach Open-Meteo ('+e.message+'). Showing the last saved reading if there is one.');
+    wxLast=Date.now();
+  }finally{
+    clearTimeout(to); wxBusy=false; wxRenderCooldown();
+  }
+}
+(function wxInit(){
+  const btn=document.getElementById('wxBtn'); if(!btn) return;
+  btn.addEventListener('click',()=>wxFetch(true));
+  const cached=wxStore.get();
+  if(cached && Date.now()-cached.at < WX_TTL){
+    wxLast=cached.at; wxPaint(cached); wxRenderCooldown();
+  } else {
+    if(cached){ cached.stale=true; wxPaint(cached); }
+    wxFetch(false);
+  }
+})();
 </script>
 </body>
 </html>
