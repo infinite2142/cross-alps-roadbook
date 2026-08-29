@@ -891,7 +891,7 @@ function pickWaypoints(mid, origin, dest, MAX){
    and Google has to follow the road we planned rather than cutting the corner.
    Navigate leg 1, then start leg 2 where it ended. */
 function gdirLegs(day){
-  const pts=day.pts.filter(p=>GEO[p[2]]);
+  const pts=day.pts.filter(p=>GEO[p[2]] && p[3]!=='thru');
   if(pts.length<2) return [];
   const c=p=>GEO[p[2]][0].toFixed(5)+','+GEO[p[2]][1].toFixed(5);
   const MAXPTS=11;                       /* origin + 9 intermediate + destination */
@@ -912,7 +912,7 @@ function gdirLegs(day){
 }
 
 function gdir(day){
-  const pts = day.pts.filter(p=>GEO[p[2]]);
+  const pts = day.pts.filter(p=>GEO[p[2]] && p[3]!=='thru');
   if(pts.length<2) return null;
   const o=pts[0], d=pts[pts.length-1], mid=pts.slice(1,-1);
   /* The URL API takes 9 intermediate stops. Picking only the passes loses the
@@ -952,7 +952,7 @@ A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',short:'Garda',sub:'South t
    pts:[[0,67,'Garda','stop','IT',''],
     [22,68,'Peschiera del Garda','','IT','South-east corner, where the Mincio leaves the lake.'],
     [60,19,'Mantova','stop','IT','Lunch. Palazzo Ducale and Palazzo Te, both indoors, both worth it.'],
-    [150,149,'Brescia','','IT','Motorway only — no reason to stop.'],
+    [150,149,'Brescia','thru','IT','Motorway only — the autostrada passes it.'],
     [175,75,'Salò','','IT','Back on the lake for twenty minutes of shoreline.'],
     [230,221,'Darfo Boario Terme','','IT','Into the Val Camonica.'],
     [285,699,'Edolo','','IT','Fuel before the climb.'],
@@ -1012,7 +1012,7 @@ B:{key:'B',tag:'Option B',title:'Glockner &amp; Dolomites',short:'Glockner',sub:
   {n:0,from:'Munich Airport',to:'Zell am See',km:280,time:'4h 00m',passes:1,depart:'15:00',arrive:'≈20:15',
    note:'<strong>Tight but worth it.</strong> If the flight is late or the rental desk is slow, drop the Rossfeld and run straight down the A8 — Zell am See in 2h15. The Rossfeld is a good warm-up loop, not a highlight worth arriving at 22:00 for.',
    pts:[[0,448,'Munich Airport','stop','DE','Car rental, Terminalstr. Mitte. Allow 45 min for the desk and the paperwork.'],
-    [20,520,'A8 east toward Salzburg','','DE',''],[150,570,'Berchtesgaden','','DE',''],
+    [20,520,'A8 east toward Salzburg','thru','DE',''],[150,570,'Berchtesgaden','','DE',''],
     [172,1570,'Rossfeld Panoramastrasse','pass','DE','Loop road on the German–Austrian ridge. Views into the Salzburg basin.'],
     [195,630,'Lofer','','AT',''],[280,750,'Zell am See','stop','AT','Overnight.']],
    evening:'Lake promenade is a five-minute walk from all three hotels. Kitchens in Zell stop around 21:00 — call ahead if you are running late.',
@@ -1186,7 +1186,7 @@ E:{key:'E',tag:'Option E',title:'Valleys &amp; Lakes',short:'Valleys',sub:'The w
   {n:0,from:'Munich Airport',to:'Zell am See',km:230,time:'2h 45m',passes:0,depart:'15:00',arrive:'≈19:00',
    note:'<strong>Straight down the motorway.</strong> No Rossfeld on this version — it is a panorama road and there is no panorama. Buy the vignette at the last German services or the first Austrian petrol station, then run the A8 to Salzburg and drop south.',
    pts:[[0,448,'Munich Airport','stop','DE','Car rental, Terminalstr. Mitte. Allow 45 min for the desk and the paperwork.'],
-    [20,520,'A8 east toward Salzburg','','DE',''],[145,424,'Salzburg','','AT','Vignette here at the latest.'],
+    [20,520,'A8 east toward Salzburg','thru','DE',''],[145,424,'Salzburg','','AT','Vignette here at the latest.'],
     [190,630,'Lofer','','AT',''],[230,750,'Zell am See','stop','AT','Overnight.']],
    evening:'Lake promenade is a five-minute walk from all three hotels, and it is covered most of the way. Kitchens in Zell stop around 21:00 — call ahead if you are running late.',
    stays:[{n:'Hotel Berner',pick:'Pick',loc:'Nikolaus-Gassner-Promenade 1, Zell am See',why:'Small, family-run, consistently the best kitchen in town. Quiet end of the lake, five minutes from the centre.',tel:'+43 6542 779',pid:'ChIJu5rn8tgcd0cRDjal7S1ybjU'},
@@ -1623,7 +1623,7 @@ function gdirAll(s){
   let run=0;
   s.days.forEach(d=>{
     const last=d.pts[d.pts.length-1][0]||0;
-    d.pts.forEach(p=>{ if(GEO[p[2]]) flat.push({p,km:run+p[0]}); });
+    d.pts.forEach(p=>{ if(GEO[p[2]] && p[3]!=='thru') flat.push({p,km:run+p[0]}); });
     run+=last;
   });
   if(flat.length<2) return null;
