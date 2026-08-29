@@ -293,7 +293,13 @@
   .day-tag{font-family:'IBM Plex Mono',monospace;font-size:var(--ft,8px);fill:var(--slate);letter-spacing:.14em}
 
   .day{border-top:1px solid var(--ink);padding:26px 0 30px}
-  .day-head{display:flex;flex-wrap:wrap;gap:6px 20px;align-items:baseline;margin-bottom:4px}
+  .day-head{display:flex;flex-wrap:wrap;gap:6px 20px;align-items:baseline;margin-bottom:4px;
+    position:sticky;top:calc(var(--hdrH,60px) - 1px);z-index:900;
+    background:var(--rock);padding:10px 0 8px;
+    box-shadow:0 10px 12px -12px rgba(0,0,0,.35)}
+  .day.alt .day-head{background:#EAE6DD}
+  body.dark .day-head{background:#141619}
+  body.dark .day.alt .day-head{background:#191C21}
   .day-head h3{font-size:clamp(19px,3.2vw,27px)}
   .daydot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:9px;vertical-align:1px}
   .day-head .when{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
@@ -305,7 +311,7 @@
   @media(max-width:860px){.cols{grid-template-columns:1fr}}
 
   .rb{border-top:0}
-  .rb-row{display:grid;grid-template-columns:40px 56px 1fr 60px;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);
+  .rb-row{display:grid;grid-template-columns:40px 56px 1fr 60px;gap:4px 10px;padding:8px 0;border-bottom:1px solid var(--line);
     align-items:baseline;transition:background .15s}
   .rb-row:hover{background:rgba(25,26,24,.045)}
   .rb-km{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
@@ -422,6 +428,14 @@
   .daywrap{max-width:1120px;margin:0 auto;padding:0 var(--pad)}
   .rb-row .lg{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#9A968D;display:block;margin-top:2px}
   .rb-row .lg.eta{color:var(--slate);margin-top:3px}
+  /* the note sits on its own row, so it wraps into real width rather than a
+     140px sliver — and is capped at three lines whatever the copy does */
+  .rb-note{grid-column:3 / 5;color:var(--slate);font-size:12.5px;line-height:1.45;
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+  @media(max-width:640px){
+    .rb-note{grid-column:1 / 5;-webkit-line-clamp:3}
+    .rb-row{grid-template-columns:36px 52px 1fr 52px;gap:3px 8px}
+  }
   .stay .nm .ic{color:var(--slate);width:15px;height:15px;margin-right:6px;vertical-align:-2px}
   .costicon{color:var(--slate);width:15px;height:15px;margin-right:8px;vertical-align:-2.5px}
   .legchip .ic{width:14px;height:14px;color:var(--slate);margin-top:7px;flex:0 0 14px}
@@ -996,7 +1010,7 @@ A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',short:'Garda',sub:'South t
     [215,816,'Landeck','','AT','Fuel. Cheaper than Bavaria.'],
     [260,1216,'Fernpass','pass','AT','Two lanes, no hairpins.'],
     [303,708,'Garmisch-Partenkirchen','','DE','Partnachklamm gorge is a good hour if you are ahead.'],
-    [390,519,'Munich','stop','DE','Aim for a signed Parkhaus in the centre — Altstadt streets are resident-permit only after 19:00 and the Umweltzone covers everything inside the Mittlerer Ring. A green sticker is standard on German plates, so that part is usually fine; overnight street parking is the bit that catches people.']],
+    [390,519,'Munich','stop','DE','Signed Parkhaus, not the street. Parking notes below.']],
    evening:'',stays:[]}
  ]},
 
@@ -1056,7 +1070,7 @@ B:{key:'B',tag:'Option B',title:'Glockner &amp; Dolomites',short:'Glockner',sub:
    pts:[[0,1179,'Längenfeld','stop','AT',''],[55,828,'Imst','','AT','Fuel. Fill up in Austria — cheaper than Bavaria.'],
     [85,1894,'Hahntennjoch','pass','AT','Narrow, empty, technical. The best last road of the trip.'],
     [100,976,'Elmen / Lechtal','','AT',''],[130,854,'Reutte','','AT',''],[150,994,'Ehrwald','','AT','Zugspitze on your right.'],
-    [175,708,'Garmisch-Partenkirchen','','DE',''],[220,519,'Munich','stop','DE','Aim for a signed Parkhaus in the centre — Altstadt streets are resident-permit only after 19:00 and the Umweltzone covers everything inside the Mittlerer Ring. A green sticker is standard on German plates, so that part is usually fine; overnight street parking is the bit that catches people.']],
+    [175,708,'Garmisch-Partenkirchen','','DE',''],[220,519,'Munich','stop','DE','Signed Parkhaus, not the street. Parking notes below.']],
    evening:'',stays:[]}
  ]},
 
@@ -1229,7 +1243,7 @@ E:{key:'E',tag:'Option E',title:'Valleys &amp; Lakes',short:'Valleys',sub:'The w
     [130,1216,'Fernpass','pass','AT','Two lanes, no hairpins. Queues on a summer Sunday, not in the wet.'],
     [150,994,'Ehrwald','','AT','Zugspitze on your right if the cloud lifts.'],
     [175,708,'Garmisch-Partenkirchen','','DE','Partnachklamm gorge is a good hour if you are ahead of schedule, and it is better in the rain.'],
-    [245,519,'Munich','stop','DE','Aim for a signed Parkhaus in the centre — Altstadt streets are resident-permit only after 19:00 and the Umweltzone covers everything inside the Mittlerer Ring. A green sticker is standard on German plates, so that part is usually fine; overnight street parking is the bit that catches people.']],
+    [245,519,'Munich','stop','DE','Signed Parkhaus, not the street. Parking notes below.']],
    evening:'',stays:[]}
  ]},
 
@@ -1298,7 +1312,7 @@ const NOTES={
 };
 Object.values(D).forEach(sc=>sc.days.forEach(d=>d.pts.forEach(pt=>{
   const base=NOTES[pt[2]]; if(!base) return;
-  pt[5] = !pt[5] ? base : (pt[5].length<30 ? base+' '+pt[5] : pt[5]);
+  pt[5] = pt[5] || base;
 })));
 
 const TODO_ALL=[
@@ -1897,8 +1911,9 @@ function renderDays(s){
       return `<div class="rb-row ${p[3]==='pass'?'is-pass':''}" data-pin="pin-${di}-${pi}">
         <div class="rb-km">${p[0]}<span class="lg unit">km</span></div>
         <div class="rb-leg">${leg>0?`+${leg}`:'—'}<span class="lg eta">${eta(day,p[0])}</span></div>
-        <div class="rb-name"><span class="flag f-${p[4]}">${p[4]}</span>${esc(p[2])}${p[5]?`<em>${esc(p[5])}</em>`:''}</div>
-        <div class="rb-alt">${p[1]} m</div></div>`;}).join('');
+        <div class="rb-name"><span class="flag f-${p[4]}">${p[4]}</span>${esc(p[2])}</div>
+        <div class="rb-alt">${p[1]} m</div>
+        ${p[5]?`<div class="rb-note">${esc(p[5])}</div>`:''}</div>`;}).join('');
     const stays=day.stays.length?`
       <div class="aside"><h4>Segment map · day ${day.n}</h4>
         <div class="viewtog segtog" role="group" aria-label="Segment map view">
