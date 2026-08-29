@@ -506,15 +506,15 @@
     <div class="sechead"><svg class="ic"><use href="#i-car"/></svg><h3>The car</h3></div>
     <p class="lede">Same for all three options.</p>
     <div class="grid3">
-      <div class="card"><h5>What's bookable at 18</h5>
-        <p>Sixt Germany rents from 18 with the licence held one day, but only in groups MBMR through CWMR — mini to compact estate. In Munich that means a BMW 1 Series, Mercedes A-Class or Audi A3, roughly 150–190 hp. Young driver surcharge applies under 25.</p>
-        <p>Premium and Sports &amp; Luxury need 25 or 30. No German insurer writes a performance car for an 18-year-old at consumer rates, so paying more doesn't unlock it.</p></div>
-      <div class="card"><h5>Everyone else</h5>
-        <p>Europcar and Buchbinder start at 18–19 but only in the smallest classes. Avis and Budget at 19. Hertz and Enterprise at 21. Sixt is the best available answer.</p>
-        <p>Book with his real date of birth entered — the engine greys out what he can't take. Then call Munich Airport on <a class="mono" href="tel:+498966060">+49 89 66 06 00</a> and ask for the top of the permitted family.</p></div>
+      <div class="card"><h5>The car group</h5>
+        <p>Sixt Munich Airport, groups MBMR through CWMR — mini to compact estate. In practice that means a BMW 1 Series, Mercedes A-Class or Audi A3, roughly 150–190 hp.</p>
+        <p>Premium and Sports &amp; Luxury aren't available on this booking, so paying more doesn't unlock them.</p></div>
+      <div class="card"><h5>Booking it</h5>
+        <p>Other desks either don't offer this group at all or only in the smallest classes. Sixt is the best available answer.</p>
+        <p>Book online, then call Munich Airport on <a class="mono" href="tel:+498966060">+49 89 66 06 00</a> and ask for the top of the permitted family. Add every driver by name — unnamed drivers void the insurance entirely.</p></div>
       <div class="card"><h5>Italy's new-driver power cap</h5>
         <p>Since December 2024, drivers in their first three years may not drive cars over 75 kW/tonne or 105 kW absolute (about 143 hp). A 156 hp 1 Series is over it on paper.</p>
-        <p>The penalty clause is written against holders of an Italian licence, and a valid foreign licence circulates freely, so a UK-licensed driver is very unlikely to be stopped.</p></div>
+        <p>The penalty clause is written against holders of an Italian licence, and a valid foreign licence circulates freely, so it is very unlikely to be enforced on a rental.</p></div>
       <div class="card"><h5>Why it matters less than it sounds</h5>
         <p>Stelvio, Timmelsjoch and the Sellaronda are first-and-second-gear roads. A 156 hp hatch with good brakes is more fun here than a 911 you'd never open up. Put the money into the excess reduction and the second-driver fee.</p></div>
     </div>
@@ -845,7 +845,7 @@ Object.values(D).forEach(sc=>sc.days.forEach(d=>d.pts.forEach(pt=>{
 })));
 
 const TODO=[
- {t:'Book the Sixt car with the 18-year-old\'s real date of birth',d:'The booking engine hides categories he can\'t take. Then phone Munich Airport on +49 89 66 06 00 and ask for the top of the permitted group. Add him as a named additional driver — unnamed drivers void the insurance entirely.'},
+ {t:'Book the Sixt car',d:'Book online, then phone Munich Airport on +49 89 66 06 00 and ask for the top of the permitted group. Add every driver by name — unnamed drivers void the insurance entirely.'},
  {t:'Reserve the Tre Cime toll road slot',d:'auronzo.info · €40 · mandatory, no booking means no entry. You can book without a plate now and add it the day before. Options A and B only.'},
  {t:'Buy the Austrian 10-day digital vignette',d:'€12.80. Buy at a petrol station or ADAC office once you have the plate, not online — online purchases can have a delayed start. Fine is €200+.'},
  {t:'Call the three hotels',d:'Four days out, phone beats any booking site. Ask for half board and mention vegetarian at the time of booking, not on arrival.'},
@@ -1173,7 +1173,7 @@ function renderDays(s){
         ${day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:''}</div>`
       :`<div class="aside"><h4>End of trip</h4><div class="stay"><div class="nm"><span>Sixt return, Munich Airport</span></div>
          <div class="loc">Terminalstr. Mitte, parking level P20</div>
-         <div class="why">Allow 30 minutes for the return inspection with a young driver on the contract. Refuel within 10 km or Sixt bills its own rate.</div></div></div>`;
+         <div class="why">Allow 30 minutes for the return inspection. Refuel within 10 km or Sixt bills its own rate.</div></div></div>`;
     return `<section class="sec day ${di%2?'alt':''}" id="sec-day${day.n}"><div class="daywrap">
       <div class="day-head"><h3><i class="daydot" style="background:${DAYC[di]}"></i>Day ${day.n} · ${esc(day.from)} → ${esc(day.to)}</h3>
         <span class="when mono">${esc(day.date)} · depart ${day.depart} · arrive ${day.arrive}</span></div>
