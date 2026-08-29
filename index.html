@@ -94,6 +94,9 @@
   .dm-lbl{font-family:'IBM Plex Mono',monospace;font-size:7.4px;fill:var(--slate)}
   .dm-lbl.pass{fill:var(--ink);font-weight:600}
   .dm-lbl.end{fill:var(--ink);font-weight:600}
+  .segtog{margin:0 0 10px}
+  .segwrap{position:relative}
+  .segwrap iframe{display:block;width:100%;height:300px;border:1px solid var(--line);background:var(--panel)}
   .osmlink{display:inline-block;margin:-6px 0 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;
     letter-spacing:.04em;color:var(--slate)}
   .osmlink:hover{color:var(--ink)}
@@ -194,6 +197,8 @@
   .mapfoot{display:flex;justify-content:space-between;gap:10px;padding:6px 6px 2px;
     font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
 
+  .rbhead{font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:600;
+    text-transform:uppercase;letter-spacing:.12em;color:var(--slate);margin:0 0 10px}
   .legend h4,.aside h4{font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:600;
     letter-spacing:.16em;text-transform:uppercase;margin:0 0 10px;color:var(--slate)}
   .legchip{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;background:none;
@@ -221,15 +226,22 @@
   .ridge-path{fill:url(#ridgefill);stroke:var(--ink);stroke-width:1.4;stroke-linejoin:round;vector-effect:non-scaling-stroke}
   .peak-dot{fill:var(--glow)}
   .peak-lead{stroke:var(--line);stroke-width:.8;stroke-dasharray:2 2}
+  .peak-lead.faint{opacity:.5}
+  .way-dot{fill:var(--snow);stroke:var(--slate);stroke-width:1}
+  body.dark .way-dot{fill:var(--rock)}
+  .way-label.stacked{font-family:'IBM Plex Mono',monospace;font-size:calc(var(--fl,10px)*.80);
+    fill:var(--slate);font-style:italic}
   .peak-label.stacked{font-size:calc(var(--fl,10px)*.92);fill:var(--ink)}
   .peak-alt-in{fill:var(--glow);font-family:'IBM Plex Mono',monospace;font-size:calc(var(--fa,8px)*.92)}
   .km-axis{font-family:'IBM Plex Mono',monospace;fill:var(--slate)}
+  .km-axis.mark{fill:var(--glow)}
+  .km-lead{stroke:var(--glow);stroke-width:.7;stroke-dasharray:2 2;opacity:.45}
   .cty-band{fill:var(--ghost);opacity:.55}
   .cty-lbl{font-family:'IBM Plex Mono',monospace;fill:var(--slate);letter-spacing:.1em}
   .way-tick{stroke:var(--slate);stroke-width:.7;opacity:.5}
   .way-lbl{font-family:'IBM Plex Mono',monospace;fill:var(--slate)}
   .p-hit{fill:transparent;cursor:crosshair}
-  .p-hit:hover{fill:var(--glow);fill-opacity:.20}
+  .p-hit:hover,.p-hit.hot{fill:var(--glow);fill-opacity:.28}
   #profTip{position:fixed;z-index:1200;pointer-events:none;display:none;max-width:250px;
     background:var(--ink);color:var(--snow);padding:7px 10px;font-size:12.5px;line-height:1.4;
     box-shadow:0 6px 22px rgba(0,0,0,.28)}
@@ -372,6 +384,7 @@
   .day .wrap{padding-left:0;padding-right:0}
   .daywrap{max-width:1120px;margin:0 auto;padding:0 var(--pad)}
   .rb-row .lg{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#9A968D;display:block;margin-top:2px}
+  .rb-row .lg.eta{color:var(--slate);margin-top:3px}
   .stay .nm .ic{color:var(--slate);width:15px;height:15px;margin-right:6px;vertical-align:-2px}
   .costicon{color:var(--slate);width:15px;height:15px;margin-right:8px;vertical-align:-2.5px}
   .legchip .ic{width:14px;height:14px;color:var(--slate);margin-top:7px;flex:0 0 14px}
@@ -622,7 +635,7 @@
     </div>
 
     <div class="ridge-box">
-      <div class="ridge-cap"><span>Altitude profile · whole route</span><span>150 m – 2,850 m</span></div>
+      <div class="ridge-cap"><span>Altitude profile · whole route</span><span>${ALT_MIN} m – 2,850 m</span></div>
       <div id="heroRidge"></div>
     </div>
   </div>
@@ -769,7 +782,80 @@ function gdir(day){
 
 /* ============================================================ DATA =========== */
 const D = {
-A:{key:'A',tag:'Option A',title:'Glockner &amp; Dolomites',sub:'Recommended. Best road of the three, balanced days.',
+A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',sub:'South to the lake and the plain, home through Switzerland.',
+ heroTitle:'Down to the water, across the plain, and back over four countries.',
+ blurb:'The long way south, with the extra evening built in. Day 0 runs the Brenner to the east shore of Garda, day 1 drops to Mantova on the plain and climbs back into the mountains at Ponte di Legno, day 2 loops the Gavia, Livigno, the Bernina and St Moritz from a thermal spa above Bormio, and day 3 comes home through the Swiss Engadin. Eleven passes, four countries, and the Stelvio driven once, properly, on the last morning.',
+ stats:[['1,348 km','total distance'],['21h 45m','moving time'],['11','named passes'],['2,757 m','highest point'],['4','countries']],
+ costs:[['Austrian 10-day digital vignette','Day 0, buy at a petrol station','€12.80'],
+  ['Brenner autobahn, A13 and A22','Day 0','~€40'],
+  ['Swiss roads on this route','Days 2 and 3, no motorway used','free'],
+  ['Gavia, Bernina, Stelvio, Ofenpass','Days 2 and 3, no toll','free']],
+ total:'≈ €95',
+ days:[
+  {n:0,from:'Munich Airport',to:'Garda',km:415,time:'4h 15m',passes:1,depart:'15:00',arrive:'≈20:00',
+   note:'<strong>Motorway the whole way, and no apologies for it.</strong> Four hours of autobahn and autostrada to buy three days of proper roads. The Brenner is the only crossing and it is four lanes the whole way over — buy the Austrian vignette before Kufstein and keep moving. Innsbruck is the last cheap fuel before Italy. South of the pass the Eisack valley narrows through Bolzano and Trento with vineyards on both walls, and then the lake opens out. Garda sits on the quieter east shore, twenty minutes off the motorway at Affi, with olive terraces behind the town and the water in front.',
+   pts:[[0,448,'Munich Airport','stop','DE','Car rental, Terminalstr. Mitte. Allow 45 min for the desk and the paperwork.'],
+    [165,574,'Innsbruck','','AT','Last cheap fuel before Italy.'],
+    [203,1370,'Brenner Pass','pass','AT','Motorway crossing. Austrian vignette plus the A13 toll.'],
+    [283,262,'Bolzano','','IT',''],[340,194,'Trento','','IT',''],
+    [415,67,'Garda','stop','IT','Overnight. East shore, olive terraces behind the town.']],
+   evening:'Garda has a proper waterfront promenade and enough restaurants to not need a booking in September. The centre is a ZTL — use a signed car park on the edge and walk in.',
+   staysNote:'Nothing researched here yet. Aim for the lakefront north of the centre with parking included; the ZTL makes street parking a false economy.',
+   stays:[]},
+  {n:1,from:'Garda',to:'Ponte di Legno',km:310,time:'5h 00m',passes:0,depart:'09:00',arrive:'≈18:30',
+   note:'<strong>Lake, plain, then back up.</strong> The one day with no passes at all, and the only one that leaves the mountains entirely. South past Peschiera along the Mincio, then out onto the Po plain to Mantova — three artificial lakes, a ducal palace with Mantegna\'s frescoes, and almost no tourists. Lunch there. Afterwards the autostrada does the boring work back to Brescia and Salò, where you rejoin the lake for twenty minutes of shoreline before turning north. The Val Camonica climbs slowly through Darfo and Edolo, industrial at first and then increasingly alpine, until Ponte di Legno appears at 1,258 m with the Gavia road running out of the top of the village. Flat, fast, hot and then suddenly cold — a day of two halves.',
+   pts:[[0,67,'Garda','stop','IT',''],
+    [22,68,'Peschiera del Garda','','IT','South-east corner, where the Mincio leaves the lake.'],
+    [60,19,'Mantova','stop','IT','Lunch. Palazzo Ducale and Palazzo Te, both indoors, both worth it.'],
+    [150,149,'Brescia','','IT','Motorway only — no reason to stop.'],
+    [175,75,'Salò','','IT','Back on the lake for twenty minutes of shoreline.'],
+    [230,221,'Darfo Boario Terme','','IT','Into the Val Camonica.'],
+    [285,699,'Edolo','','IT','Fuel before the climb.'],
+    [310,1258,'Ponte di Legno','stop','IT','Overnight, at the foot of the Gavia.']],
+   evening:'Ponte di Legno is a small ski town that empties in September — quiet, cheap, and the Gavia starts at the end of the street. Kitchens close early, so do not arrive after 20:00 expecting dinner.',
+   staysNote:'Not researched. Anything in the village centre works; ask for a garage and confirm dinner is served, since half the places shut their kitchens out of season.',
+   stays:[]},
+  {n:2,from:'Ponte di Legno',to:'Bormio',km:233,time:'6h 00m',passes:5,depart:'09:00',arrive:'≈19:00',
+   note:'<strong>The Engadin loop, and the best day of the five.</strong> The Gavia first thing while it is still empty — single track in places, no barrier, and worth the early start. Drop into Bormio, leave the bags at the spa, then go round rather than back: Foscagno and Eira lift you into Livigno, a duty-free valley where the fuel is half price and worth a full tank. The Forcola crosses into Switzerland on a bare treeless shoulder, the Bernina runs past glaciers with the red railway crossing below it, and St Moritz arrives in time for lunch. The way home is the Bernina\'s south side — hairpins down through Poschiavo into chestnut woods and vineyards, out at Tirano at 441 m, then the Valtellina back up to Bormio. No road driven twice, and the Stelvio deliberately left for tomorrow morning when it is empty.',
+   pts:[[0,1258,'Ponte di Legno','stop','IT',''],
+    [25,2621,'Passo Gavia','pass','IT','Single track in places, no barrier, and the finest road on any of these five routes. Go early.'],
+    [50,1225,'Bormio','','IT','Coffee and fuel.'],
+    [55,1270,'Bagni Vecchi','stop','IT','Drop the bags — this is tonight.'],
+    [78,2291,'Passo di Foscagno','pass','IT','Customs post at the top: Livigno beyond it is duty-free.'],
+    [85,2208,'Passo d\'Eira','pass','IT','Second of the pair, straight after the first.'],
+    [93,1816,'Livigno','','IT','Duty-free valley. Fill the tank here — it is the cheapest fuel of the entire trip.'],
+    [103,2315,'Forcola di Livigno','pass','CH','Into Switzerland. Bare, treeless and usually empty.'],
+    [113,2328,'Passo del Bernina','pass','CH','Glaciers on the left, the red Bernina Express crossing below.'],
+    [128,1774,'Pontresina','','CH',''],
+    [135,1822,'St Moritz','stop','CH','Lunch and the lake. Turn round here.'],
+    [170,1014,'Poschiavo','','CH','Back over the Bernina and down its south side — vineyards by the bottom.'],
+    [190,441,'Tirano','','IT','Border back into Italy, and the lowest point since the lake.'],
+    [230,1225,'Bormio','','IT','Up the Valtellina.'],
+    [233,1270,'Bagni Vecchi','stop','IT','Overnight.']],
+   evening:'Bagni Vecchi is a thermal spa built into the hillside — Roman baths, a tunnel cut through the rock to a grotto, and an outdoor pool looking down the valley. Open late, and the whole point of arriving at six rather than eight.',
+   staysNote:'QC Terme Bagni Vecchi sits on the SS38 about 3 km above Bormio, at roughly 1,270 m, and the Stelvio climb starts at its door. Confirm the room and the spa entry together — details here are from memory and were not verified.',
+   stays:[{n:'QC Terme Bagni Vecchi',pick:'Pick',loc:'Strada Statale dello Stelvio, Valdidentro, Bormio',
+     why:'Thermal spa in the old baths above Bormio, with the Stelvio starting outside. Listing details deliberately left blank — not verified.'}]},
+  {n:3,from:'Bormio',to:'Munich',km:390,time:'6h 30m',passes:5,depart:'09:00',arrive:'≈20:00',
+   note:'<strong>Four countries before dinner.</strong> The Stelvio north side first, then into Switzerland at Müstair and up the Engadin — Ofenpass, Scuol, out at Martina. Buy the Swiss vignette at the border; it is charged even for two hours of motorway. Long day, but the 20:00 target leaves real slack.',
+   pts:[[0,1270,'Bagni Vecchi','stop','IT',''],
+    [17,2757,'Passo dello Stelvio','pass','IT','North side this time, in the morning light.'],
+    [42,915,'Prad allo Stelvio','','IT','Coffee at the bottom.'],
+    [62,1247,'Müstair','','CH','Into Switzerland. The convent is a UNESCO site and takes twenty minutes.'],
+    [82,2149,'Ofenpass / Pass dal Fuorn','pass','CH','Through the Swiss National Park. Wide, empty, forested.'],
+    [105,1474,'Zernez','','CH','Turn down the Engadin.'],
+    [130,1243,'Scuol','','CH','Lower Engadin. Painted houses, and a thermal bath if you are somehow not done with spas.'],
+    [150,1035,'Martina','','CH','Border back into Austria.'],
+    [165,1405,'Norbertshöhe','pass','AT','Short climb from the Inn up to the Reschen road.'],
+    [172,1504,'Reschenpass','pass','IT','Briefly back into Italy for the bell tower in the lake, then north.'],
+    [215,816,'Landeck','','AT','Fuel. Cheaper than Bavaria.'],
+    [260,1216,'Fernpass','pass','AT','Two lanes, no hairpins.'],
+    [303,708,'Garmisch-Partenkirchen','','DE','Partnachklamm gorge is a good hour if you are ahead.'],
+    [390,519,'Munich','stop','DE','Aim for a signed Parkhaus in the centre — Altstadt streets are resident-permit only after 19:00 and the Umweltzone covers everything inside the Mittlerer Ring. A green sticker is standard on German plates, so that part is usually fine; overnight street parking is the bit that catches people.']],
+   evening:'',stays:[]}
+ ]},
+
+B:{key:'B',tag:'Option B',title:'Glockner &amp; Dolomites',sub:'Recommended. Best road of the three, balanced days.',
  heroTitle:'Twelve crossings, one glacier, and a spa at the end of it.',
  blurb:'Anticlockwise: the Grossglockner on the morning of day one while the light is still low, the Dolomite passes on day two, and the Jaufen–Timmelsjoch sequence as the last real drive before an easy run home over the Hahntennjoch.',
  stats:[['1,075 km','total distance'],['21h 45m','moving time'],['12','named passes'],['2,571 m','highest point'],['3','countries']],
@@ -788,7 +874,7 @@ A:{key:'A',tag:'Option A',title:'Glockner &amp; Dolomites',sub:'Recommended. Bes
    stays:[{n:'Hotel Berner',pick:'Pick',loc:'Nikolaus-Gassner-Promenade 1, Zell am See',why:'Small, family-run, consistently the best kitchen in town. Quiet end of the lake, five minutes from the centre.',tel:'+43 6542 779',pid:'ChIJu5rn8tgcd0cRDjal7S1ybjU'},
     {n:'Hotel Tirolerhof',loc:'Auerspergstrasse 5, Zell am See',why:'Central, free parking, spa. Easiest arrival if you get in late.',tel:'+43 6542 772',pid:'ChIJ5-E0ziAdd0cRMwodEx5hfh4'},
     {n:'Grand Hotel Zell am See',loc:'Esplanade 4–6, Zell am See',why:'On its own peninsula with a private lake beach. The view option.',tel:'+43 6542 7880',pid:'ChIJLTewaiAdd0cRlZubVPZ7Tio'}]},
-  {n:1,from:'Zell am See',to:'Corvara',km:292,time:'7h 00m',passes:5,depart:'07:30',arrive:'≈19:00',
+  {n:1,from:'Zell am See',to:'Corvara',km:292,time:'7h 00m',passes:5,depart:'09:00',arrive:'≈20:00',
    note:'<strong>The long one.</strong> Ferleiten gate opens 06:00 — being through it by 08:00 buys you empty hairpins and low light on the Pasterze. Your Tre Cime slot must be booked in advance; if you can\'t get one, skip Misurina and go Toblach → Cortina, which saves 90 minutes.',
    pts:[[0,750,'Zell am See','stop','AT',''],[25,1150,'Ferleiten toll gate','','AT','€46.50 day ticket. Gate 06:00–19:30 on the autumn timetable.'],
     [33,2571,'Edelweissspitze','pass','AT','Cobbled spur off the main road. Highest point you can drive to here.'],
@@ -805,7 +891,7 @@ A:{key:'A',tag:'Option A',title:'Glockner &amp; Dolomites',sub:'Recommended. Bes
    stays:[{n:'Hotel Arkadia',pick:'Pick',loc:'Str. Burjé 11, Corvara in Badia',why:'In the village, garage parking, pool looking straight at the Sella massif. Set up for people arriving late and leaving early.',tel:'+39 0471 836043',pid:'ChIJy5DZLAY_eEcRy0XVm6QdE0I'},
     {n:'Dolomites Lifestyle Hotel Marmolada',loc:'Str. Col Alt 80, Corvara in Badia',why:'Recently renovated, smaller, strong dinner. Slightly quieter.',tel:'+39 0471 836139',pid:'ChIJE6i_BQY_eEcRz6oD4rN4oz4'},
     {n:'Sporthotel Arabba',loc:'Via Mesdi 76, Arabba',why:'Fifteen minutes south, at the foot of Pordoi. Saves you the Campolongo in the morning and is used to guests keeping odd hours.',tel:'+39 0436 79321',pid:'ChIJl-BumLRBeEcRotYE7w4dVvE'}]},
-  {n:2,from:'Corvara',to:'Längenfeld',km:285,time:'6h 30m',passes:6,depart:'08:00',arrive:'≈18:30',
+  {n:2,from:'Corvara',to:'Längenfeld',km:285,time:'6h 30m',passes:6,depart:'09:00',arrive:'≈19:30',
    note:'<strong>Watch the Timmelsjoch gate.</strong> It shuts at 20:00 and there is no discretion. Aim to be at Hochgurgl by 18:00. The Bolzano–Sterzing stretch on the A22 is the only dull hour of the trip — use it to swap drivers.',
    pts:[[0,1568,'Corvara in Badia','stop','IT',''],[6,1875,'Passo Campolongo','pass','IT',''],[12,1602,'Arabba','','IT',''],
     [22,2239,'Passo Pordoi','pass','IT','Cable car to Sass Pordoi, 2,950 m, if you want an hour off the road.'],
@@ -820,16 +906,16 @@ A:{key:'A',tag:'Option A',title:'Glockner &amp; Dolomites',sub:'Recommended. Bes
    stays:[{n:'Hotel Bergwelt',pick:'Pick',loc:'Au 135, Unterlängenfeld',why:'Aqua Dome entry included, which is the reason to stay in Längenfeld rather than Sölden. Large rooms, will hold dinner for late arrivals.',tel:'+43 5253 5301',pid:'ChIJUwCcTJUlnUcRhNONkwGNw-M'},
     {n:'Hotel Stern',loc:'Oberlängenfeld 1, Längenfeld',why:'Infinity pool, very good half board, mid-valley so short hops in both directions.',tel:'+43 5253 5226',pid:'ChIJuZN1VIIvnUcRGEO5hkjqzn8'},
     {n:'die berge lifestyle-hotel',loc:'Gemeindestrasse 2, Sölden',why:'If you\'d rather stay in Sölden: rooftop pool, underground garage, central. Twenty minutes closer to the Timmelsjoch.',tel:'+43 5254 2062',pid:'ChIJ0WiufEMynUcRq9M6VKSR-UE'}]},
-  {n:3,from:'Längenfeld',to:'Munich',km:220,time:'4h 00m',passes:1,depart:'08:30',arrive:'≈20:00',
+  {n:3,from:'Längenfeld',to:'Munich',km:220,time:'4h 00m',passes:1,depart:'09:00',arrive:'≈20:00',
    note:'<strong>Leave by 08:30.</strong> That lands you at the rental return around 13:15 with an hour of slack. Drop the Hahntennjoch and go Imst → Fernpass → Garmisch if you are behind — same finish, 40 minutes quicker.',
    pts:[[0,1179,'Längenfeld','stop','AT',''],[55,828,'Imst','','AT','Fuel. Fill up in Austria — cheaper than Bavaria.'],
     [85,1894,'Hahntennjoch','pass','AT','Narrow, empty, technical. The best last road of the trip.'],
     [100,976,'Elmen / Lechtal','','AT',''],[130,854,'Reutte','','AT',''],[150,994,'Ehrwald','','AT','Zugspitze on your right.'],
-    [175,708,'Garmisch-Partenkirchen','','DE',''],[220,519,'Munich','stop','DE','Same-day return, city centre. Refuel before you reach the ring road.']],
+    [175,708,'Garmisch-Partenkirchen','','DE',''],[220,519,'Munich','stop','DE','Aim for a signed Parkhaus in the centre — Altstadt streets are resident-permit only after 19:00 and the Umweltzone covers everything inside the Mittlerer Ring. A green sticker is standard on German plates, so that part is usually fine; overnight street parking is the bit that catches people.']],
    evening:'',stays:[]}
  ]},
 
-B:{key:'B',tag:'Option B',title:'Stelvio &amp; Dolomites',sub:'Take this if Stelvio is non-negotiable. Adds Switzerland.',
+C:{key:'C',tag:'Option C',title:'Stelvio &amp; Dolomites',sub:'Take this if Stelvio is non-negotiable. Adds Switzerland.',
  heroTitle:'Forty-eight hairpins, then the Gavia, then everything else.',
  blurb:'Clockwise and further west. Stelvio first thing on day one, a short hop into Switzerland over the Umbrail, the Gavia in the afternoon, and the full Sellaronda plus Giau on day two. Day one is eight hours in the seat.',
  stats:[['1,120 km','total distance'],['21h 00m','moving time'],['16','named passes'],['2,757 m','highest point'],['4','countries']],
@@ -850,7 +936,7 @@ B:{key:'B',tag:'Option B',title:'Stelvio &amp; Dolomites',sub:'Take this if Stel
    stays:[{n:'Garden Park Hotel',pick:'Pick',loc:'Via Pineta 35A, Prato allo Stelvio',why:'Big grounds, garage, spa, and a kitchen that handles vegetarian requests properly. Fifteen minutes from hairpin one.',tel:'+39 0473 618228',pid:'ChIJixzz5XIfg0cRHRz497sJXR0'},
     {n:'Aktiv- & Wellnesshotel Zentral',loc:'Via Principale 100, Prato allo Stelvio',why:'In the village centre, modern rooms, large spa. Good backup.',tel:'+39 0473 616008',pid:'ChIJFcsAkggfg0cRn2q1S2FwGaw'},
     {n:'Pension & Residence Astoria',loc:'Vicolo Maniscalchi 1, Prato allo Stelvio',why:'Simpler and cheaper, owner-run, early breakfast for the Stelvio crowd.',tel:'+39 0473 616338',pid:'ChIJz8UiYggfg0cRJuauLq7j3V4'}]},
-  {n:1,from:'Prad allo Stelvio',to:'Canazei',km:325,time:'8h 00m',passes:6,depart:'07:00',arrive:'≈19:30',
+  {n:1,from:'Prad allo Stelvio',to:'Canazei',km:325,time:'8h 00m',passes:6,depart:'09:00',arrive:'≈20:00',
    note:'<strong>Eight hours, no slack.</strong> Start at 07:00 to have the Stelvio to yourself — by 10:00 it is a queue of motorhomes with nowhere to overtake. The Umbrail leg into Switzerland is an out-and-back of about 45 minutes; drop it if you are behind. No Swiss vignette needed, the Umbrail is a main road.',
    pts:[[0,915,'Prad allo Stelvio','stop','IT',''],[25,2757,'Passo dello Stelvio','pass','IT','48 numbered hairpins on the east ramp. Highest point of the trip.'],
     [33,2501,'Umbrail Pass','pass','CH','Into Switzerland. Passport not needed, but carry it.'],
@@ -866,7 +952,7 @@ B:{key:'B',tag:'Option B',title:'Stelvio &amp; Dolomites',sub:'Take this if Stel
    stays:[{n:'Olympic Spa Hotel',pick:'Pick',loc:'S.da de Ciarlonch 5, San Giovanni di Fassa',why:'Ten minutes down valley from Canazei. Large spa, kitchen is good with dietary requests. Best-run hotel on this list.',tel:'+39 0462 764225',pid:'ChIJK84u3thoeEcRYB9Z2Hicql4'},
     {n:'Hotel Sas Morin',loc:'Via Donato Zeni 6, Pozza di Fassa',why:'Smaller, outdoor jacuzzi and sauna, easy parking. Quieter than staying in Canazei itself.',tel:'+39 0462 764419',pid:'ChIJdWQiHz1peEcRjq38u-EKGeM'},
     {n:'Hotel Renè',loc:'Strada de la Veisc 69, San Giovanni di Fassa',why:'Recently renovated, big free car park, strong half board.',tel:'+39 0462 764258',pid:'ChIJcUD0etDkLhMR9-e_Z0hEHIE'}]},
-  {n:2,from:'Canazei',to:'Bruneck',km:230,time:'6h 00m',passes:7,depart:'08:00',arrive:'≈18:00',
+  {n:2,from:'Canazei',to:'Bruneck',km:230,time:'6h 00m',passes:7,depart:'09:00',arrive:'≈19:00',
    note:'<strong>The best driving day on any of these routes.</strong> Full Sellaronda loop from Canazei, then Fedaia under the Marmolada, then the Giau — the finest single pass in the Dolomites and considerably better than Falzarego next door.',
    pts:[[0,1465,'Canazei','stop','IT',''],[12,2240,'Passo Sella','pass','IT',''],[25,2121,'Passo Gardena','pass','IT','Open.'],
     [35,1568,'Corvara in Badia','','IT',''],[42,1875,'Passo Campolongo','pass','IT',''],[48,1602,'Arabba','','IT',''],
@@ -888,9 +974,9 @@ B:{key:'B',tag:'Option B',title:'Stelvio &amp; Dolomites',sub:'Take this if Stel
    evening:'',stays:[]}
  ]},
 
-C:{key:'C',tag:'Option C',title:'Max drive',sub:'Stelvio and Glockner in one go. Day two has no slack.',
+D:{key:'D',tag:'Option D',title:'Stelvio &amp; Glockner',sub:'Stelvio and Glockner in one go. Day two has no slack.',
  heroTitle:'Both headline roads, and a day two you will remember for the wrong reasons if anything slips.',
- blurb:'Option B for the first two days, then a 345 km day two that runs the Sellaronda, crosses the Dolomites to Lienz and comes over the Grossglockner northbound before the gate shuts. Day three is a two-hour run home. Only take this if you are happy to drop Tre Cime and Giau on the day.',
+ blurb:'Option C for the first two days, then a 345 km day two that runs the Sellaronda, crosses the Dolomites to Lienz and comes over the Grossglockner northbound before the gate shuts. Day three is a two-hour run home. Only take this if you are happy to drop Tre Cime and Giau on the day.',
  stats:[['1,215 km','total distance'],['23h 30m','moving time'],['16','named passes'],['2,757 m','highest point'],['4','countries']],
  costs:[['Austrian 10-day digital vignette','Day 0','€12.80'],['Stelvio, Umbrail, Gavia, Tonale','No toll','€0'],
   ['Italian autostrada, Trento–Bolzano','Day 1','~€10'],['Grossglockner High Alpine Road','Day 2, Heiligenblut gate','€46.50'],
@@ -907,7 +993,7 @@ C:{key:'C',tag:'Option C',title:'Max drive',sub:'Stelvio and Glockner in one go.
    stays:[{n:'Garden Park Hotel',pick:'Pick',loc:'Via Pineta 35A, Prato allo Stelvio',why:'Garage, spa, good kitchen, fifteen minutes from hairpin one.',tel:'+39 0473 618228',pid:'ChIJixzz5XIfg0cRHRz497sJXR0'},
     {n:'Aktiv- & Wellnesshotel Zentral',loc:'Via Principale 100, Prato allo Stelvio',why:'Central, modern, large spa.',tel:'+39 0473 616008',pid:'ChIJFcsAkggfg0cRn2q1S2FwGaw'},
     {n:'Pension & Residence Astoria',loc:'Vicolo Maniscalchi 1, Prato allo Stelvio',why:'Simple and cheap with an early breakfast.',tel:'+39 0473 616338',pid:'ChIJz8UiYggfg0cRJuauLq7j3V4'}]},
-  {n:1,from:'Prad allo Stelvio',to:'Canazei',km:325,time:'8h 00m',passes:6,depart:'07:00',arrive:'≈19:30',
+  {n:1,from:'Prad allo Stelvio',to:'Canazei',km:325,time:'8h 00m',passes:6,depart:'09:00',arrive:'≈20:00',
    note:'<strong>Identical to Option B.</strong> Stelvio at dawn, Umbrail for the Swiss tick, Gavia after lunch. Drop the Umbrail detour if you leave late — Day two cannot absorb a deficit.',
    pts:[[0,915,'Prad allo Stelvio','stop','IT',''],[25,2757,'Passo dello Stelvio','pass','IT','48 hairpins. Be here by 08:00.'],
     [33,2501,'Umbrail Pass','pass','CH','Into Switzerland.'],[45,1375,'Santa Maria Val Müstair','stop','CH','Turn round.'],
@@ -919,7 +1005,7 @@ C:{key:'C',tag:'Option C',title:'Max drive',sub:'Stelvio and Glockner in one go.
    stays:[{n:'Olympic Spa Hotel',pick:'Pick',loc:'S.da de Ciarlonch 5, San Giovanni di Fassa',why:'Best-run hotel on this list, ten minutes down valley, big spa.',tel:'+39 0462 764225',pid:'ChIJK84u3thoeEcRYB9Z2Hicql4'},
     {n:'Hotel Sas Morin',loc:'Via Donato Zeni 6, Pozza di Fassa',why:'Smaller, easy parking, outdoor sauna.',tel:'+39 0462 764419',pid:'ChIJdWQiHz1peEcRjq38u-EKGeM'},
     {n:'Hotel Renè',loc:'Strada de la Veisc 69, San Giovanni di Fassa',why:'Large free car park, strong half board.',tel:'+39 0462 764258',pid:'ChIJcUD0etDkLhMR9-e_Z0hEHIE'}]},
-  {n:2,from:'Canazei',to:'Zell am See',km:345,time:'8h 30m',passes:7,depart:'07:00',arrive:'≈19:30',
+  {n:2,from:'Canazei',to:'Zell am See',km:345,time:'8h 30m',passes:7,depart:'09:00',arrive:'≈20:00',
    note:'<strong>The gate at Heiligenblut is the whole day.</strong> Last entry 18:45, no exceptions — and you want to be through by 16:00 to actually see the Glockner rather than commute over it. Working backwards: Cortina by 10:30, Toblach 11:30, Lienz 13:00, Heiligenblut 14:15. If you are behind at Cortina, skip Misurina.',
    pts:[[0,1465,'Canazei','stop','IT',''],[12,2240,'Passo Sella','pass','IT',''],[25,2121,'Passo Gardena','pass','IT',''],
     [35,1568,'Corvara in Badia','','IT',''],[42,1875,'Passo Campolongo','pass','IT',''],
@@ -943,7 +1029,7 @@ C:{key:'C',tag:'Option C',title:'Max drive',sub:'Stelvio and Glockner in one go.
    evening:'',stays:[]}
  ]},
 
-D:{key:'D',tag:'Option D',title:'Valleys &amp; Lakes',sub:'The wet-weather route. Five easy passes, nothing exposed, €26 in tolls.',
+E:{key:'E',tag:'Option E',title:'Valleys &amp; Lakes',sub:'The wet-weather route. Five easy passes, nothing exposed, €26 in tolls.',
  heroTitle:'Five passes you can drive in the rain, and a bell tower standing in a lake.',
  blurb:'The bad-weather answer. Five passes rather than sixteen, and every one of them wide, two-lane and driveable in rain — the Felbertauern instead of the Grossglockner, the Reschen instead of the Stelvio. Nothing above 1,650 m, nothing exposed to cloud or ice, and the days are short enough that the afternoons can go indoors: Ötzi in Bolzano, the gardens at Merano, the arcades in Lienz and Bruneck.',
  stats:[['915 km','total distance'],['15h 30m','moving time'],['5','named passes'],['2,052 m','highest point'],['3','countries']],
@@ -961,7 +1047,7 @@ D:{key:'D',tag:'Option D',title:'Valleys &amp; Lakes',sub:'The wet-weather route
    stays:[{n:'Hotel Berner',pick:'Pick',loc:'Nikolaus-Gassner-Promenade 1, Zell am See',why:'Small, family-run, consistently the best kitchen in town. Quiet end of the lake, five minutes from the centre.',tel:'+43 6542 779',pid:'ChIJu5rn8tgcd0cRDjal7S1ybjU'},
     {n:'Hotel Tirolerhof',loc:'Auerspergstrasse 5, Zell am See',why:'Central, free parking, spa. Easiest arrival if you get in late.',tel:'+43 6542 772',pid:'ChIJ5-E0ziAdd0cRMwodEx5hfh4'},
     {n:'Grand Hotel Zell am See',loc:'Esplanade 4–6, Zell am See',why:'On its own peninsula with a private lake beach. Worth less in the rain, but the spa is the best of the three.',tel:'+43 6542 7880',pid:'ChIJLTewaiAdd0cRlZubVPZ7Tio'}]},
-  {n:1,from:'Zell am See',to:'Bruneck',km:200,time:'4h 15m',passes:1,depart:'08:30',arrive:'≈15:30',
+  {n:1,from:'Zell am See',to:'Bruneck',km:200,time:'4h 15m',passes:1,depart:'09:00',arrive:'≈16:00',
    note:'<strong>The Felbertauern replaces the Glockner.</strong> Same direction, 1,000 m lower, open in any weather and €33 cheaper. After Lienz the Staller Sattel gives you a real pass without the exposure. If the cloud is on the deck or you miss the one-way window, stay on the Pustertal via Sillian and Toblach — same arrival, no climb.',
    pts:[[0,750,'Zell am See','stop','AT',''],[28,789,'Mittersill','','AT','Last fuel before the tunnel toll.'],
     [45,1632,'Felbertauern tunnel','','AT','€13.00 single, 5.3 km. All weather, no gradient worth the name.'],
@@ -989,7 +1075,7 @@ D:{key:'D',tag:'Option D',title:'Valleys &amp; Lakes',sub:'The wet-weather route
    stays:[{n:'Garden Park Hotel',pick:'Pick',loc:'Via Pineta 35A, Prato allo Stelvio',why:'Big grounds, garage, spa, and a kitchen that handles vegetarian requests properly. Fifteen minutes from hairpin one.',tel:'+39 0473 618228',pid:'ChIJixzz5XIfg0cRHRz497sJXR0'},
     {n:'Aktiv- & Wellnesshotel Zentral',loc:'Via Principale 100, Prato allo Stelvio',why:'In the village centre, modern rooms, large spa. Good backup.',tel:'+39 0473 616008',pid:'ChIJFcsAkggfg0cRn2q1S2FwGaw'},
     {n:'Pension & Residence Astoria',loc:'Vicolo Maniscalchi 1, Prato allo Stelvio',why:'Simpler and cheaper, owner-run, early breakfast.',tel:'+39 0473 616338',pid:'ChIJz8UiYggfg0cRJuauLq7j3V4'}]},
-  {n:3,from:'Prad allo Stelvio',to:'Munich',km:245,time:'4h 15m',passes:2,depart:'08:30',arrive:'≈20:00',
+  {n:3,from:'Prad allo Stelvio',to:'Munich',km:245,time:'4h 15m',passes:2,depart:'09:00',arrive:'≈20:00',
    note:'<strong>Two easy passes and home.</strong> Reschen and Fernpass are both two-lane, gritted early and free. Lago di Resia is five minutes off the road and the bell tower is the one photograph on this route that works better under cloud.',
    pts:[[0,915,'Prad allo Stelvio','stop','IT',''],
     [28,1520,'Lago di Resia','stop','IT','The submerged bell tower, standing in the lake. Two minutes from the car park.'],
@@ -998,83 +1084,10 @@ D:{key:'D',tag:'Option D',title:'Valleys &amp; Lakes',sub:'The wet-weather route
     [130,1216,'Fernpass','pass','AT','Two lanes, no hairpins. Queues on a summer Sunday, not in the wet.'],
     [150,994,'Ehrwald','','AT','Zugspitze on your right if the cloud lifts.'],
     [175,708,'Garmisch-Partenkirchen','','DE','Partnachklamm gorge is a good hour if you are ahead of schedule, and it is better in the rain.'],
-    [245,519,'Munich','stop','DE','Same-day return, city centre. Refuel before you reach the ring road.']],
+    [245,519,'Munich','stop','DE','Aim for a signed Parkhaus in the centre — Altstadt streets are resident-permit only after 19:00 and the Umweltzone covers everything inside the Mittlerer Ring. A green sticker is standard on German plates, so that part is usually fine; overnight street parking is the bit that catches people.']],
    evening:'',stays:[]}
  ]},
 
-
-E:{key:'E',tag:'Option E',title:'Garda &amp; Stelvio',sub:'South to the lake and the plain, home through Switzerland.',
- heroTitle:'Down to the water, across the plain, and back over four countries.',
- blurb:'The long way south, with the extra evening built in. Day 0 runs the Brenner to the east shore of Garda, day 1 drops to Mantova on the plain and climbs back into the mountains at Ponte di Legno, day 2 loops the Gavia, Livigno, the Bernina and St Moritz from a thermal spa above Bormio, and day 3 comes home through the Swiss Engadin. Eleven passes, four countries, and the Stelvio driven once, properly, on the last morning.',
- stats:[['1,348 km','total distance'],['21h 45m','moving time'],['11','named passes'],['2,757 m','highest point'],['4','countries']],
- costs:[['Austrian 10-day digital vignette','Day 0, buy at a petrol station','€12.80'],
-  ['Brenner autobahn, A13 and A22','Day 0','~€40'],
-  ['Swiss roads on this route','Days 2 and 3, no motorway used','free'],
-  ['Gavia, Bernina, Stelvio, Ofenpass','Days 2 and 3, no toll','free']],
- total:'≈ €95',
- days:[
-  {n:0,from:'Munich Airport',to:'Garda',km:415,time:'4h 15m',passes:1,depart:'15:00',arrive:'≈20:00',
-   note:'<strong>Motorway the whole way.</strong> The Brenner is the only crossing and it is four lanes. Buy the Austrian vignette before Kufstein. Garda sits on the quieter east shore, twenty minutes off the motorway at Affi.',
-   pts:[[0,448,'Munich Airport','stop','DE','Car rental, Terminalstr. Mitte. Allow 45 min for the desk and the paperwork.'],
-    [165,574,'Innsbruck','','AT','Last cheap fuel before Italy.'],
-    [203,1370,'Brenner Pass','pass','AT','Motorway crossing. Austrian vignette plus the A13 toll.'],
-    [283,262,'Bolzano','','IT',''],[340,194,'Trento','','IT',''],
-    [415,67,'Garda','stop','IT','Overnight. East shore, olive terraces behind the town.']],
-   evening:'Garda has a proper waterfront promenade and enough restaurants to not need a booking in September. The centre is a ZTL — use a signed car park on the edge and walk in.',
-   staysNote:'Nothing researched here yet. Aim for the lakefront north of the centre with parking included; the ZTL makes street parking a false economy.',
-   stays:[]},
-  {n:1,from:'Garda',to:'Ponte di Legno',km:310,time:'5h 00m',passes:0,depart:'08:30',arrive:'≈18:00',
-   note:'<strong>Lake, plain, then back up.</strong> No passes and no hurry: south past Peschiera to Mantova for lunch, then the autostrada to Salò and into the Val Camonica. Mantova is three lakes, a ducal palace and almost no tourists — the best two hours on the flat anywhere near here.',
-   pts:[[0,67,'Garda','stop','IT',''],
-    [22,68,'Peschiera del Garda','','IT','South-east corner, where the Mincio leaves the lake.'],
-    [60,19,'Mantova','stop','IT','Lunch. Palazzo Ducale and Palazzo Te, both indoors, both worth it.'],
-    [150,149,'Brescia','','IT','Motorway only — no reason to stop.'],
-    [175,75,'Salò','','IT','Back on the lake for twenty minutes of shoreline.'],
-    [230,221,'Darfo Boario Terme','','IT','Into the Val Camonica.'],
-    [285,699,'Edolo','','IT','Fuel before the climb.'],
-    [310,1258,'Ponte di Legno','stop','IT','Overnight, at the foot of the Gavia.']],
-   evening:'Ponte di Legno is a small ski town that empties in September — quiet, cheap, and the Gavia starts at the end of the street. Kitchens close early, so do not arrive after 20:00 expecting dinner.',
-   staysNote:'Not researched. Anything in the village centre works; ask for a garage and confirm dinner is served, since half the places shut their kitchens out of season.',
-   stays:[]},
-  {n:2,from:'Ponte di Legno',to:'Bormio',km:233,time:'6h 00m',passes:5,depart:'08:00',arrive:'≈18:00',
-   note:'<strong>The Engadin loop.</strong> Gavia first thing while it is empty, bags at the spa, then a full circle into Switzerland: Livigno, the Forcola, the Bernina and lunch in St Moritz, back down the Bernina\'s south side through Poschiavo and up the Valtellina. No road driven twice, and the Stelvio waits for tomorrow morning. Leave at 08:00 and you are back by six with the evening at the baths.',
-   pts:[[0,1258,'Ponte di Legno','stop','IT',''],
-    [25,2621,'Passo Gavia','pass','IT','Single track in places, no barrier, and the finest road on any of these five routes. Go early.'],
-    [50,1225,'Bormio','','IT','Coffee and fuel.'],
-    [55,1270,'Bagni Vecchi','stop','IT','Drop the bags — this is tonight.'],
-    [78,2291,'Passo di Foscagno','pass','IT','Customs post at the top: Livigno beyond it is duty-free.'],
-    [85,2208,'Passo d\'Eira','pass','IT','Second of the pair, straight after the first.'],
-    [93,1816,'Livigno','','IT','Duty-free valley. Fill the tank here — it is the cheapest fuel of the entire trip.'],
-    [103,2315,'Forcola di Livigno','pass','CH','Into Switzerland. Bare, treeless and usually empty.'],
-    [113,2328,'Passo del Bernina','pass','CH','Glaciers on the left, the red Bernina Express crossing below.'],
-    [128,1774,'Pontresina','','CH',''],
-    [135,1822,'St Moritz','stop','CH','Lunch and the lake. Turn round here.'],
-    [170,1014,'Poschiavo','','CH','Back over the Bernina and down its south side — vineyards by the bottom.'],
-    [190,441,'Tirano','','IT','Border back into Italy, and the lowest point since the lake.'],
-    [230,1225,'Bormio','','IT','Up the Valtellina.'],
-    [233,1270,'Bagni Vecchi','stop','IT','Overnight.']],
-   evening:'Bagni Vecchi is a thermal spa built into the hillside — Roman baths, a tunnel cut through the rock to a grotto, and an outdoor pool looking down the valley. Open late, and the whole point of arriving at six rather than eight.',
-   staysNote:'QC Terme Bagni Vecchi sits on the SS38 about 3 km above Bormio, at roughly 1,270 m, and the Stelvio climb starts at its door. Confirm the room and the spa entry together — details here are from memory and were not verified.',
-   stays:[{n:'QC Terme Bagni Vecchi',pick:'Pick',loc:'Strada Statale dello Stelvio, Valdidentro, Bormio',
-     why:'Thermal spa in the old baths above Bormio, with the Stelvio starting outside. Listing details deliberately left blank — not verified.'}]},
-  {n:3,from:'Bormio',to:'Munich',km:390,time:'6h 30m',passes:5,depart:'07:30',arrive:'≈20:00',
-   note:'<strong>Four countries before dinner.</strong> The Stelvio north side first, then into Switzerland at Müstair and up the Engadin — Ofenpass, Scuol, out at Martina. Buy the Swiss vignette at the border; it is charged even for two hours of motorway. Long day, but the 20:00 target leaves real slack.',
-   pts:[[0,1270,'Bagni Vecchi','stop','IT',''],
-    [17,2757,'Passo dello Stelvio','pass','IT','North side this time, in the morning light.'],
-    [42,915,'Prad allo Stelvio','','IT','Coffee at the bottom.'],
-    [62,1247,'Müstair','','CH','Into Switzerland. The convent is a UNESCO site and takes twenty minutes.'],
-    [82,2149,'Ofenpass / Pass dal Fuorn','pass','CH','Through the Swiss National Park. Wide, empty, forested.'],
-    [105,1474,'Zernez','','CH','Turn down the Engadin.'],
-    [130,1243,'Scuol','','CH','Lower Engadin. Painted houses, and a thermal bath if you are somehow not done with spas.'],
-    [150,1035,'Martina','','CH','Border back into Austria.'],
-    [165,1405,'Norbertshöhe','pass','AT','Short climb from the Inn up to the Reschen road.'],
-    [172,1504,'Reschenpass','pass','IT','Briefly back into Italy for the bell tower in the lake, then north.'],
-    [215,816,'Landeck','','AT','Fuel. Cheaper than Bavaria.'],
-    [260,1216,'Fernpass','pass','AT','Two lanes, no hairpins.'],
-    [303,708,'Garmisch-Partenkirchen','','DE','Partnachklamm gorge is a good hour if you are ahead.'],
-    [390,519,'Munich','stop','DE','Same-day return, city centre. Refuel before you reach the ring road.']],
-   evening:'',stays:[]}
- ]},
 
 };
 
@@ -1143,15 +1156,25 @@ Object.values(D).forEach(sc=>sc.days.forEach(d=>d.pts.forEach(pt=>{
   pt[5] = !pt[5] ? base : (pt[5].length<30 ? base+' '+pt[5] : pt[5]);
 })));
 
-const TODO=[
- {t:'Reserve the Tre Cime toll road slot',d:'auronzo.info · €40 · mandatory, no booking means no entry. You can book without a plate now and add it the day before. Options A and B only.'},
- {t:'Buy the Austrian 10-day digital vignette',d:'€12.80. Buy at a petrol station or ADAC office once you have the plate, not online — online purchases can have a delayed start. Fine is €200+.'},
- {t:'Call the three hotels',d:'Four days out, phone beats any booking site. Ask for half board and mention vegetarian at the time of booking, not on arrival.'},
- {t:'Buy the Grossglockner ticket online',d:'grossglockner.at · €46.50 · 10% off in the road\'s shops if bought in advance, and it saves a queue at Ferleiten. Options A and C.'},
- {t:'Download offline maps for the whole corridor',d:'Signal drops in the Ötztal, the Passeier and most of the Val Badia. Offline areas in Google Maps, plus a paper Kompass sheet if you want redundancy.'},
- {t:'Check pass status the morning before',d:'alpen-paesse.ch, suedtirol.com/verkehr, grossglockner.at webcams. Roadworks near Umbrail have run alternating closures — check before committing.'},
- {t:'Take a fleece and gloves in the cabin, not the boot',d:'It is routinely 15°C colder at 2,500 m than in the valley. Fuscher Törl in a t-shirt is a short visit.'}
+const TODO_ALL=[
+ {t:'Reserve the Tre Cime toll road slot',d:'auronzo.info · €40 · mandatory, no booking means no entry. You can book without a plate now and add it the day before.',when:s=>has(s,'Rifugio Auronzo · Tre Cime')},
+ {t:'Buy the Grossglockner ticket online',d:'grossglockner.at · €46.50 · 10% off in the road\'s shops if bought in advance, and it saves a queue at Ferleiten.',when:s=>has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel')},
+ {t:'Buy the Austrian 10-day digital vignette',d:'€12.80. Buy at a petrol station or ADAC office once you have the plate, not online — online purchases can have a delayed start. Fine is €200+.',when:s=>country(s,'AT')},
+ {t:'Budget for the Felbertauern tunnel',d:'€13.00 single, no advance booking. It is the all-weather crossing this route is built around, so plan the toll rather than be surprised by it.',when:s=>has(s,'Felbertauern tunnel')},
+ {t:'Fill up in Livigno, not before',d:'The valley is duty-free and roughly half the Italian pump price — the cheapest tank of the trip. Customs post at Foscagno; allowances are per person and they do check.',when:s=>has(s,'Livigno')},
+ {t:'Check the Gavia and the Stelvio are open',d:'Both normally run into October but shut on the first serious snow. The Gavia is single track in places with no barrier — if it is wet or in cloud, drop to the Aprica and rejoin at Bormio.',when:s=>has(s,'Passo Gavia')||has(s,'Passo dello Stelvio')},
+ {t:'Check the Swiss passes and skip the vignette',d:'Ofenpass, Forcola and Bernina are high and shut early in a bad autumn. None of them is motorway, so the CHF 40 sticker is not needed unless you divert onto one.',when:s=>country(s,'CH')},
+ {t:'Sort a ZTL-safe car park for every Italian night',d:'Garda, Bormio, Corvara, Canazei and most South Tyrol centres are camera-controlled. Book a hotel with its own garage, or note the nearest signed car park before you arrive.',when:s=>country(s,'IT')},
+ {t:'Call the hotels',d:'Four days out, phone beats any booking site. Ask for half board and mention vegetarian at the time of booking, not on arrival.',when:s=>s.days.some(d=>d.stays.length)},
+ {t:'Pick the two unbooked nights',d:'This route still has stops with nothing researched. Sort them before anything else — everything downstream depends on where you sleep.',when:s=>s.days.some((d,i)=>i<s.days.length-1&&!d.stays.length)},
+ {t:'Download offline maps for the whole corridor',d:'Google Maps offline areas cover a box, not a route — take four overlapping boxes. Signal drops on the north side of most of these passes.',when:()=>true},
+ {t:'Check pass status the morning before',d:'alpen-paesse.ch, suedtirol.com/verkehr, grossglockner.at webcams. Roadworks near Umbrail have run alternating closures.',when:()=>true},
+ {t:'Take a fleece and gloves in the cabin, not the boot',d:'It is 20°C in the valley and 4°C at 2,700 m, and you will want them at the top, not after unpacking at the hotel.',when:()=>true}
 ];
+const has=(s,name)=>s.days.some(d=>d.pts.some(p=>p[2]===name));
+const country=(s,cc)=>s.days.some(d=>d.pts.some(p=>p[4]===cc));
+const todoFor=s=>TODO_ALL.filter(t=>t.when(s));
+
 
 /* ============================================================ RENDER ========= */
 const DAYC=['#26557F','#6E4A87','#A8467E','#C24966'];
@@ -1192,7 +1215,6 @@ function buildMap(s,PX){
   let routes='',pins='',labelSeeds=[];
   TIPS={};
   s.days.forEach((day,di)=>{
-    const ways=[];
     const coords=day.pts.map(p=>GEO[p[2]]).filter(Boolean).map(g=>[px(g[1]),py(g[0])]);
     const d='M'+coords.map(c=>c[0].toFixed(1)+','+c[1].toFixed(1)).join(' L');
     routes+=`<path class="rt-case" data-day="${di}" d="${d}"/>`;
@@ -1205,24 +1227,15 @@ function buildMap(s,PX){
       const isStay=p[3]==='stop'&&(pi===day.pts.length-1||(di===0&&pi===0));
       if(p[3]==='pass'){
         pins+=`<g class="pin" id="${id}" data-day="${di}">${hit}<polygon points="${x},${(y-4.4).toFixed(1)} ${(x+4.4).toFixed(1)},${y} ${x},${(y+4.4).toFixed(1)} ${(x-4.4).toFixed(1)},${y}" fill="${DAYC[di]}" stroke="#F3F1EC" stroke-width=".9"><title>${esc(p[2])} — ${p[1]} m</title></polygon></g>`;
-        if(p[1]>=1950) labelSeeds.push({x,y,t:p[2].replace(/^Passo (dello |del |della |di )?/,'').replace(' tunnel','').replace(' / Passo del Rombo','').replace(' · Tre Cime',''),alt:p[1],stay:false,di,pid:id});
+        labelSeeds.push({x,y,t:p[2].replace(/^Passo (dello |del |della |di )?/,'').replace(' tunnel','').replace(' / Passo del Rombo','').replace(' · Tre Cime',''),alt:p[1],stay:false,di,pid:id,rank:p[1]>=1950?0:1});
       } else if(isStay){
         pins+=`<g class="pin" id="${id}" data-day="${di}">${hit}<rect x="${(x-4.2).toFixed(1)}" y="${(y-4.2).toFixed(1)}" width="8.4" height="8.4" rx="1" fill="#191A18" stroke="#F3F1EC" stroke-width="1"><title>${esc(p[2])}</title></rect></g>`;
-        labelSeeds.push({x,y,t:p[2].replace(' / Dobbiaco','').replace(' / Brunico','').replace(' / Val Gardena',''),alt:p[1],stay:true,di,pid:id});
+        labelSeeds.push({x,y,t:p[2].replace(' / Dobbiaco','').replace(' / Brunico','').replace(' / Val Gardena',''),alt:p[1],stay:true,di,pid:id,rank:0});
       } else {
         pins+=`<g class="pin" id="${id}" data-day="${di}">${hit}<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6" fill="#F3F1EC" stroke="${DAYC[di]}" stroke-width="1.5"><title>${esc(p[2])}</title></circle></g>`;
-        ways.push({x,y,t:p[2].split(' / ')[0],alt:p[1],di,pid:id,km:p[0]});
+        labelSeeds.push({x,y,t:p[2].split(' / ')[0],alt:p[1],di,pid:id,stay:false,way:true,rank:2});
       }
     });
-    /* name a couple of plain waypoints per day — enough to orient by, not enough to clutter */
-    if(ways.length){
-      ways.sort((a,b)=>a.km-b.km);
-      const want=Math.min(2,ways.length), step=(ways.length-1)/Math.max(1,want);
-      for(let i=0;i<want;i++){
-        const w=ways[Math.round(i*step+step/2)] || ways[i];
-        if(w && !labelSeeds.some(o=>o.pid===w.pid)) labelSeeds.push({...w,stay:false,way:true});
-      }
-    }
   });
 
   /* leg distances at segment midpoints, greedily de-cluttered */
@@ -1241,32 +1254,46 @@ function buildMap(s,PX){
     }
   });
 
-  /* de-collide labels: push outward from centre, then space vertically */
-  const showAlt = (PX||MW) >= 400;   /* on a phone the name alone is enough; the tooltip has the rest */
-  const cx=MW/2, L=[],R=[];
+  /* Label placement: each candidate tries a ring of offsets and takes the first
+     that clears everything already placed. Passes and overnights go first, so a
+     crowded corner drops a minor waypoint rather than a summit. A leader line is
+     drawn only when the label actually ended up away from its pin.            */
+  const showAlt = (PX||MW) >= 400;
+  const chW=fL*.63, lineH=fL*1.06, altH=showAlt?fA*1.1:0;
+  const taken=[];
+  const hits=(r)=>taken.some(q=>r.x0<q.x1+1.5&&q.x0<r.x1+1.5&&r.y0<q.y1+1.5&&q.y0<r.y1+1.5);
   const seen=new Set();
-  labelSeeds.forEach(o=>{const k=o.t+o.stay; if(seen.has(k))return; seen.add(k); (o.x<cx?L:R).push(o);});
-  const place=(arr,side)=>{
-    arr.sort((a,b)=>a.y-b.y); let last=-99;
-    const gap=(showAlt?fL*1.15+fA*1.1:fL*1.35);
-    arr.forEach(o=>{o.ly=Math.max(o.y,last+gap); last=o.ly;});
-    const over=last-(MH-MP-6);
-    if(over>0) arr.forEach(o=>o.ly-=over);
-    arr.forEach(o=>{o.lx=side==='L'?o.x-7:o.x+7; o.anchor=side==='L'?'end':'start';});
-  };
-  place(L,'L'); place(R,'R');
+  const cands=labelSeeds.filter(o=>{const k=o.t; if(seen.has(k))return false; seen.add(k); return true;})
+                        .sort((a,b)=>(a.rank-b.rank)||(b.alt-a.alt));
+  /* pins themselves are obstacles so labels never sit on a marker */
+  labelSeeds.forEach(o=>taken.push({x0:o.x-5,x1:o.x+5,y0:o.y-5,y1:o.y+5}));
+  const OFF=[[8,3.2],[-8,3.2],[8,-2.4],[-8,-2.4],[8,10],[-8,10],[8,-9],[-8,-9],[0,-11],[0,13]];
   let labels='';
-  [...L,...R].forEach(o=>{
-    if(Math.abs(o.ly-o.y)>2.5)
-      labels+=`<line class="lead" x1="${o.x.toFixed(1)}" y1="${o.y.toFixed(1)}" x2="${o.lx.toFixed(1)}" y2="${(o.ly-2.5).toFixed(1)}"/>`;
-    labels+=`<text class="lbl ${o.stay?'stay':''}${o.way?' way':''}" x="${o.lx.toFixed(1)}" y="${o.ly.toFixed(1)}" text-anchor="${o.anchor}" data-day="${o.di}" data-pin="${o.pid}">${esc(o.t)}</text>`;
-    if(showAlt && !o.way) labels+=`<text class="lbl maplbl-alt" x="${o.lx.toFixed(1)}" y="${(o.ly+fA*1.05).toFixed(1)}" text-anchor="${o.anchor}" data-day="${o.di}" data-pin="${o.pid}" style="font-size:${fA.toFixed(2)}px">${o.alt} m</text>`;
+  cands.forEach(o=>{
+    /* the altitude line can be wider than a short name — size to the longer */
+    const w=Math.max(o.t.length*chW, (o.way?0:(String(o.alt).length+2)*fA*.63));
+    const h=lineH+(o.way?0:altH);
+    let done=false;
+    for(const [dx,dy] of OFF){
+      const anchor = dx<0?'end':(dx>0?'start':'middle');
+      const lx=o.x+dx, ly=o.y+dy;
+      const x0 = anchor==='end'?lx-w:(anchor==='start'?lx:lx-w/2);
+      const r={x0,x1:x0+w,y0:ly-lineH*.8,y1:ly-lineH*.8+h};
+      if(r.x0<MP-6||r.x1>MW-MP+6||r.y0<MP-4||r.y1>MH-MP-2) continue;
+      if(hits(r)) continue;
+      taken.push(r);
+      const far=Math.abs(dy)>6||Math.abs(dx)>9;
+      if(far) labels+=`<line class="lead" x1="${o.x.toFixed(1)}" y1="${o.y.toFixed(1)}" x2="${(dx<0?lx+1:(dx>0?lx-1:lx)).toFixed(1)}" y2="${(ly-lineH*.3).toFixed(1)}"/>`;
+      labels+=`<text class="lbl ${o.stay?'stay':''}${o.way?' way':''}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}" data-day="${o.di}" data-pin="${o.pid}">${esc(o.t)}</text>`;
+      if(showAlt && !o.way) labels+=`<text class="lbl maplbl-alt" x="${lx.toFixed(1)}" y="${(ly+fA*1.05).toFixed(1)}" text-anchor="${anchor}" data-day="${o.di}" data-pin="${o.pid}" style="font-size:${fA.toFixed(2)}px">${o.alt} m</text>`;
+      done=true; break;
+    }
   });
 
   /* scale bar: 50 km */
   const kmPx=SC/111.32, bar=(50*kmPx).toFixed(1);
   const bx=MP+4, by=MH-MP-10;
-  const scale=`<g><line x1="${bx}" y1="${by}" x2="${(+bx+ +bar).toFixed(1)}" y2="${by}" stroke="#63665F" stroke-width="1.2"/>
+  const scale=`<g class="scalebar"><line x1="${bx}" y1="${by}" x2="${(+bx+ +bar).toFixed(1)}" y2="${by}" stroke="#63665F" stroke-width="1.2"/>
     <line x1="${bx}" y1="${by-3}" x2="${bx}" y2="${by+3}" stroke="#63665F" stroke-width="1.2"/>
     <line x1="${(+bx+ +bar).toFixed(1)}" y1="${by-3}" x2="${(+bx+ +bar).toFixed(1)}" y2="${by+3}" stroke="#63665F" stroke-width="1.2"/>
     <text class="scale-txt" x="${bx}" y="${by-6}">50 KM</text></g>
@@ -1413,6 +1440,18 @@ function dayMapSVG(day,di){
   return `<svg class="daymap" viewBox="0 0 ${W} ${H}" role="img" aria-label="Map of day ${day.n}">`+
     `<path class="rt-case" d="${d}"/><path class="rt" d="${d}" stroke="${DAYC[di]}"/>${marks}${labels}</svg>`;
 }
+/* bbox and pin list for the embedded OpenStreetMap frame */
+function osmBox(day){
+  const g=day.pts.map(p=>GEO[p[2]]).filter(Boolean);
+  if(!g.length) return '';
+  const la=g.map(v=>v[0]), ln=g.map(v=>v[1]);
+  return [(Math.min(...ln)-.10).toFixed(3),(Math.min(...la)-.06).toFixed(3),
+          (Math.max(...ln)+.10).toFixed(3),(Math.max(...la)+.06).toFixed(3)].join(',');
+}
+function osmMarks(day){
+  const g=GEO[day.pts[day.pts.length-1][2]];
+  return g?g[0].toFixed(4)+','+g[1].toFixed(4):'';
+}
 /* same day, on real OpenStreetMap tiles, in a new tab */
 function osmDay(day){
   const g=day.pts.map(p=>GEO[p[2]]).filter(Boolean);
@@ -1432,7 +1471,7 @@ function ridgeSVG(segments,opts){
   const plotH=H-padT-padB,plotW=W-padL-padR;
   let total=0;const segs=segments.map(s=>{const len=s.pts[s.pts.length-1][0];const o={...s,offset:total,len};total+=len;return o;});
   const x=km=>padL+(km/total)*plotW, y=a=>padT+plotH-((Math.max(ALT_MIN,Math.min(ALT_MAX,a))-ALT_MIN)/(ALT_MAX-ALT_MIN))*plotH;
-  let all=[];segs.forEach(s=>s.pts.forEach(p=>all.push({x:x(p[0]+s.offset),y:y(p[1]),p})));
+  let all=[];segs.forEach(s=>s.pts.forEach((p,pi)=>all.push({x:x(p[0]+s.offset),y:y(p[1]),p,i:pi})));
   all.sort((a,b)=>a.x-b.x);
   const d='M'+all.map(pt=>pt.x.toFixed(1)+','+pt.y.toFixed(1)).join(' L');
   const area=d+` L${(W-padR).toFixed(1)},${(padT+plotH).toFixed(1)} L${padL},${(padT+plotH).toFixed(1)} Z`;
@@ -1448,39 +1487,49 @@ function ridgeSVG(segments,opts){
                       .replace(' / Passo del Rombo','').replace(' · Tre Cime','').replace(' / Pass dal Fuorn','');
   /* below ~620px the peaks are too close together to label in place, so the
      names go under the plot in staggered rows and the peak keeps a stem only */
-  const stack = px<620;
-  const cap = stack ? 99 : (opts.tall?7:5);
-  const named=peaks.slice().sort((a,b)=>b.p[1]-a.p[1]).slice(0,cap).map(o=>o.p[2]);
   const edge=fL*9;
   let marks='';
   peaks.forEach(o=>{
     marks+=`<line class="peak-stem" x1="${o.x.toFixed(1)}" y1="${o.y.toFixed(1)}" x2="${o.x.toFixed(1)}" y2="${(padT+plotH).toFixed(1)}"/>`;
     marks+=`<circle class="peak-dot" cx="${o.x.toFixed(1)}" cy="${o.y.toFixed(1)}" r="${(2.4*Math.min(k,1.7)).toFixed(1)}"><title>${esc(o.p[2])} — ${o.p[1]} m</title></circle>`;
-    if(!stack && named.includes(o.p[2])){
-      const a=o.x>W-edge?'end':(o.x<edge?'start':'middle');
-      marks+=`<text class="peak-alt" x="${o.x.toFixed(1)}" y="${(o.y-fA*1.15).toFixed(1)}" text-anchor="${a}">${o.p[1]}m</text>`;
-      marks+=`<text class="peak-label" x="${o.x.toFixed(1)}" y="${(o.y-fA*1.15-fL*1.08).toFixed(1)}" text-anchor="${a}">${esc(shortName(o.p[2]))}</text>`;}
+  });
+  /* every non-pass gets a small dot on the line so the labels below have anchors */
+  const ways=all.filter(o=>o.p[3]!=='pass');
+  ways.forEach(o=>{
+    marks+=`<circle class="way-dot" cx="${o.x.toFixed(1)}" cy="${o.y.toFixed(1)}" r="${(1.5*Math.min(k,1.7)).toFixed(1)}"><title>${esc(o.p[2])} — ${o.p[1]} m</title></circle>`;
   });
   /* staggered stack under the plot: leader down to its own row, then the name */
+  /* Names go under the plot, packed greedily into rows so nothing collides.
+     Passes claim their row first; waypoints fill what is left.               */
   let stackH=0;
-  if(stack && peaks.length){
-    const rowH=fL*1.5, top=padT+plotH+fG*1.0, chW=fL*.50, gap=fL*.9;
-    const rowEnd=[];                                  /* right edge used so far, per row */
-    const placed=peaks.slice().sort((a,b)=>a.x-b.x).map(o=>{
-      const label=shortName(o.p[2]), w=(label.length+5)*chW;
-      let anchor='middle', x0=o.x-w/2, x1=o.x+w/2;
-      if(x1>W-2){ anchor='end'; x0=o.x-w; x1=o.x; }
-      if(x0<2){ anchor='start'; x0=o.x; x1=o.x+w; }
-      let r=0; while(r<6 && rowEnd[r]!==undefined && x0<rowEnd[r]+gap) r++;
+  {
+    const rowH=fL*1.42, top=padT+plotH+fG*1.0, gap=fL*1.0;
+    const seenN=new Set();
+    const cand=[...peaks.map(o=>({o,pass:true})), ...ways.map(o=>({o,pass:false}))]
+      .filter(q=>{const n=q.o.p[2]; if(seenN.has(n))return false; seenN.add(n); return true;});
+    cand.sort((a,b)=>(b.pass-a.pass)||(a.o.x-b.o.x));
+    const rowEnd=[];
+    const placed=[];
+    cand.forEach(q=>{
+      const label=shortName(q.o.p[2]);
+      const chW=(q.pass?fL*.52:fL*.46);
+      const w=(label.length+(q.pass?5:0))*chW;
+      let anchor='middle', x0=q.o.x-w/2, x1=q.o.x+w/2;
+      if(x1>W-2){ anchor='end'; x0=q.o.x-w; x1=q.o.x; }
+      if(x0<2){ anchor='start'; x0=q.o.x; x1=q.o.x+w; }
+      let r=0; while(r<8 && rowEnd[r]!==undefined && x0<rowEnd[r]+gap) r++;
+      if(r>=8) return;                       /* no room: drop it rather than overlap */
       rowEnd[r]=x1;
-      return {o,label,r,anchor};
+      placed.push({...q,label,r,anchor});
     });
-    const rows=Math.max(...placed.map(q=>q.r))+1;
+    const rows=placed.length?Math.max(...placed.map(q=>q.r))+1:0;
     stackH=rows*rowH+fL*.7;
     placed.forEach(q=>{
-      const ly=top+q.r*rowH+fL*.85;
-      marks+=`<line class="peak-lead" x1="${q.o.x.toFixed(1)}" y1="${(padT+plotH).toFixed(1)}" x2="${q.o.x.toFixed(1)}" y2="${(ly-fL*.72).toFixed(1)}"/>`;
-      marks+=`<text class="peak-label stacked" x="${q.o.x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${q.anchor}">${esc(q.label)} <tspan class="peak-alt-in">${q.o.p[1]}m</tspan></text>`;
+      const ly=top+q.r*rowH+fL*.82;
+      marks+=`<line class="peak-lead${q.pass?'':' faint'}" x1="${q.o.x.toFixed(1)}" y1="${(padT+plotH).toFixed(1)}" x2="${q.o.x.toFixed(1)}" y2="${(ly-fL*.68).toFixed(1)}"/>`;
+      marks+= q.pass
+        ? `<text class="peak-label stacked" x="${q.o.x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${q.anchor}">${esc(q.label)} <tspan class="peak-alt-in">${q.o.p[1]}m</tspan></text>`
+        : `<text class="way-label stacked" x="${q.o.x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${q.anchor}">${esc(q.label)}</text>`;
     });
   }
   /* one invisible target per point so the whole profile is hoverable, not just the passes */
@@ -1488,12 +1537,13 @@ function ridgeSVG(segments,opts){
   all.forEach(o=>{
     hits+=`<circle class="p-hit" cx="${o.x.toFixed(1)}" cy="${o.y.toFixed(1)}" r="${(9*k).toFixed(1)}"`+
       ` data-n="${esc(o.p[2])}" data-a="${o.p[1]}" data-km="${o.p[0]}" data-c="${esc(o.p[4]||'')}"`+
-      ` data-k="${esc(o.p[3]||'')}" data-note="${esc(o.p[5]||'')}"><title>${esc(o.p[2])} — ${o.p[1]} m</title></circle>`;
+      ` data-k="${esc(o.p[3]||'')}" data-note="${esc(o.p[5]||'')}" data-i="${o.i}"><title>${esc(o.p[2])} — ${o.p[1]} m</title></circle>`;
   });
   /* day profiles: country bands along the top, waypoint ticks, and a km axis */
   let extra='';
   if(opts.axis){
     const CN={DE:'Germany',AT:'Austria',IT:'Italy',CH:'Switzerland',LI:'Liechtenstein'};
+    const CC={DE:'var(--de)',AT:'var(--at)',IT:'var(--it)',CH:'var(--ch)'};
     const bandY=padT-fT*1.5, bandH=fT*1.05;
     let run=null;
     all.forEach((o,i)=>{
@@ -1504,24 +1554,36 @@ function ridgeSVG(segments,opts){
       if(i===all.length-1&&run){ run.x1=o.x; if(run.x1-run.x0>2) extra+=band(run); }
     });
     function band(r){
-      const w=r.x1-r.x0;
-      let t=`<rect class="cty-band" x="${r.x0.toFixed(1)}" y="${bandY.toFixed(1)}" width="${w.toFixed(1)}" height="${bandH.toFixed(1)}"/>`;
+      const inset=2.5, x0=r.x0+inset, w=Math.max(3,(r.x1-r.x0)-inset*2);
+      const col=CC[r.c]||'var(--slate)';
+      let t=`<rect class="cty-band" x="${x0.toFixed(1)}" y="${bandY.toFixed(1)}" width="${w.toFixed(1)}" height="${bandH.toFixed(1)}"/>`;
+      t+=`<rect x="${x0.toFixed(1)}" y="${bandY.toFixed(1)}" width="${Math.min(3,w).toFixed(1)}" height="${bandH.toFixed(1)}" fill="${col}"/>`;
       const nm=CN[r.c]||r.c;
-      if(w>nm.length*fG*.62)
-        t+=`<text class="cty-lbl" x="${(r.x0+w/2).toFixed(1)}" y="${(bandY+bandH*.76).toFixed(1)}" text-anchor="middle" style="font-size:${(fG*.82).toFixed(2)}px">${esc(nm)}</text>`;
+      if(w>nm.length*fG*.66)
+        t+=`<text class="cty-lbl" x="${(x0+w/2).toFixed(1)}" y="${(bandY+bandH*.74).toFixed(1)}" text-anchor="middle" style="font-size:${(fG*.82).toFixed(2)}px">${esc(nm)}</text>`;
       return t;
     }
     /* every waypoint gets a tick; the two ends get named */
     all.forEach(o=>{ if(o.p[3]==='pass') return;
       extra+=`<line class="way-tick" x1="${o.x.toFixed(1)}" y1="${(padT+plotH).toFixed(1)}" x2="${o.x.toFixed(1)}" y2="${(padT+plotH+fG*.5).toFixed(1)}"/>`;});
     const baseY=padT+plotH+stackH;
-    const ends=[all[0],all[all.length-1]];
-    ends.forEach((o,ix)=>{
-      extra+=`<text class="way-lbl" x="${(ix?W-padR:padL).toFixed(1)}" y="${(baseY+fG*1.25).toFixed(1)}" text-anchor="${ix?'end':'start'}" style="font-size:${(fG*.9).toFixed(2)}px">${esc(o.p[2].split(' / ')[0])}</text>`;});
     /* km ticks at round intervals */
     const step = total>320?100:(total>160?50:25);
-    const axisY=baseY+fG*2.6;
+    const axisY=baseY+fG*1.9;
     let axis='';
+    /* km leader from each named point down to the axis, unless a regular tick
+       is already within half a step — no need to label the same spot twice */
+    const ticks=[]; for(let km=0;km<=total+.01;km+=step) ticks.push(km);
+    const marked=[];
+    all.forEach(o=>{
+      const isNamed = o.p[3]==='pass' || o.p[3]==='stop';
+      if(!isNamed) return;
+      if(ticks.some(t=>Math.abs(t-o.p[0])<step*.42)) return;
+      if(marked.some(v=>Math.abs(v-o.x)<fG*2.4)) return;
+      marked.push(o.x);
+      axis+=`<line class="km-lead" x1="${o.x.toFixed(1)}" y1="${(padT+plotH).toFixed(1)}" x2="${o.x.toFixed(1)}" y2="${(axisY-fG*.75).toFixed(1)}"/>`;
+      axis+=`<text class="km-axis mark" x="${o.x.toFixed(1)}" y="${(axisY+fG*.75).toFixed(1)}" text-anchor="middle" style="font-size:${(fG*.8).toFixed(2)}px">${o.p[0]}</text>`;
+    });
     for(let km=0;km<=total+.01;km+=step){
       const xx=x(km);
       axis+=`<line class="way-tick" x1="${xx.toFixed(1)}" y1="${(axisY-fG*.75).toFixed(1)}" x2="${xx.toFixed(1)}" y2="${(axisY-fG*.2).toFixed(1)}"/>`;
@@ -1584,6 +1646,7 @@ function paintMap(){
   if(!CURRENT) return;
   const host=document.getElementById('mapHost');
   host.innerHTML=buildMap(CURRENT,host.clientWidth); bindTips();
+  if(window.mapZoomRepaint) window.mapZoomRepaint();   /* re-apply any zoom */
 }
 let rsz;
 window.addEventListener('resize',()=>{clearTimeout(rsz);rsz=setTimeout(()=>{paintProfiles();paintMap();},180);});
@@ -1607,16 +1670,31 @@ function applyIsolate(){
   });
 }
 
+/* Rough clock time at a waypoint: the day's whole window spread across its
+   distance, so the slack for coffee and photographs is already baked in. */
+function eta(day,km){
+  const mins=t=>{const [h,m]=t.replace('≈','').split(':').map(Number); return h*60+m;};
+  const a=mins(day.depart), b=mins(day.arrive), total=day.pts[day.pts.length-1][0]||1;
+  const t=Math.round(a+(km/total)*(b-a));
+  return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
+}
 function renderDays(s){
   return s.days.map((day,di)=>{
     const rows=day.pts.map((p,pi)=>{
       const leg = pi>0 ? p[0]-day.pts[pi-1][0] : 0;
       return `<div class="rb-row ${p[3]==='pass'?'is-pass':''}" data-pin="pin-${di}-${pi}">
-        <div class="rb-km">${p[0]}${leg>0?`<span class="lg">+${leg}</span>`:''}</div>
+        <div class="rb-km">${p[0]}${leg>0?`<span class="lg">+${leg}</span>`:''}<span class="lg eta">${eta(day,p[0])}</span></div>
         <div class="rb-name"><span class="flag f-${p[4]}">${p[4]}</span>${esc(p[2])}${p[5]?`<em>${esc(p[5])}</em>`:''}</div>
         <div class="rb-alt">${p[1]} m</div></div>`;}).join('');
     const stays=day.stays.length?`
-      <div class="aside">${dayMapSVG(day,di)}<a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} on OpenStreetMap ↗</a><h4>Where to sleep · ${esc(day.to)}</h4>
+      <div class="aside"><h4>Segment map · day ${day.n}</h4>
+        <div class="viewtog segtog" role="group" aria-label="Segment map view">
+          <button data-seg="s" data-day="${day.n}" aria-pressed="true">Schematic</button>
+          <button data-seg="m" data-day="${day.n}" aria-pressed="false">Map</button>
+        </div>
+        <div class="segwrap" id="segwrap-${day.n}" data-bbox="${osmBox(day)}" data-marks="${osmMarks(day)}">${dayMapSVG(day,di)}</div>
+        <a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} on OpenStreetMap ↗</a>
+        <h4 style="margin-top:20px">Where to sleep · ${esc(day.to)}</h4>
         ${day.stays.map(h=>`<div class="stay ${h.pick?'pick':''}">
             <div class="nm"><span><svg class="ic"><use href="#i-bed"/></svg>${esc(h.n)}</span>${h.pick?`<span class="pk">${h.pick.toUpperCase()}</span>`:''}</div>
             <div class="loc">${esc(h.loc)}</div><div class="why">${esc(h.why)}</div>
@@ -1628,13 +1706,20 @@ function renderDays(s){
             </div></div>`).join('')}
         ${day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:''}</div>`
       : di<s.days.length-1 ? `
-      <div class="aside">${dayMapSVG(day,di)}<a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} on OpenStreetMap ↗</a><h4>Where to sleep · ${esc(day.to)}</h4>
+      <div class="aside"><h4>Segment map · day ${day.n}</h4>
+        <div class="viewtog segtog" role="group" aria-label="Segment map view">
+          <button data-seg="s" data-day="${day.n}" aria-pressed="true">Schematic</button>
+          <button data-seg="m" data-day="${day.n}" aria-pressed="false">Map</button>
+        </div>
+        <div class="segwrap" id="segwrap-${day.n}" data-bbox="${osmBox(day)}" data-marks="${osmMarks(day)}">${dayMapSVG(day,di)}</div>
+        <a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} on OpenStreetMap ↗</a>
+        <h4 style="margin-top:20px">Where to sleep · ${esc(day.to)}</h4>
         <div class="stay"><div class="nm"><span><svg class="ic"><use href="#i-bed"/></svg>Not chosen yet</span></div>
           <div class="why">${esc(day.staysNote||'No hotels researched for this stop.')}</div></div>
         ${day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:''}</div>`
       :`<div class="aside"><h4>End of trip</h4><div class="stay"><div class="nm"><span>Munich, city centre</span></div>
-         <div class="loc">Due back 20:00, city centre</div>
-         <div class="why">Same-day return in the city rather than the airport, so the target is to be there by 20:00 with the tank full. Refuel outside the ring — city forecourts are the worst rates you will pay all trip.</div></div></div>`;
+         <div class="loc">Munich by 20:00 · no rush after that</div>
+         <div class="why">Nothing is due back tonight, so 20:00 is a target rather than a deadline. Park in a signed Parkhaus rather than on the street: the Altstadt is resident-permit only in the evening, and the Umweltzone inside the Mittlerer Ring needs a green sticker, which German plates carry as standard. Weekend access is otherwise unrestricted.</div></div></div>`;
     return `<section class="sec day ${di%2?'alt':''}" id="sec-day${day.n}"><div class="daywrap">
       <div class="day-head"><h3><i class="daydot" style="background:${DAYC[di]}"></i>Day ${day.n} · ${esc(day.from)} → ${esc(day.to)}</h3>
         <span class="when mono">depart ${day.depart} · arrive ${day.arrive}</span></div>
@@ -1644,9 +1729,9 @@ function renderDays(s){
         <span><svg class="ic"><use href="#i-peak"/></svg> <b>${day.passes}</b> ${day.passes===1?'pass':'passes'}</span>
         <span><svg class="ic"><use href="#i-gauge"/></svg> <b>${Math.max(...day.pts.map(p=>p[1]))} m</b> high point</span></div>
       <div class="day-note">${day.note}</div>
-      <div class="ridge-box"><div class="ridge-cap"><span>${esc(day.from)}</span><span>${esc(day.to)}</span></div>
+      <div class="ridge-box"><div class="ridge-cap"><span>Altitude profile</span><span>${day.km} km · ${day.passes} ${day.passes===1?'pass':'passes'}</span></div>
         <div id="ridge-d${day.n}"></div></div>
-      <div class="cols" style="margin-top:20px"><div class="rb">${rows}
+      <div class="cols" style="margin-top:20px"><div class="rb"><h4 class="rbhead">Roadbook · day ${day.n}</h4>${rows}
         <a class="gbtn" href="${gdir(day)}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-map"/></svg>Open Day ${day.n} in Google Maps ↗</a>
         <p class="mnote" style="margin:8px 0 0">Passes are pinned as waypoints so Google routes over them rather than round them. Check that “avoid tolls” is off, or it will send you down the valley.</p>
       </div>${stays}</div></div></section>`;
@@ -1678,10 +1763,18 @@ function render(k){
   paintProfiles();
   document.querySelectorAll('.rb-row').forEach(r=>{
     const ids=[r.dataset.pin, r.dataset.pin.replace(/^pin-/,'dm-')];
-    const els=()=>ids.map(i=>document.getElementById(i)).filter(Boolean);
+    const m=r.dataset.pin.match(/^pin-(\d+)-(\d+)$/);
+    const els=()=>{
+      const out=ids.map(i=>document.getElementById(i)).filter(Boolean);
+      if(m){ const sec=document.getElementById('sec-day'+CURRENT.days[+m[1]].n);
+             const hit=sec&&sec.querySelector(`.p-hit[data-i="${m[2]}"]`);
+             if(hit) out.push(hit); }
+      return out;
+    };
     r.addEventListener('mouseenter',()=>els().forEach(e=>e.classList.add('hot')));
     r.addEventListener('mouseleave',()=>els().forEach(e=>e.classList.remove('hot')));
   });
+  document.getElementById('todo').innerHTML=todoFor(s).map(t=>`<li><label><input type="checkbox"><span class="txt">${esc(t.t)}<em>${esc(t.d)}</em></span></label></li>`).join('');
   document.getElementById('costTable').innerHTML=
     `<tr><th>Item</th><th>When</th><th style="text-align:right">Cost</th></tr>`+
     s.costs.map(c=>`<tr><td><svg class="ic costicon"><use href="#i-ticket"/></svg>${esc(c[0])}</td><td style="color:#63665F">${esc(c[1])}</td><td class="num">${c[2]}</td></tr>`).join('')+
@@ -1734,7 +1827,7 @@ let ticking=false;
 window.addEventListener('scroll',()=>{ if(!ticking){ticking=true;requestAnimationFrame(()=>{syncHeader();ticking=false;});} },{passive:true});
 window.addEventListener('resize',syncHeader);
 
-document.getElementById('todo').innerHTML=TODO.map(t=>`<li><label><input type="checkbox"><span class="txt">${esc(t.t)}<em>${esc(t.d)}</em></span></label></li>`).join('');
+
 
 /* ---------- light / dark ---------- */
 function setTheme(dark){
@@ -1913,14 +2006,48 @@ function wxLoad(k){
   btn.addEventListener('click',()=>wxFetch(true));
 })();
 
+/* ---------- segment map: schematic or real tiles ---------- */
+document.addEventListener('click',e=>{
+  const b=e.target.closest && e.target.closest('.segtog button'); if(!b) return;
+  const wrap=document.getElementById('segwrap-'+b.dataset.day); if(!wrap) return;
+  b.parentNode.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  if(b.dataset.seg==='m'){
+    if(wrap.querySelector('iframe')) return;
+    wrap.dataset.svg=wrap.innerHTML;
+    const bb=wrap.dataset.bbox, mk=wrap.dataset.marks;
+    wrap.innerHTML='<iframe loading="lazy" title="OpenStreetMap" src="https://www.openstreetmap.org/export/embed.html?bbox='
+      +encodeURIComponent(bb)+'&layer=mapnik'+(mk?'&marker='+encodeURIComponent(mk):'')+'"></iframe>';
+  } else if(wrap.dataset.svg){
+    wrap.innerHTML=wrap.dataset.svg;
+  }
+});
+
 /* ---------- schematic map: zoom and pan ---------- */
 (function mapZoom(){
   const host=document.getElementById('mapHost'); if(!host) return;
   let z=1,tx=0,ty=0,drag=null;
   const svg=()=>host.querySelector('svg.map');
-  const apply=()=>{const g=host.querySelector('#zoomG'); if(g) g.setAttribute('transform',`translate(${tx} ${ty}) scale(${z})`);
+  const apply=()=>{
+    const g=host.querySelector('#zoomG');
+    if(g) g.setAttribute('transform',`translate(${tx} ${ty}) scale(${z})`);
+    /* counter-scale text and markers so zooming reveals detail rather than
+       magnifying it — that is the whole point of zooming a crowded loop */
+    const inv=1/z;
+    host.querySelectorAll('#zoomG .lbl, #zoomG .seg-km').forEach(t=>{
+      const x=+t.getAttribute('x'), y=+t.getAttribute('y');
+      t.setAttribute('transform',`translate(${x} ${y}) scale(${inv}) translate(${-x} ${-y})`);
+    });
+    host.querySelectorAll('#zoomG .pin').forEach(p=>{
+      const c=p.querySelector('circle:not(.hit),polygon,rect'); if(!c) return;
+      const bb=p.__c||(p.__c=(()=>{const b=c.getBBox();return {x:b.x+b.width/2,y:b.y+b.height/2};})());
+      p.setAttribute('transform',`translate(${bb.x} ${bb.y}) scale(${inv}) translate(${-bb.x} ${-bb.y})`);
+    });
+    /* the scale bar measures ground distance and stops being true once zoomed */
+    const sc=host.querySelector('.scalebar'); if(sc) sc.style.display=z>1.01?'none':'';
     host.classList.toggle('zoomed',z>1.01);};
   window.mapZoomReset=()=>{z=1;tx=0;ty=0;apply();};
+  /* a freshly painted map has no transforms on it yet */
+  window.mapZoomRepaint=()=>apply();
   host.addEventListener('wheel',e=>{
     const el=svg(); if(!el) return;
     e.preventDefault();
