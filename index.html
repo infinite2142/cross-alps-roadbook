@@ -596,7 +596,7 @@
 
 <div class="banner">
   <svg class="pano" viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Stylised alpine ridgelines with a switchback road"><use href="#pano"/>
-    <g class="goat g1" transform="translate(577.0 164.3) scale(1.80)" aria-hidden="true">
+    <g class="goat g1" transform="translate(603.1 164.3) scale(-1.80 1.80)" aria-hidden="true">
       <path d="M2.3 7.3 C2.3 6.0 3.4 5.4 4.8 5.4 L7.3 5.4 C8.5 5.4 9.2 6.0 9.3 6.9 C9.4 7.8 8.8 8.3 7.7 8.3 L3.9 8.3 C2.8 8.3 2.3 8.1 2.3 7.3 Z"/>
       <path d="M8.5 6.6 L9.7 4.4 L10.9 4.9 L9.9 7.1 Z"/>
       <path d="M9.8 4.9 C10.2 4.0 11.0 3.6 11.8 3.8 L13.1 4.2 L13.3 5.0 L11.9 5.7 L10.4 5.9 Z"/>
@@ -622,7 +622,7 @@
       <rect x="8.2" y="8.1" width=".72" height="3.4" rx=".34"/>
       <path d="M2.4 5.8 L1.2 4.4" fill="none" stroke="currentColor" stroke-width=".75" stroke-linecap="round"/>
     </g>
-    <g class="goat g3" transform="translate(887.0 148.3) scale(1.80)" aria-hidden="true">
+    <g class="goat g3" transform="translate(913.1 148.3) scale(-1.80 1.80)" aria-hidden="true">
       <path d="M2.3 7.3 C2.3 6.0 3.4 5.4 4.8 5.4 L7.3 5.4 C8.5 5.4 9.2 6.0 9.3 6.9 C9.4 7.8 8.8 8.3 7.7 8.3 L3.9 8.3 C2.8 8.3 2.3 8.1 2.3 7.3 Z"/>
       <path d="M8.5 6.6 L9.7 4.4 L10.9 4.9 L9.9 7.1 Z"/>
       <path d="M9.8 4.9 C10.2 4.0 11.0 3.6 11.8 3.8 L13.1 4.2 L13.3 5.0 L11.9 5.7 L10.4 5.9 Z"/>
@@ -1950,7 +1950,12 @@ function renderDays(s){
           return `<div class="leglinks">`+L.map((g,i)=>
             `<a class="gbtn" href="${g.url}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-map"/></svg>Day ${day.n} · leg ${i+1} of ${L.length} · ${esc(g.from.split(' / ')[0])} → ${esc(g.to.split(' / ')[0])}</a>`
           ).join('')+`</div>`;})()}
-        <p class="mnote" style="margin:8px 0 0">Google takes nine stops per route and the app is no different, so a long day is split into legs — every waypoint is in there, which is what stops it cutting a corner. Navigate one leg, then start the next where it ended. Check that “avoid tolls” is off, or it will send you down the valley.</p>
+        <details class="aboutmaps" style="margin-top:10px">
+          <summary>Why the route is split</summary>
+          <p>Google takes nine stops per route and the app is no different, so a long day is split into legs — every
+          waypoint is in there, which is what stops it cutting a corner. Navigate one leg, then start the next where
+          it ended. Check that “avoid tolls” is off, or it will send you down the valley.</p>
+        </details>
       </div>${stays}</div></div></section>`;
   }).join('');
 }
