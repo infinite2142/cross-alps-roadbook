@@ -1998,7 +1998,7 @@ function renderDays(s){
         <span><svg class="ic"><use href="#i-clock"/></svg> <b>${day.time}</b> moving</span>
         <span><svg class="ic"><use href="#i-peak"/></svg> <b>${day.passes}</b> ${day.passes===1?'pass':'passes'}</span>
         <span><svg class="ic"><use href="#i-gauge"/></svg> <b>${Math.max(...day.pts.map(p=>p[1]))} m</b> high point</span>
-        <span title="Summed between waypoints, so the real figure is higher"><svg class="ic"><use href="#i-peak"/></svg> <b>${ascent(day).toLocaleString()} m</b> climbed</span></div>
+        <span title="Summed between waypoints, so the real figure is higher"><svg class="ic"><use href="#i-peak"/></svg> <b>${ascent(day)} m</b> climbed</span></div>
       <div class="day-note">${day.note}</div>
       <div class="ridge-box"><div class="ridge-cap"><span>Altitude profile</span><span>${day.km} km · ${day.passes} ${day.passes===1?'pass':'passes'}</span></div>
         <div id="ridge-d${day.n}"></div></div>
