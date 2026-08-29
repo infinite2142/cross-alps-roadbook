@@ -95,10 +95,10 @@
   .daymap .pin.hot::after{content:''}
   .daymap .pin.hot .dm-halo{opacity:1}
   .dm-halo{fill:var(--glow);opacity:0;transition:opacity .12s}
-  .dm-lbl{font-family:'IBM Plex Mono',monospace;font-size:7.4px;fill:var(--slate)}
-  .dm-sub{font-family:'IBM Plex Mono',monospace;font-size:6.2px;fill:var(--slate);opacity:.75}
+  .dm-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;fill:var(--slate)}
+  .dm-sub{font-family:'IBM Plex Mono',monospace;font-size:7.4px;fill:var(--slate);opacity:.8}
   .dm-legbg{fill:var(--panel);stroke:var(--line);stroke-width:.5}
-  .dm-leg{font-family:'IBM Plex Mono',monospace;font-size:5.4px;fill:var(--ink);font-weight:600}
+  .dm-leg{font-family:'IBM Plex Mono',monospace;font-size:6.6px;fill:var(--ink);font-weight:600}
   body.dark .dm-legbg{fill:#1C1F24}
   .dm-sub.end{fill:var(--glow);opacity:1}
   .dm-lbl.pass{fill:var(--ink);font-weight:600}
@@ -502,9 +502,11 @@
   /* landscape phones: assume compact from the start */
   @media (max-height:560px){
     .banner .pano{height:clamp(150px,30vh,210px)}
-    .mast{padding:7px 0 6px}
+    .mast{padding:1px 0 0;justify-content:flex-end}
+    .mast h1{display:none}
     .mast .dates{display:none}
     .mast h1 .sv{display:none}
+    .themebtn{width:24px;height:24px}
     .tab .s{display:none}
     .tab{padding:6px 12px 7px;min-width:0;flex:1 1 auto;display:flex;align-items:baseline;gap:8px;white-space:nowrap}
     .tab .k{font-size:9.5px} .tab .t{font-size:12.5px;display:inline}
@@ -842,6 +844,42 @@ const bkg  = h => 'https://www.booking.com/searchresults.html?ss='+enc(h.n+' '+h
 
 /* Google Maps driving directions. The URL API caps at 9 intermediate waypoints,
    so passes win, then overnight stops, in road order. */
+/* Google takes nine intermediate stops. Which nine decides whether it follows
+   the route or invents its own: every pass must be pinned or it will take the
+   valley or the tunnel instead, and the remaining slots go to the points that
+   bend the line most — the ones whose absence lets a leg cut a corner. */
+function pickWaypoints(mid, origin, dest, MAX){
+  if(mid.length<=MAX) return mid.slice();
+  const g=q=>GEO[q.p[2]];
+  const KX=Math.cos((g(origin)[0]||46)*Math.PI/180);
+  const dev=(q,a,b)=>{                      /* perpendicular distance, lon scaled */
+    const ax=g(a)[1]*KX, ay=g(a)[0], bx=g(b)[1]*KX, by=g(b)[0];
+    const px=g(q)[1]*KX, py=g(q)[0];
+    const dx=bx-ax, dy=by-ay, L=dx*dx+dy*dy;
+    if(!L) return Math.hypot(px-ax,py-ay);
+    let t=((px-ax)*dx+(py-ay)*dy)/L; t=Math.max(0,Math.min(1,t));
+    return Math.hypot(px-(ax+t*dx), py-(ay+t*dy));
+  };
+  /* passes first — they are the reason the route exists */
+  let chosen=mid.filter(q=>q.p[3]==='pass')
+                .sort((a,b)=>b.p[1]-a.p[1]).slice(0,MAX);
+  chosen.sort((a,b)=>a.km-b.km);
+  const rest=()=>mid.filter(q=>chosen.indexOf(q)<0);
+  while(chosen.length<MAX){
+    const line=[origin,...chosen,dest];
+    let best=null,bd=-1;
+    for(const q of rest()){
+      /* the leg this point falls between */
+      let i=0; while(i<line.length-2 && line[i+1].km<=q.km) i++;
+      const d=dev(q,line[i],line[i+1]) * (q.p[3]==='stop'?1.25:1);
+      if(d>bd){bd=d;best=q;}
+    }
+    if(!best) break;
+    chosen.push(best); chosen.sort((a,b)=>a.km-b.km);
+  }
+  return chosen;
+}
+
 function gdir(day){
   const pts = day.pts.filter(p=>GEO[p[2]]);
   if(pts.length<2) return null;
@@ -849,25 +887,8 @@ function gdir(day){
   /* The URL API takes 9 intermediate stops. Picking only the passes loses the
      shape of a loop — Google then routes straight back the way you came — so
      choose 9 spread evenly along the day, preferring a pass when one is near. */
-  const MAX=9;
-  let picks;
-  if(mid.length<=MAX){ picks=mid.slice(); }
-  else{
-    const total=mid[mid.length-1][0]||1;
-    picks=[];
-    for(let i=0;i<MAX;i++){
-      const target=((i+0.5)/MAX)*total;
-      let best=null,bd=Infinity;
-      for(const q of mid){
-        if(picks.indexOf(q)>-1) continue;
-        const bias=q[3]==='pass'?0.55:(q[3]==='stop'?0.8:1);
-        const dist=Math.abs(q[0]-target)*bias;
-        if(dist<bd){bd=dist;best=q;}
-      }
-      if(best) picks.push(best);
-    }
-  }
-  picks.sort((a,b)=>a[0]-b[0]);
+  const wrap=a=>a.map(q=>({p:q,km:q[0]}));
+  const picks=pickWaypoints(wrap(mid),{p:o,km:o[0]},{p:d,km:d[0]},9).map(q=>q.p);
   const c = p => GEO[p[2]][0].toFixed(5)+','+GEO[p[2]][1].toFixed(5);
   return 'https://www.google.com/maps/dir/?api=1&origin='+c(o)+'&destination='+c(d)
        + (picks.length?'&waypoints='+picks.map(c).join('%7C'):'') + '&travelmode=driving';
@@ -1512,30 +1533,40 @@ function dayMapSVG(day,di){
   const seeds=pts.map((o,pi)=>({x:X(o.g[1]),y:Y(o.g[0]),p:o.p,pi,
       pass:o.p[3]==='pass', end:pi===0||pi===pts.length-1,
       tm:pi===0?day.depart:(pi===pts.length-1?String(day.arrive).replace('≈',''):'')}));
-  const cx=W/2, LS=[], RS=[];
-  const seen=new Set();
-  /* ends first, so a day that returns to its start keeps the arrival label */
-  seeds.slice().sort((a,b)=>(b.end?1:0)-(a.end?1:0)).forEach(o=>{
-    if(seen.has(o.p[2]))return; seen.add(o.p[2]); (o.x<cx?LS:RS).push(o); });
-  const CHW=4.35;                                   /* 7.4px mono, near enough */
+  const CHW=5.3;                                    /* 9px mono, near enough */
   const trim=n=>n.split(' / ')[0].replace(/^Passo (dello |del |della |di )?/,'')
                  .replace('Rifugio Auronzo · ','').replace(' tunnel','').replace(' toll gate','')
                  .replace('Kaiser-Franz-Josefs-Höhe','Franz-Josefs-Höhe');
-  const lab=(arr,side)=>{
-    arr.sort((a,b)=>a.y-b.y); let last=-99; const gap=15;
-    return arr.map(o=>{
-      const ly=Math.max(o.y+3,last+gap); last=ly;
-      const nm=trim(o.p[2]), w=nm.length*CHW;
-      /* flip to the other side rather than run off the edge */
-      let an=side==='L'?'end':'start', lx=side==='L'?o.x-6:o.x+6;
-      if(an==='start' && lx+w>W-3){ an='end'; lx=o.x-6; }
-      if(an==='end' && lx-w<3){ an='start'; lx=o.x+6; }
+  /* Ends first, then passes, then the rest; each tries a ring of offsets and
+     takes the first that clears what is already down. A crowded map drops a
+     minor name rather than printing two on top of each other. */
+  const seen=new Set();
+  const cands=seeds.slice()
+    .sort((a,b)=>((b.end?2:0)+(b.pass?1:0))-((a.end?2:0)+(a.pass?1:0)) || a.y-b.y)
+    .filter(o=>{ if(seen.has(o.p[2])) return false; seen.add(o.p[2]); return true; });
+  const taken=seeds.map(o=>({x0:o.x-5,x1:o.x+5,y0:o.y-5,y1:o.y+5}));
+  const clash=r=>taken.some(q=>r.x0<q.x1+1&&q.x0<r.x1+1&&r.y0<q.y1+1&&q.y0<r.y1+1);
+  const NAME=9.2, BOX=NAME+7.6;
+  let labels='';
+  cands.forEach(o=>{
+    const nm=trim(o.p[2]);
+    const sub=(o.end&&o.tm? o.tm+' · ':'')+o.p[1]+' m'+(o.p[0]?' · '+o.p[0]+' km':'');
+    const w=Math.max(nm.length*CHW, sub.length*CHW*0.82);
+    for(const off of [[7,2],[-7,2],[7,-9],[-7,-9],[7,13],[-7,13],[7,-20],[-7,-20],[0,17],[0,-18]]){
+      const dx=off[0], dy=off[1];
+      const an=dx<0?'end':(dx>0?'start':'middle');
+      const lx=o.x+dx, ly=o.y+dy;
+      const x0=an==='end'?lx-w:(an==='start'?lx:lx-w/2);
+      const r={x0,x1:x0+w,y0:ly-NAME*.8,y1:ly-NAME*.8+BOX};
+      if(r.x0<2||r.x1>W-2||r.y0<2||r.y1>H-2) continue;
+      if(clash(r)) continue;
+      taken.push(r);
       const cls=o.pass?'dm-lbl pass':(o.end?'dm-lbl end':'dm-lbl');
-      const sub=(o.end&&o.tm? o.tm+' · ':'')+o.p[1]+' m'+(o.p[0]?' · '+o.p[0]+' km':'');
-      return `<text class="${cls}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${an}">${esc(nm)}</text>`
-           + `<text class="dm-sub${o.end?' end':''}" x="${lx.toFixed(1)}" y="${(ly+5.2).toFixed(1)}" text-anchor="${an}">${esc(sub)}</text>`;
-    }).join('');
-  };
+      labels+=`<text class="${cls}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${an}">${esc(nm)}</text>`
+            + `<text class="dm-sub${o.end?' end':''}" x="${lx.toFixed(1)}" y="${(ly+6.9).toFixed(1)}" text-anchor="${an}">${esc(sub)}</text>`;
+      break;
+    }
+  });
   /* leg distance at each segment midpoint, skipped where they would collide */
   let legs='';
   const usedL=[];
@@ -1543,13 +1574,13 @@ function dayMapSVG(day,di){
     const a=pts[i-1], b=pts[i];
     const km=b.p[0]-a.p[0]; if(km<=0) continue;
     const mx=(X(a.g[1])+X(b.g[1]))/2, my=(Y(a.g[0])+Y(b.g[0]))/2;
-    if(usedL.some(q=>Math.abs(q[0]-mx)<16&&Math.abs(q[1]-my)<8)) continue;
+    if(usedL.some(q=>Math.abs(q[0]-mx)<18&&Math.abs(q[1]-my)<9)) continue;
     usedL.push([mx,my]);
-    const w=String(km).length*3.6+5;
-    legs+=`<g><rect class="dm-legbg" x="${(mx-w/2).toFixed(1)}" y="${(my-3.6).toFixed(1)}" width="${w.toFixed(1)}" height="7.2" rx="3.6"/>`
-        + `<text class="dm-leg" x="${mx.toFixed(1)}" y="${(my+1.9).toFixed(1)}" text-anchor="middle">${km}</text></g>`;
+    const w=String(km).length*4.4+6;
+    legs+=`<g><rect class="dm-legbg" x="${(mx-w/2).toFixed(1)}" y="${(my-4.4).toFixed(1)}" width="${w.toFixed(1)}" height="8.8" rx="4.4"/>`
+        + `<text class="dm-leg" x="${mx.toFixed(1)}" y="${(my+2.3).toFixed(1)}" text-anchor="middle">${km}</text></g>`;
   }
-  const labels=legs+lab(LS,'L')+lab(RS,'R');
+  labels=legs+labels;
   return `<svg class="daymap" viewBox="0 0 ${W} ${H}" role="img" aria-label="Map of day ${day.n}">`+
     `<path class="rt-case" d="${d}"/><path class="rt" d="${d}" stroke="${DAYC[di]}"/>${marks}${labels}</svg>`;
 }
@@ -1566,20 +1597,7 @@ function gdirAll(s){
   });
   if(flat.length<2) return null;
   const o=flat[0], dst=flat[flat.length-1], mid=flat.slice(1,-1);
-  const MAX=9, total=dst.km||1;
-  const picks=[];
-  for(let i=0;i<MAX;i++){
-    const target=((i+0.5)/MAX)*total;
-    let best=null,bd=Infinity;
-    for(const q of mid){
-      if(picks.indexOf(q)>-1) continue;
-      const bias=q.p[3]==='pass'?0.55:(q.p[3]==='stop'?0.75:1);
-      const dist=Math.abs(q.km-target)*bias;
-      if(dist<bd){bd=dist;best=q;}
-    }
-    if(best) picks.push(best);
-  }
-  picks.sort((a,b)=>a.km-b.km);
+  const picks=pickWaypoints(mid,o,dst,9);
   const c=q=>GEO[q.p[2]][0].toFixed(5)+','+GEO[q.p[2]][1].toFixed(5);
   return 'https://www.google.com/maps/dir/?api=1&origin='+c(o)+'&destination='+c(dst)
        + (picks.length?'&waypoints='+picks.map(c).join('%7C'):'') + '&travelmode=driving';
