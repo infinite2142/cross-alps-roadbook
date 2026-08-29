@@ -1,7 +1,7 @@
-# 2026 Cross-Alps Trip
+# Cross-Alps Trip
 
-Single-page roadbook for a four-day drive from Munich Airport across Austria and Italy,
-1–4 September 2026. Three switchable route options, per-day roadbooks with altitude
+Single-page roadbook for a four-day drive from Munich Airport across Austria and Italy.
+Three switchable route options, per-day roadbooks with altitude
 profiles, a schematic and a terrain map, tolls, hotels and a pre-departure checklist.
 
 ## Files
