@@ -2339,33 +2339,47 @@ document.addEventListener('click',e=>{
 (function profTip(){
   const tip=document.createElement('div'); tip.id='profTip'; document.body.appendChild(tip);
   const KIND={pass:'Pass',stop:'Stop'};
-  /* A tap fires mouseover but often no mouseout and never a mousemove, so on a
-     touch screen this would appear unpositioned and then stay there. */
+  /* Hover follows the pointer. Touch has no hover and fires no mousemove, so
+     there it is tap to show and tap anywhere else to dismiss — the earlier
+     version simply disabled itself on touch, which lost the feature. */
   const hoverable=matchMedia('(hover:hover) and (pointer:fine)').matches;
   const hide=()=>{ tip.style.display='none'; };
-  addEventListener('scroll',hide,{passive:true});
-  addEventListener('pointerdown',hide,{passive:true});
-  addEventListener('touchstart',hide,{passive:true});
-  addEventListener('blur',hide);
-  document.addEventListener('visibilitychange',hide);
-  if(!hoverable) return;
-  document.addEventListener('mouseover',e=>{
-    const h=e.target.closest && e.target.closest('.p-hit'); if(!h) return;
+  const place=(cx,cy)=>{
+    const pad=14, w=tip.offsetWidth, h=tip.offsetHeight;
+    let x=cx+pad, y=cy+pad;
+    if(x+w>innerWidth-8) x=cx-w-pad;
+    if(y+h>innerHeight-8) y=cy-h-pad;
+    /* it is position:fixed, so keep it inside the viewport whatever happens */
+    x=Math.min(Math.max(8,x), Math.max(8,innerWidth-w-8));
+    y=Math.min(Math.max(8,y), Math.max(8,innerHeight-h-8));
+    tip.style.left=x+'px'; tip.style.top=y+'px';
+  };
+  const show=(h,cx,cy)=>{
     const d=h.dataset, kind=KIND[d.k]||'Waypoint';
     tip.innerHTML='<b>'+d.n+'</b><span class="pm">'+d.a+' m · km '+d.km+' · '+kind+(d.c?' · '+d.c:'')+'</span>'+
       (d.note?'<span class="pn">'+d.note+'</span>':'');
-    tip.style.display='block';
+    tip.style.display='block'; place(cx,cy);
+  };
+  addEventListener('scroll',hide,{passive:true});
+  addEventListener('blur',hide);
+  document.addEventListener('visibilitychange',hide);
+
+  /* works for a mouse click too, and a tap that misses a point closes it */
+  document.addEventListener('click',e=>{
+    const h=e.target.closest && e.target.closest('.p-hit');
+    if(h) show(h,e.clientX,e.clientY); else hide();
+  });
+
+  if(!hoverable) return;
+  document.addEventListener('mouseover',e=>{
+    const h=e.target.closest && e.target.closest('.p-hit'); if(!h) return;
+    show(h,e.clientX,e.clientY);
   });
   document.addEventListener('mouseout',e=>{
-    if(e.target.closest && e.target.closest('.p-hit')) tip.style.display='none';
+    if(e.target.closest && e.target.closest('.p-hit')) hide();
   });
   document.addEventListener('mousemove',e=>{
-    if(tip.style.display!=='block') return;
-    const pad=14, w=tip.offsetWidth, h=tip.offsetHeight;
-    let x=e.clientX+pad, y=e.clientY+pad;
-    if(x+w>innerWidth-8) x=e.clientX-w-pad;
-    if(y+h>innerHeight-8) y=e.clientY-h-pad;
-    tip.style.left=x+'px'; tip.style.top=y+'px';
+    if(tip.style.display==='block') place(e.clientX,e.clientY);
   });
 })();
 
