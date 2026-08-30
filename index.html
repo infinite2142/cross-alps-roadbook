@@ -449,8 +449,13 @@
   .rb-note{grid-column:3 / 5;color:var(--slate);font-size:12.5px;line-height:1.45;
     display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
   @media(max-width:640px){
-    .rb-note{grid-column:1 / 5;-webkit-line-clamp:3}
-    .rb-row{grid-template-columns:36px 52px 1fr 52px;gap:3px 8px}
+    /* stays in column 3 so it lines up under the country tag rather than
+       running out to the far left of the row. The columns and the note are
+       trimmed to buy back the width that alignment costs. */
+    .rb-row{grid-template-columns:32px 48px 1fr 46px;gap:3px 6px}
+    .rb-note{font-size:11.8px;line-height:1.4}
+    .rb-name{font-size:13.5px}
+    .rb-alt{font-size:11px}
   }
   .stay .nm .ic{color:var(--slate);width:15px;height:15px;margin-right:6px;vertical-align:-2px}
   .costicon{color:var(--slate);width:15px;height:15px;margin-right:8px;vertical-align:-2.5px}
