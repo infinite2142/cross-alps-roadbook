@@ -1771,12 +1771,14 @@ function ridgeSVG(segments,opts){
     const taken=[];
     const hit=r=>taken.some(q=>r.x0<q.x1+1&&q.x0<r.x1+1&&r.y0<q.y1+1&&q.y0<r.y1+1);
     const lineH=fL*1.06, top=padT-fL*.2, floor=padT+plotH-2;
-    /* Rungs to try, in order: just above the marker, then one up, one down, two
-       up, two down... Upward alone is what forced the ordering to break — a label
-       blocked from climbing had no other escape, so it fell through to the relaxed
-       pass and climbed anyway. Below its own marker is both free space and the
-       correct place for a lower pass to sit. */
-    const LADDER=[0]; for(let i=1;i<10;i++){LADDER.push(i);LADDER.push(-i);}
+    /* Rungs, in preference order. A pass label belongs just above its own marker:
+       search upward only, because a rung below the marker lands the name inside the
+       shaded fill where it reads as a valley town rather than a summit. Way labels
+       may go either way — that slack is what lets a crowded chart resolve at all,
+       and it costs nothing, since a town has no height to misread. */
+    const UP=[]; for(let i=0;i<13;i++) UP.push(i);
+    const ANY=[0]; for(let i=1;i<10;i++){ANY.push(i);ANY.push(-i);}
+    const nearPad=fL*1.5;
     cand.forEach(q=>{
       const label=shortName(q.o.p[2]);
       /* Width is estimated, not measured — the collision test runs while the SVG
@@ -1786,35 +1788,58 @@ function ridgeSVG(segments,opts){
       const chW=q.pass?fL*.575:fL*.51;
       const w=Math.max(label.length*chW, q.pass?(String(q.o.p[1]).length+1)*fA*.6:0);
       const h=lineH*(q.pass?2:1);
+      /* Sideways before upwards. Three anchors on the marker was barely a
+         nudge — about half a label's width of travel — so a name boxed in at its
+         own height had to climb, and climbing is what puts a low pass over a high
+         one. Stepping a whole label clear to either side, with a leader back to
+         the peak, keeps it at the height it belongs at. */
+      /* Lateral travel scales with the crowd, not the name: stepping a short label
+         like d'Eira clear of a long one like Forcola di Livigno takes more than its
+         own width, and it was the last pass with no choice but to climb over its
+         taller neighbours. Only passes get the long reach — they are the labels
+         worth moving a leader line for, and searching it for every waypoint made
+         the repaint slow enough to hang on a resize. */
+      const U=Math.max(w,fL*5);
+      const SIDES = q.pass
+        ? [['middle',0],['start',3],['end',-3],
+           ['middle',U*0.62],['middle',-U*0.62],['middle',U*1.15],['middle',-U*1.15],
+           ['middle',U*1.8],['middle',-U*1.8],['middle',U*2.6],['middle',-U*2.6],
+           ['middle',U*3.4],['middle',-U*3.4]]
+        : [['middle',0],['start',3],['end',-3]];
       let done=false;
-      /* Try all three anchors at a level before climbing to the next. `side` used
-         to advance with the same counter as `dy`, so a label needing nothing more
-         than a sideways nudge climbed a level instead — and a label that has
-         climbed is exactly what puts a low pass above a high one.
-         Then: a pass label may not sit above the label of any taller pass. Passes
-         are placed tallest first, so every taller one is already down and can be
-         checked against. Enforced on a first attempt and dropped on a second, so
-         the ordering is tidied wherever it can be without ever costing a label. */
-      /* Three tries, loosening only as far as it must: order against every taller
-         pass, then against only the ones close enough to be read side by side,
-         then not at all. On a wide chart the first try succeeds everywhere; a
-         phone-width chart falls to the second rather than giving up entirely. */
-      for(let relax=0;relax<(q.pass?2:3)&&!done;relax++){
+      /* Try all three anchors at a level before climbing to the next. `side` used to
+         advance with the same counter as `dy`, so a label needing nothing more than
+         a sideways nudge climbed a level instead — and a climbing label is what puts
+         a low pass above a high one. Passes are placed tallest first, so a taller
+         one is always already down to check against. */
+      /* Three attempts for a pass, each giving up one thing: above its marker and
+         in altitude order; then above its marker, order be damned; then anywhere at
+         all. The last rung is what a phone-width chart falls back on — a name below
+         its peak reads worse than one above it, but not as badly as no name. */
+      for(let relax=0;relax<(q.pass?3:2)&&!done;relax++){
+        const LADDER = (q.pass&&relax<2)?UP:ANY;
         for(let li=0;li<LADDER.length&&!done;li++){
-          for(let side=0;side<3;side++){
+          for(let si=0;si<SIDES.length;si++){
+            const anchor=SIDES[si][0], off=SIDES[si][1];
             const dy=-(fL*1.0)-LADDER[li]*(lineH*0.92);
-            const anchor=side===0?'middle':(side===1?'start':'end');
-            const lx=q.o.x+(side===1?3:(side===2?-3:0));
+            const lx=q.o.x+off;
             const ly=q.o.y+dy;
             const x0=anchor==='middle'?lx-w/2:(anchor==='start'?lx:lx-w);
             const r={x0,x1:x0+w,y0:ly-lineH*.85,y1:ly-lineH*.85+h,pass:q.pass,alt:q.o.p[1]};
             if(r.x0<padL-14||r.x1>W-2||r.y0<top||r.y1>floor) continue;
             if(hit(r)) continue;
-            if(relax<2&&q.pass&&taken.some(t=>t.pass&&t.alt>r.alt&&r.y0<t.y0-.5
-                 &&(relax===0||Math.abs(((t.x0+t.x1)/2)-((r.x0+r.x1)/2))<plotW*0.28))) continue;
+            /* A pass may not sit above a taller pass whose label it overlaps
+               horizontally — side by side is where the eye reads one as higher than
+               the other. Near neighbours only: chained across the whole chart this
+               dragged every lower pass down the page, putting the Brenner below a
+               Reschenpass a thousand kilometres away and both below their markers. */
+            if(relax===0&&q.pass&&taken.some(t=>t.pass&&t.alt>r.alt&&r.y0<t.y0-.5
+                 &&r.x0<t.x1+nearPad&&t.x0<r.x1+nearPad)) continue;
             taken.push(r);
-            const far=Math.abs(dy)>fL*2.3;
-            if(far) marks+=`<line class="peak-lead${q.pass?'':' faint'}" x1="${q.o.x.toFixed(1)}" y1="${(q.o.y-2).toFixed(1)}" x2="${q.o.x.toFixed(1)}" y2="${(ly+lineH*.25).toFixed(1)}"/>`;
+            /* A label that has moved needs a line back to its peak, and one that
+               has moved sideways needs that line to actually reach it. */
+            const far=Math.abs(dy)>fL*2.3||Math.abs(off)>4;
+            if(far) marks+=`<line class="peak-lead${q.pass?'':' faint'}" x1="${q.o.x.toFixed(1)}" y1="${(q.o.y-2).toFixed(1)}" x2="${lx.toFixed(1)}" y2="${(ly+lineH*.25).toFixed(1)}"/>`;
             marks+= q.pass
               ? `<text class="peak-label stacked" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}</text>`
                 +`<text class="peak-alt-in stacked" x="${lx.toFixed(1)}" y="${(ly+fA*1.02).toFixed(1)}" text-anchor="${anchor}">${q.o.p[1]}m</text>`

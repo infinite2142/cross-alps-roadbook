@@ -60,11 +60,21 @@ stale copy and draw the wrong conclusion.
   and its label is dropped in silence — no warning, no fallback. `headroom` keeps two label lines
   clear above the highest ground. Count rendered `text.peak-label` against the `'pass'` points in
   the data before believing a profile is complete; the Stelvio was missing for a long time.
-- **A profile has two failure modes, and fixing one worsens the other.** Labels can go missing,
-  and they can print out of altitude order — a lower pass sitting above a higher one, which reads
-  as though it were the taller. Passes are placed tallest first and may not sit above an already
-  placed taller pass; where that cannot be honoured the label is dropped rather than printed
-  misleading. Measure both counts at ~1030, 620, 430 and 360px before and after any change here.
+- **A profile has four failure modes and they trade against each other.** A pass label can go
+  missing, print below its own marker (inside the fill, where it reads as a valley town), print
+  out of altitude order, or overlap a neighbour. Fixing any one of them naively worsens another,
+  so measure all four at ~1030, 620, 430 and 360px, on the whole-route chart *and* the day
+  charts, before and after any change here. `__scan` patterns for this are in the git history.
+- **Ordering rules must be local.** Forbidding a pass label from sitting above *any* taller pass
+  chained down the whole chart and pushed the Brenner below a Reschenpass 1000 km away, both of
+  them into the fill. Scope it to labels that actually overlap horizontally — side by side is
+  the only place the eye compares two heights.
+- **Move a label sideways before moving it up.** Climbing is what breaks altitude order, and
+  three anchors on the marker is barely half a label's travel. Lateral offsets scale with
+  `max(w, fL*5)`, not the label's own width, or a short name can never step clear of a long one.
+  Passes search upward only, and fall back to a rung below the marker solely to avoid being
+  dropped. Only passes get the long lateral ladder — running it for every waypoint made the
+  repaint slow enough to hang a resize.
 
 ## Verifying a change
 
