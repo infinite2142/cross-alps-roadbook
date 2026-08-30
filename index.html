@@ -28,7 +28,6 @@
     --d1:#26557F; --d2:#6E4A87; --d3:#A8467E; --d4:#C24966;
     --at:#7A6A4E; --it:#3E6B4B; --de:#55525A; --ch:#8E3F3A;
     --ghost:#CFCAC0;
-    --bar:#DCD7CC; --barline:#C4BEB1; --barink:#191A18; --barmute:#5B5E58;
     --pad: clamp(16px, 4vw, 44px);
   }
   *{box-sizing:border-box}
@@ -374,13 +373,22 @@
   .sechead{display:flex;align-items:center;gap:11px;margin-bottom:4px;
     position:sticky;top:calc(var(--hdrH,60px) - 1px);z-index:900;padding:10px 0 8px;
     box-shadow:0 10px 12px -12px rgba(0,0,0,.35)}
-  .sechead,.day-head{margin-left:calc(var(--pad) * -1);margin-right:calc(var(--pad) * -1);
-    padding-left:var(--pad);padding-right:var(--pad)}
-  /* the sticky bars get their own tone so they read as chrome, not as content */
-  .sechead,.day-head{background:var(--bar);border-bottom:1px solid var(--barline)}
-  .t-ink .sechead{background:#23262A;border-bottom-color:#33373C}
-  .sechead h3,.day-head h3{color:var(--barink)}
-  .day-head .when{color:var(--barmute)}
+  /* the bar takes the section's own background, so the heading colour is what
+     makes it noticeable rather than a block of tone */
+  .t-rock .sechead{background:var(--rock)}
+  .t-warm .sechead{background:#EAE6DD}
+  .t-cool .sechead{background:#E1E4E1}
+  .t-ink  .sechead{background:#1B1D1A}
+  body.dark .t-rock .sechead{background:#141619}
+  body.dark .t-warm .sechead{background:#191C21}
+  body.dark .t-cool .sechead{background:#171A20}
+  body.dark .t-ink  .sechead{background:#0B0D10}
+  .day-head{background:var(--rock)}
+  .day.alt .day-head{background:#EAE6DD}
+  body.dark .day-head{background:#141619}
+  body.dark .day.alt .day-head{background:#191C21}
+  .sechead h3,.day-head h3{color:var(--glow)}
+  .t-ink .sechead h3{color:#E4849F}
   @media (max-width:760px),(max-height:560px){
     .sechead{padding:7px 0 6px}
     .sechead h3{font-size:16px}
@@ -494,8 +502,7 @@
 
   /* ── dark theme ────────────────────────── */
   body.dark{--rock:#141619;--panel:#1C1F24;--ink:#E9EAE7;--slate:#969C9C;--line:#2F343B;
-            --snow:#101216;--ghost:#262B32;
-            --bar:#23272D;--barline:#343A41;--barink:#F0F1EE;--barmute:#A7ADAD}
+            --snow:#101216;--ghost:#262B32}
   body.dark .mnote,body.dark .hero .blurb,body.dark .evening,body.dark .card p,body.dark .lede{color:#A7ADAD}
   body.dark .t-rock{background:#141619} body.dark .t-warm{background:#191C21}
   body.dark .t-cool{background:#171A20} body.dark .t-ink{background:#0B0D10}
