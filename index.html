@@ -1723,7 +1723,11 @@ function ridgeSVG(segments,opts){
      the route had nowhere to put its name and was dropped without a trace. That
      is how the Stelvio and the Gavia lost their labels. The box grows by the
      reserved strip rather than the profile being squashed into it. */
-  const headroom=fL*2.4;
+  /* Sky above the highest ground, for the pass names to stack into. Two label lines
+     was enough to stop the top peak losing its name; a cluster needs room for the
+     whole stack, so this is nearer five. The box grows by it — the profile keeps its
+     vertical scale rather than being squashed into the space the labels want. */
+  const headroom=fL*7.4;
   H+=headroom;
   const plotH=H-padT-padB,plotW=W-padL-padR,curveH=plotH-headroom;
   let total=0;const segs=segments.map(s=>{const len=s.pts[s.pts.length-1][0];const o={...s,offset:total,len};total+=len;return o;});
@@ -1766,7 +1770,11 @@ function ridgeSVG(segments,opts){
     cand.forEach(q=>{ q.end = (q.o===first||q.o===last); });
     /* a day that returns to where it started has the same name twice — keep the
        endpoint occurrence, or the arrival label disappears */
-    cand.sort((a,b)=>(b.end-a.end)||(b.pass-a.pass)||(b.o.p[1]-a.o.p[1]));
+    /* Passes first, and before the endpoints too: a pass is the reason the chart
+       exists, a town on the way is not. Endpoints still outrank ordinary waypoints,
+       and a repeated name keeps its endpoint occurrence — the dedup below takes
+       whichever copy sorts first. */
+    cand.sort((a,b)=>(b.pass-a.pass)||(b.end-a.end)||(b.o.p[1]-a.o.p[1]));
     cand=cand.filter(q=>{const n=q.o.p[2]; if(seenN.has(n))return false; seenN.add(n); return true;});
     const taken=[];
     const hit=r=>taken.some(q=>r.x0<q.x1+1&&q.x0<r.x1+1&&r.y0<q.y1+1&&q.y0<r.y1+1);
@@ -1776,8 +1784,19 @@ function ridgeSVG(segments,opts){
        shaded fill where it reads as a valley town rather than a summit. Way labels
        may go either way — that slack is what lets a crowded chart resolve at all,
        and it costs nothing, since a town has no height to misread. */
-    const UP=[]; for(let i=0;i<13;i++) UP.push(i);
+    const DOWN=[]; for(let i=1;i<9;i++) DOWN.push(-i);   /* under the line, last resort */
     const ANY=[0]; for(let i=1;i<10;i++){ANY.push(i);ANY.push(-i);}
+    /* Passes in a cluster cannot all fit between their own markers and the label of
+       the tallest among them: Foscagno, d'Eira, Forcola and Bernina have ten units
+       of height between all four markers, and one label is nine deep. So a pass with
+       shorter passes crowded around it starts its search that many rows up and
+       leaves the rows beneath for them. The stack then comes out tallest-highest,
+       every name still above its own peak — which is what more sky alone could not
+       buy, since the ceiling was never what blocked them. */
+    const passC=cand.filter(c=>c.pass);
+    const halfW=c=>shortName(c.o.p[2]).length*fL*.575/2;
+    passC.forEach(q=>{ q.reserve=passC.filter(o=>o!==q && o.o.p[1]<q.o.p[1]
+        && Math.abs(o.o.x-q.o.x) < halfW(o)+halfW(q)).length; });
     const nearPad=fL*1.5;
     cand.forEach(q=>{
       const label=shortName(q.o.p[2]);
@@ -1793,31 +1812,28 @@ function ridgeSVG(segments,opts){
          own height had to climb, and climbing is what puts a low pass over a high
          one. Stepping a whole label clear to either side, with a leader back to
          the peak, keeps it at the height it belongs at. */
-      /* Lateral travel scales with the crowd, not the name: stepping a short label
-         like d'Eira clear of a long one like Forcola di Livigno takes more than its
-         own width, and it was the last pass with no choice but to climb over its
-         taller neighbours. Only passes get the long reach — they are the labels
-         worth moving a leader line for, and searching it for every waypoint made
-         the repaint slow enough to hang on a resize. */
-      const U=Math.max(w,fL*5);
-      const SIDES = q.pass
-        ? [['middle',0],['start',3],['end',-3],
-           ['middle',U*0.62],['middle',-U*0.62],['middle',U*1.15],['middle',-U*1.15],
-           ['middle',U*1.8],['middle',-U*1.8],['middle',U*2.6],['middle',-U*2.6],
-           ['middle',U*3.4],['middle',-U*3.4]]
-        : [['middle',0],['start',3],['end',-3]];
+      /* A label stays over its own peak. Walking one sideways to find space put the
+         name nearer a summit it does not belong to, which is worse than not printing
+         it: a pass reads by position, and a displaced position is a wrong answer
+         rather than a missing one. Nudge only. */
+      const SIDES=[['middle',0],['start',3],['end',-3]];
       let done=false;
       /* Try all three anchors at a level before climbing to the next. `side` used to
          advance with the same counter as `dy`, so a label needing nothing more than
          a sideways nudge climbed a level instead — and a climbing label is what puts
          a low pass above a high one. Passes are placed tallest first, so a taller
          one is always already down to check against. */
-      /* Three attempts for a pass, each giving up one thing: above its marker and
-         in altitude order; then above its marker, order be damned; then anywhere at
-         all. The last rung is what a phone-width chart falls back on — a name below
-         its peak reads worse than one above it, but not as badly as no name. */
-      for(let relax=0;relax<(q.pass?3:2)&&!done;relax++){
-        const LADDER = (q.pass&&relax<2)?UP:ANY;
+      /* Two attempts for a pass. First: above its own marker, and below the label of
+         any taller pass beside it — a higher pass must carry the higher name, or the
+         chart lies about which one is which. Failing that it goes under the line,
+         where it is plainly not part of that ordered band. Failing that it is not
+         drawn: a couple of missing names beats a misleading one. */
+      /* Reserved row first, then higher, then back down towards the marker. */
+      const base=q.pass?Math.min(q.reserve||0,6):0;
+      const UP=[]; for(let i=base;i<15;i++) UP.push(i);
+      for(let i=base-1;i>=0;i--) UP.push(i);
+      for(let relax=0;relax<2&&!done;relax++){
+        const LADDER = q.pass?(relax===0?UP:DOWN):ANY;
         for(let li=0;li<LADDER.length&&!done;li++){
           for(let si=0;si<SIDES.length;si++){
             const anchor=SIDES[si][0], off=SIDES[si][1];

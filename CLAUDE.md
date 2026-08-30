@@ -65,16 +65,19 @@ stale copy and draw the wrong conclusion.
   out of altitude order, or overlap a neighbour. Fixing any one of them naively worsens another,
   so measure all four at ~1030, 620, 430 and 360px, on the whole-route chart *and* the day
   charts, before and after any change here. `__scan` patterns for this are in the git history.
+- **The rules, in priority order.** A pass label outranks a waypoint label. A taller pass carries
+  the higher label. A label sits above its own marker. Where they cannot all hold: put the name
+  under the line, and failing that leave it out — never sideways, and never out of order.
+  A displaced label is a wrong answer; a missing one is only a gap.
 - **Ordering rules must be local.** Forbidding a pass label from sitting above *any* taller pass
   chained down the whole chart and pushed the Brenner below a Reschenpass 1000 km away, both of
   them into the fill. Scope it to labels that actually overlap horizontally — side by side is
   the only place the eye compares two heights.
-- **Move a label sideways before moving it up.** Climbing is what breaks altitude order, and
-  three anchors on the marker is barely half a label's travel. Lateral offsets scale with
-  `max(w, fL*5)`, not the label's own width, or a short name can never step clear of a long one.
-  Passes search upward only, and fall back to a rung below the marker solely to avoid being
-  dropped. Only passes get the long lateral ladder — running it for every waypoint made the
-  repaint slow enough to hang a resize.
+- **A cluster needs reserved rows, not more sky.** Four passes whose markers span ten units
+  cannot all fit between those markers and the tallest one's label. Raising `headroom` does
+  nothing, because the ceiling was never the blocker. Each pass instead starts its search as
+  many rows up as it has shorter passes crowded around it (`reserve`), leaving them the rows
+  beneath, and the cluster resolves into a stack in altitude order.
 
 ## Verifying a change
 
