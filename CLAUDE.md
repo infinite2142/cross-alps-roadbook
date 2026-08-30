@@ -73,6 +73,11 @@ stale copy and draw the wrong conclusion.
   chained down the whole chart and pushed the Brenner below a Reschenpass 1000 km away, both of
   them into the fill. Scope it to labels that actually overlap horizontally — side by side is
   the only place the eye compares two heights.
+- **`ridgeSVG` runs itself twice.** The first pass lays out with sky sized for the worst cluster
+  on any route; the second re-runs with only what this chart used, so a flat day is not padded to
+  the height a five-pass day needs. `opts.headroom` set means "this is the second pass" and stops
+  the recursion. Cropping the viewBox instead does not work — the country band is pinned near the
+  top of the box, so the empty gap is underneath it, not above.
 - **A cluster needs reserved rows, not more sky.** Four passes whose markers span ten units
   cannot all fit between those markers and the tallest one's label. Raising `headroom` does
   nothing, because the ceiling was never the blocker. Each pass instead starts its search as

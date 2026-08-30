@@ -142,7 +142,12 @@
   /* landscape phones: keep enough sky above the ridgeline for the sun to show */
   @media (max-height:560px){ .banner{min-height:210px} }
 
-  #mapHost{touch-action:none}
+  /* touch-action:none took the page's scroll with it — a finger landing anywhere on
+     the map stopped the page dead, and the map covers most of a phone screen. pan-y
+     hands vertical scrolling back to the browser while still leaving pinch to us;
+     once zoomed in, one finger has to pan the map, so it goes back to none. */
+  #mapHost{touch-action:pan-y}
+  #mapHost.zoomed{touch-action:none}
 
   #mapHost.zoomed{cursor:grab}
   #mapHost.zoomed:active{cursor:grabbing}
@@ -401,8 +406,12 @@
   .banner .pano{display:block;width:100%;height:clamp(250px,36vw,400px)}
   .banner-copy{position:absolute;left:0;right:0;bottom:0;padding:0 var(--pad) clamp(20px,3.4vw,34px);pointer-events:none}
   .banner-copy .inner{max-width:1120px;margin:0 auto}
+  /* flex-start, not center: once the line wraps, centring floats the peak into the
+     gap between the two lines. The margin re-centres it on the first line's glyphs,
+     which is where the eye expects it. */
   .banner .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;
-    color:#E4B9C6;margin:0 0 10px;display:flex;align-items:center;gap:9px}
+    color:#E4B9C6;margin:0 0 10px;display:flex;align-items:flex-start;gap:9px;line-height:1.5}
+  .banner .eyebrow .ic{margin-top:.25em}
   .banner h1{font-size:clamp(28px,5.6vw,60px);line-height:.98;color:#fff;max-width:19ch;letter-spacing:-.03em}
   .banner .sub{font-family:'IBM Plex Mono',monospace;font-size:clamp(11px,1.5vw,13px);letter-spacing:.1em;
     color:#B8BFC8;margin:12px 0 0;text-transform:uppercase}
@@ -973,7 +982,7 @@ function gdir(day){
 const D = {
 A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',short:'Garda',sub:'South to the lake, home through Switzerland. Longest drive.',
  heroTitle:'Down to the water, across the plain, and back over four countries.',
- blurb:'The long way south, with the extra evening built in. Day 0 runs the Brenner to the east shore of Garda, day 1 drops to Mantova on the plain and climbs back into the mountains at Ponte di Legno, day 2 loops the Gavia, Livigno, the Bernina and St Moritz from a thermal spa above Bormio, and day 3 comes home through the Swiss Engadin. Eleven passes, four countries, and the Stelvio driven once, properly, on the last morning.',
+ blurb:'The long way south, with the extra evening built in. Day 0 runs the Brenner to the east shore of Garda, day 1 drops to Mantova on the plain and climbs back into the mountains at Ponte di Legno, day 2 loops the Gavia, Livigno, the Bernina and St Moritz from a thermal spa above Bormio, and day 3 comes home through the Swiss Engadin. Eleven passes, four countries, and the Stelvio saved for the last morning.',
  stats:[['1,348 km','total distance'],['21h 45m','moving time'],['11','named passes'],['2,757 m','highest point'],['4','countries']],
  costs:[['Austrian 10-day digital vignette','Day 0, buy at a petrol station','€12.80'],
   ['Brenner autobahn, A13 and A22','Day 0','~€40'],
@@ -982,9 +991,9 @@ A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',short:'Garda',sub:'South t
  total:'≈ €95',
  days:[
   {n:0,from:'Munich Airport',to:'Garda',km:415,time:'4h 15m',passes:1,depart:'15:00',arrive:'≈20:00',
-   note:'<strong>Motorway the whole way, and no apologies for it.</strong> Four hours of autobahn and autostrada to buy three days of proper roads, and it does not run straight south: the A8 and A93 swing southeast through Rosenheim to the Inn at Kufstein, then west up the valley to Innsbruck. Buy the Austrian vignette before Kufstein. Innsbruck is the last cheap fuel before Italy. South of the pass the Eisack valley narrows through Bolzano and Trento with vineyards on both walls, and then the lake opens out — Garda sits on the quieter east shore, twenty minutes off the motorway at Affi, with olive terraces behind the town and the water in front.',
+   note:'<strong>Motorway the whole way, and no apologies for it.</strong> Four hours of autobahn and autostrada to buy three days of proper roads. The A8 and A93 swing southeast through Rosenheim to the Inn at Kufstein, then west up the valley to Innsbruck. Buy the Austrian vignette before Kufstein. Innsbruck is the last cheap fuel before Italy. South of the pass the Eisack valley narrows through Bolzano and Trento with vineyards on both walls, and then the lake opens out — Garda sits on the quieter east shore, twenty minutes off the motorway at Affi, with olive terraces behind the town and the water in front.',
    pts:[[0,448,'Munich Airport','stop','DE','Car rental. Allow 45 min for the desk and the paperwork.'],
-    [100,499,'Kufstein','','AT','Border and the vignette check. The road swings east to the Inn here rather than running straight south.'],
+    [100,499,'Kufstein','','AT','Border and the vignette check. The road swings east to the Inn here.'],
     [165,574,'Innsbruck','','AT','Last cheap fuel before Italy.'],
     [203,1370,'Brenner Pass','pass','AT','Motorway crossing. Austrian vignette plus the A13 toll.'],
     [283,262,'Bolzano','','IT',''],[340,194,'Trento','','IT',''],
@@ -1723,11 +1732,11 @@ function ridgeSVG(segments,opts){
      the route had nowhere to put its name and was dropped without a trace. That
      is how the Stelvio and the Gavia lost their labels. The box grows by the
      reserved strip rather than the profile being squashed into it. */
-  /* Sky above the highest ground, for the pass names to stack into. Two label lines
-     was enough to stop the top peak losing its name; a cluster needs room for the
-     whole stack, so this is nearer five. The box grows by it — the profile keeps its
-     vertical scale rather than being squashed into the space the labels want. */
-  const headroom=fL*7.4;
+  /* Sky above the highest ground for the pass names to stack into. Sized for the
+     worst cluster on any route, then handed back on the second pass below if this
+     chart did not need it. Shrinking it is safe: the curve's own scale does not
+     depend on it (curveH cancels out), so the whole drawing just moves up. */
+  const headroom = opts.headroom!=null ? opts.headroom : fL*7.4;
   H+=headroom;
   const plotH=H-padT-padB,plotW=W-padL-padR,curveH=plotH-headroom;
   let total=0;const segs=segments.map(s=>{const len=s.pts[s.pts.length-1][0];const o={...s,offset:total,len};total+=len;return o;});
@@ -1762,7 +1771,7 @@ function ridgeSVG(segments,opts){
   /* staggered stack under the plot: leader down to its own row, then the name */
   /* Labels sit on the chart, just above their own marker, and only climb when
      something is already there. Passes go first so they keep the best spots. */
-  let stackH=0;
+  let stackH=0, labelTop=Infinity;   /* highest label actually placed, for the trim below */
   {
     const seenN=new Set();
     const first=all[0], last=all[all.length-1];
@@ -1870,8 +1879,10 @@ function ridgeSVG(segments,opts){
         const lx=Math.min(Math.max(q.o.x,padL),W-3);
         const ly=Math.min(Math.max(q.o.y-fL*1.2, padT+lineH), padT+plotH-lineH*.6);
         marks+=`<text class="way-label stacked endpt" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}</text>`;
+        labelTop=Math.min(labelTop, ly-lineH*.85);
       }
     });
+    taken.forEach(r=>{ if(r.y0<labelTop) labelTop=r.y0; });
   }
   /* one invisible target per point so the whole profile is hoverable, not just the passes */
   let hits='';
@@ -1923,6 +1934,16 @@ function ridgeSVG(segments,opts){
     extra+=axis;
   }
   const H2=H+stackH+(opts.axis?fG*4.2:0);
+  /* Second pass: give back the sky this chart did not use. Only the crowded charts
+     need the full reservation, and on the rest an empty band above the ridge just
+     pushes the next day off a phone screen. Cropping the viewBox cannot do this —
+     the country band is pinned near the top, so the empty gap is underneath it —
+     so the layout is simply re-run with the headroom that turned out to be enough. */
+  if(opts.headroom==null && isFinite(labelTop)){
+    const used = (padT+headroom) - labelTop;
+    const want = Math.max(fL*2.2, Math.min(headroom, used + fL*1.1));
+    if(want < headroom - fL*0.4) return ridgeSVG(segments, {...opts, headroom:want});
+  }
   const vars=`--fl:${fL.toFixed(2)}px;--fa:${fA.toFixed(2)}px;--fg:${fG.toFixed(2)}px;--ft:${fT.toFixed(2)}px`;
   return `<svg class="profile" viewBox="0 0 ${W} ${H2}" style="${vars}" role="img" aria-label="Altitude profile">
     <defs><linearGradient id="ridgefill" x1="0" y1="0" x2="0" y2="1">
