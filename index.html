@@ -2189,6 +2189,13 @@ function wxRenderCooldown(){
   }
 }
 /* Background tint by daytime high, so a cold pass reads at a glance. */
+/* Rain chance runs green at 0 through blue at 50 to red at 100. Hue rises the
+   whole way — 140 to 210 over the first half, 210 to 360 over the second — so
+   the ramp is continuous rather than reading as two states. */
+function popHue(pop){
+  if(pop==null) return 210;
+  return Math.round(pop<=50 ? 140+pop*1.4 : 210+(pop-50)*3);
+}
 function wxHeat(hi){
   if(hi==null) return '';
   if(hi<=2)  return ' h1';
@@ -2213,7 +2220,7 @@ function wxPaint(data){
       const [ic,lab]=wxIcon(c.code);
       h+='<td class="wx-cell'+wxHeat(c.hi)+'"><svg class="ic" role="img" aria-label="'+esc(lab)+'"><use href="#'+ic+'"/></svg>'+
          '<div class="wx-t"><b>'+c.hi+'°</b> <span>'+c.lo+'°</span></div>'+
-         '<div class="wx-pop'+(c.pop>=55?' hi':'')+'"'+(c.pop==null?'':' style="--ph:'+Math.round(140-1.4*c.pop)+'"')+'>'+(c.pop==null?'–':c.pop+'%')+'</div></td>';
+         '<div class="wx-pop'+(c.pop>=55?' hi':'')+'"'+(c.pop==null?'':' style="--ph:'+popHue(c.pop)+'"')+'>'+(c.pop==null?'–':c.pop+'%')+'</div></td>';
     });
     h+='</tr>';
   });
