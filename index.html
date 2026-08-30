@@ -802,14 +802,10 @@
     <table class="costs" id="costTable"></table>
   </div></section>
 
-  <section class="sec t-warm" id="sec-rules"><div class="wrap">
-    <div class="sechead"><svg class="ic"><use href="#i-alert"/></svg><h3>Rules that will catch you out</h3></div>
-    <div class="grid3" id="rules"></div>
-  </div></section>
 
   <section class="sec t-rock" id="sec-book"><div class="wrap">
-    <div class="sechead"><svg class="ic"><use href="#i-check"/></svg><h3>Book before you fly</h3></div>
-    <p class="lede">Ordered by how badly it goes wrong if you skip it.</p>
+    <div class="sechead"><svg class="ic"><use href="#i-check"/></svg><h3>Book before you drive</h3></div>
+    <p class="lede">Ordered by how badly it goes wrong if you skip it. Some of it keeps until the morning of the drive.</p>
     <ul class="todo" id="todo"></ul>
   </div></section>
 
@@ -1342,62 +1338,25 @@ Object.values(D).forEach(sc=>sc.days.forEach(d=>d.pts.forEach(pt=>{
 
 const TODO_ALL=[
  {t:'Reserve the Tre Cime toll road slot',d:'auronzo.info · €40 · mandatory, no booking means no entry. You can book without a plate now and add it the day before.',when:s=>has(s,'Rifugio Auronzo · Tre Cime')},
+ {t:'Note the gate times and build the day backwards from them',d:'Grossglockner runs 06:00–19:30 on the autumn timetable, last entry 18:45. Timmelsjoch is 07:00–20:00. Both are enforced with gates rather than signs, so arriving late means not going.',when:s=>has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel')||has(s,'Timmelsjoch / Passo del Rombo')},
  {t:'Buy the Grossglockner ticket online',d:'grossglockner.at · €46.50 · 10% off in the road\'s shops if bought in advance, and it saves a queue at Ferleiten.',when:s=>has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel')},
  {t:'Buy the Austrian 10-day digital vignette',d:'€12.80. Buy at a petrol station or ADAC office once you have the plate, not online — online purchases can have a delayed start. Fine is €200+.',when:s=>country(s,'AT')},
  {t:'Budget for the Felbertauern tunnel',d:'€13.00 single, no advance booking. It is the all-weather crossing this route is built around, so plan the toll rather than be surprised by it.',when:s=>has(s,'Felbertauern tunnel')},
+ {t:'Time the Staller Sattel window',d:'Alternating one-way on the Italian side, thirty minutes each way on the half hour. Miss it and you wait, so keep the Pustertal via Sillian in reserve.',when:s=>has(s,'Staller Sattel')},
  {t:'Fill up in Livigno, not before',d:'The valley is duty-free and roughly half the Italian pump price — the cheapest tank of the trip. Customs post at Foscagno; allowances are per person and they do check.',when:s=>has(s,'Livigno')},
  {t:'Check the Gavia and the Stelvio are open',d:'Both normally run into October but shut on the first serious snow. The Gavia is single track in places with no barrier — if it is wet or in cloud, drop to the Aprica and rejoin at Bormio.',when:s=>has(s,'Passo Gavia')||has(s,'Passo dello Stelvio')},
  {t:'Check the Swiss passes and skip the vignette',d:'Ofenpass, Forcola and Bernina are high and shut early in a bad autumn. None of them is motorway, so the CHF 40 sticker is not needed unless you divert onto one.',when:s=>country(s,'CH')},
- {t:'Sort a ZTL-safe car park for every Italian night',d:'Garda, Bormio, Corvara, Canazei and most South Tyrol centres are camera-controlled. Book a hotel with its own garage, or note the nearest signed car park before you arrive.',when:s=>country(s,'IT')},
+ {t:'Sort a ZTL-safe car park for every Italian night',d:'Most centres on this route are camera-controlled and the fine arrives months later through the rental company. Book a hotel with a garage, or note a signed car park on the edge. On the street: white is free but may need a disc, blue is paid, yellow is residents only and gets towed.',when:s=>country(s,'IT')},
  {t:'Call the hotels',d:'Ask for half board when you book rather than on arrival — several of these kitchens stop serving early out of season.',when:s=>s.days.some(d=>d.stays.length)},
  {t:'Pick the two unbooked nights',d:'This route still has stops with nothing researched. Sort them before anything else — everything downstream depends on where you sleep.',when:s=>s.days.some((d,i)=>i<s.days.length-1&&!d.stays.length)},
  {t:'Download offline maps for the whole corridor',d:'Google Maps offline areas cover a box, not a route — take four overlapping boxes. Signal drops on the north side of most of these passes.',when:()=>true},
- {t:'Check pass status the morning before',d:'alpen-paesse.ch, suedtirol.com/verkehr, grossglockner.at webcams. Roadworks near Umbrail have run alternating closures.',when:()=>true},
+ {t:'Check pass status the morning before',d:'alpen-paesse.ch, suedtirol.com/verkehr, grossglockner.at webcams. Roadworks near Umbrail have run alternating closures. Ignore the blogs claiming Passo Gardena is shut — the province confirmed no restriction.',when:()=>true},
  {t:'Take a fleece and gloves in the cabin, not the boot',d:'It is 20°C in the valley and 4°C at 2,700 m, and you will want them at the top, not after unpacking at the hotel.',when:()=>true}
 ];
 const has=(s,name)=>s.days.some(d=>d.pts.some(p=>p[2]===name));
 const country=(s,cc)=>s.days.some(d=>d.pts.some(p=>p[4]===cc));
 const todoFor=s=>TODO_ALL.filter(t=>t.when(s));
 
-const RULES=[
- {t:'Passo Gardena is open',
-  d:'Several blogs say it closes to all traffic this autumn. It doesn\'t. The restriction was reduced to a digital simulation with no physical barriers and no penalties; the province has confirmed no restriction.',
-  when:s=>has(s,'Passo Gardena')},
- {t:'Gated passes close at dusk',
-  d:'Grossglockner runs 06:00–19:30 on the autumn timetable, last entry 18:45. Timmelsjoch is 07:00–20:00. Both are enforced with gates, not signs. Build the day backwards from the gate time.',
-  when:s=>has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel')||has(s,'Timmelsjoch / Passo del Rombo')},
- {t:'Austrian vignette',
-  d:'German-plated rental cars usually don\'t carry one. Buy the 10-day digital vignette (€12.80) at a petrol station or ADAC office for immediate validity. Fine is €200+.',
-  when:s=>country(s,'AT')},
- {t:'Parking colours in Italy',
-  d:'White is free but may need a disc, blue is paid, yellow is residents only and gets towed. On the passes, park only in marked gravel bays.',
-  when:s=>country(s,'IT')},
- {t:'Italian town ZTLs',
-  d:'Most Italian and South Tyrol centres on this route are camera-controlled. Fines arrive months later through the rental company with an admin fee on top. Park in a signed garage on the edge and walk in.',
-  when:s=>country(s,'IT')},
- {t:'Livigno is duty-free',
-  d:'Fuel in Livigno is roughly half the Italian price and it is the cheapest tank of the trip. Customs post at Foscagno; allowances are per person and they do check.',
-  when:s=>has(s,'Livigno')},
- {t:'No Swiss vignette needed',
-  d:'The CHF 40 sticker is only for motorways and semi-motorways. Every Swiss road on this route — Umbrail, Forcola, Bernina, the Ofenpass, the Engadin valley — is an ordinary road, so you do not need one unless you divert onto an autobahn.',
-  when:s=>country(s,'CH')},
- {t:'Gavia and Stelvio are seasonal',
-  d:'Both normally run into October but shut on the first serious snow, and the Gavia is single track in places with no barrier. In cloud or wet, drop to the Aprica and rejoin at Bormio.',
-  when:s=>has(s,'Passo Gavia')||has(s,'Passo dello Stelvio')},
- {t:'The Felbertauern is a toll tunnel',
-  d:'€13.00 single, paid at the portal, no advance booking. It is the all-weather alternative to the Grossglockner rather than a way of avoiding a toll.',
-  when:s=>has(s,'Felbertauern tunnel')},
- {t:'Staller Sattel runs one way at a time',
-  d:'Alternating traffic on the Italian side, thirty minutes each way on the half hour. Miss the window and you wait, so keep the Pustertal via Sillian in reserve.',
-  when:s=>has(s,'Staller Sattel')},
- {t:'Tre Cime is a booked slot',
-  d:'The Auronzo toll road takes a pre-booked slot and no booking means no entry. You can book without a plate and add it the day before.',
-  when:s=>has(s,'Rifugio Auronzo · Tre Cime')},
- {t:'Check the morning before',
-  d:'alpen-paesse.ch for Swiss and border passes, suedtirol.com/verkehr for South Tyrol, grossglockner.at webcams for the Glockner. Roadworks near Umbrail have run alternating closures.',
-  when:()=>true}
-];
-const rulesFor=s=>RULES.filter(r=>r.when(s));
 
 
 /* ============================================================ RENDER ========= */
@@ -2096,8 +2055,6 @@ function render(k){
     r.addEventListener('mouseenter',()=>els().forEach(e=>e.classList.add('hot')));
     r.addEventListener('mouseleave',()=>els().forEach(e=>e.classList.remove('hot')));
   });
-  document.getElementById('rules').innerHTML=rulesFor(s).map(r=>
-    `<div class="card"><h5>${esc(r.t)}</h5><p>${esc(r.d)}</p></div>`).join('');
   document.getElementById('todo').innerHTML=todoFor(s).map(t=>`<li><label><input type="checkbox"><span class="txt">${esc(t.t)}<em>${esc(t.d)}</em></span></label></li>`).join('');
   document.getElementById('costTable').innerHTML=
     `<tr><th>Item</th><th>When</th><th style="text-align:right">Cost</th></tr>`+
@@ -2121,7 +2078,6 @@ function buildNav(s){
   const items = s.days.map((d,i)=>({id:'sec-day'+d.n, label:'Day '+d.n, dot:DAYC[i]}))
     .concat([{id:'sec-weather',label:'Weather',icon:'i-w-part'},
              {id:'sec-tolls',label:'Tolls',icon:'i-ticket'},
-             {id:'sec-rules',label:'Rules',icon:'i-alert'},
              {id:'sec-book',label:'Book first',icon:'i-check'}]);
   document.getElementById('secnav').innerHTML =
     `<a href="#sec-overview" data-t="sec-overview"><svg class="ic"><use href="#i-map"/></svg>Overview</a>` +
