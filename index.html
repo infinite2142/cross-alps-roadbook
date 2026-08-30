@@ -303,7 +303,7 @@
     color:var(--slate);display:flex;gap:4px 16px}
   .day-metrics{display:flex;flex-wrap:wrap;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);margin-bottom:16px}
   .day-metrics b{color:var(--ink);font-weight:600}
-  .day-note{background:var(--panel);border-left:3px solid var(--glow);padding:10px 14px;font-size:14px;margin:0 0 18px;max-width:80ch}
+  .day-note{background:var(--panel);border-left:3px solid var(--glow);padding:10px 14px;font-size:14px;margin:0 0 18px}
 
   .cols{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
   @media(max-width:860px){.cols{grid-template-columns:1fr}}
@@ -364,7 +364,7 @@
   ul.todo input:checked ~ .txt em{text-decoration:none}
 
   footer{border-top:1px solid var(--ink);padding:20px 0 46px;font-size:12.5px;color:var(--slate)}
-  footer p{margin:0 0 6px;max-width:82ch}
+  footer p{margin:0 0 6px}
 
   /* ── icons ─────────────────────────────── */
   .ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.14em;flex:0 0 auto}
@@ -860,7 +860,7 @@ const GEO = {
  'Gargnano':[45.688,10.661],'Salò':[45.606,10.521],'Desenzano del Garda':[45.470,10.535],
  'Sirmione':[45.494,10.607],'Bardolino':[45.548,10.719],'Malcesine':[45.765,10.809],
  'Passo Ballino':[45.966,10.833],'Tione di Trento':[46.032,10.727],'Madonna di Campiglio':[46.229,10.826],
- 'Passo Campo Carlo Magno':[46.246,10.832],'Dimaro':[46.325,10.871],'Bagni Vecchi':[46.481,10.342],
+ 'Passo Campo Carlo Magno':[46.246,10.832],'Dimaro':[46.325,10.871],'Bagni Vecchi':[46.4923,10.3611],
  'St Jakob in Defereggen':[46.918,12.345],'Staller Sattel':[46.917,12.220],
  'Anterselva / Antholz':[46.868,12.113],'Passo delle Palade':[46.585,11.132],
  'Mittersill':[47.279,12.484],'Felbertauern tunnel':[47.133,12.510],'Matrei in Osttirol':[46.999,12.539],
@@ -871,10 +871,23 @@ const GEO = {
 const gmap = id => 'https://www.google.com/maps/place/?q=place_id:'+id;
 const gsearch = h => 'https://www.google.com/maps/search/?api=1&query='+enc(h.n+' '+h.loc);
 const enc = encodeURIComponent;
-/* Official sites for these 19 hotels aren't reliably resolvable — search engines return OTA pages,
+/* Official sites for these 21 hotels aren't reliably resolvable — search engines return OTA pages,
    and a guessed domain is worse than no link. These two resolve every time. */
 const site = h => 'https://www.google.com/search?q='+enc('"'+h.n+'" '+h.loc.split(',').pop().trim()+' official website');
 const bkg  = h => 'https://www.booking.com/searchresults.html?ss='+enc(h.n+' '+h.loc.split(',').pop().trim());
+
+/* The last waypoint of a day is the town; the night is spent at an address in it.
+   Where a hotel is picked, the day's final leg is routed to the hotel itself —
+   by Place ID where we have one, by name and address where we don't. The roadbook
+   still lists the town, so only the arrival changes. Days with no hotel (the last
+   day home) fall back to the town coordinate. */
+function dayDest(day){
+  if(!day.stays || !day.stays.length) return null;
+  const h=day.stays.find(x=>x.pick)||day.stays[0];
+  return h && h.n && h.loc ? h : null;
+}
+const destOf = h => 'destination='+enc(h.n+', '+h.loc)
+                  + (h.pid?'&destination_place_id='+enc(h.pid):'');
 
 /* Google Maps driving directions. The URL API caps at 9 intermediate waypoints,
    so passes win, then overnight stops, in road order. */
@@ -924,16 +937,16 @@ function gdirLegs(day){
   if(pts.length<2) return [];
   const c=p=>GEO[p[2]][0].toFixed(5)+','+GEO[p[2]][1].toFixed(5);
   const MAXPTS=11;                       /* origin + 9 intermediate + destination */
-  const legs=[];
+  const legs=[], hotel=dayDest(day), last=pts[pts.length-1];
   for(let i=0;i<pts.length-1;i+=MAXPTS-1){
     const chunk=pts.slice(i, i+MAXPTS);
     if(chunk.length<2) break;
-    const mid=chunk.slice(1,-1);
+    const mid=chunk.slice(1,-1), end=chunk[chunk.length-1];
     legs.push({
-      from:chunk[0][2], to:chunk[chunk.length-1][2],
-      km:chunk[chunk.length-1][0]-chunk[0][0],
+      from:chunk[0][2], to:end[2], hotel:(end===last&&hotel)?hotel.n:null,
+      km:end[0]-chunk[0][0],
       url:'https://www.google.com/maps/dir/?api=1&origin='+c(chunk[0])
-        +'&destination='+c(chunk[chunk.length-1])
+        +'&'+((end===last&&hotel)?destOf(hotel):'destination='+c(end))
         +(mid.length?'&waypoints='+mid.map(c).join('%7C'):'')+'&travelmode=driving'
     });
   }
@@ -950,7 +963,9 @@ function gdir(day){
   const wrap=a=>a.map(q=>({p:q,km:q[0]}));
   const picks=pickWaypoints(wrap(mid),{p:o,km:o[0]},{p:d,km:d[0]},9).map(q=>q.p);
   const c = p => GEO[p[2]][0].toFixed(5)+','+GEO[p[2]][1].toFixed(5);
-  return 'https://www.google.com/maps/dir/?api=1&origin='+c(o)+'&destination='+c(d)
+  const hotel=dayDest(day);
+  return 'https://www.google.com/maps/dir/?api=1&origin='+c(o)
+       + '&' + (hotel?destOf(hotel):'destination='+c(d))
        + (picks.length?'&waypoints='+picks.map(c).join('%7C'):'') + '&travelmode=driving';
 }
 
@@ -2005,6 +2020,8 @@ function renderDays(s){
           <p>Google takes nine stops per route and the app is no different, so a long day is split into legs — every
           waypoint is in there, which is what stops it cutting a corner. Navigate one leg, then start the next where
           it ended. Check that “avoid tolls” is off, or it will send you down the valley.</p>
+          <p>The last leg of each day ends at that night's hotel rather than the town centre, so
+          the final turn is to the door. The roadbook still lists the town.</p>
         </details>
       </div>${stays}</div></div></section>`;
   }).join('');
