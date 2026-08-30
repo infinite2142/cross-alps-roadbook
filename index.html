@@ -446,14 +446,13 @@
   .rb-row .lg.eta{color:var(--slate);margin-top:3px}
   /* the note sits on its own row, so it wraps into real width rather than a
      140px sliver — and is capped at three lines whatever the copy does */
-  .rb-note{grid-column:3 / 5;color:var(--slate);font-size:12.5px;line-height:1.45;
-    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+  /* indented past the country tag so it starts under the name, and held to
+     two lines — most notes need one, and the row stays short either way */
+  .rb-note{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+    margin-top:2px;padding-left:29px;color:var(--slate);font-size:12.5px;line-height:1.45}
   @media(max-width:640px){
-    /* stays in column 3 so it lines up under the country tag rather than
-       running out to the far left of the row. The columns and the note are
-       trimmed to buy back the width that alignment costs. */
     .rb-row{grid-template-columns:32px 48px 1fr 46px;gap:3px 6px}
-    .rb-note{font-size:11.8px;line-height:1.4}
+    .rb-note{font-size:11.8px;line-height:1.4;padding-left:27px}
     .rb-name{font-size:13.5px}
     .rb-alt{font-size:11px}
   }
@@ -1958,9 +1957,8 @@ function renderDays(s){
       return `<div class="rb-row ${p[3]==='pass'?'is-pass':''}" data-pin="pin-${di}-${pi}">
         <div class="rb-km">${p[0]}<span class="lg unit">km</span></div>
         <div class="rb-leg">${leg>0?`+${leg}`:'—'}<span class="lg eta">${eta(day,p[0])}</span></div>
-        <div class="rb-name"><span class="flag f-${p[4]}">${p[4]}</span>${esc(p[2])}</div>
-        <div class="rb-alt">${p[1]} m</div>
-        ${p[5]?`<div class="rb-note">${esc(p[5])}</div>`:''}</div>`;}).join('');
+        <div class="rb-name"><span class="flag f-${p[4]}">${p[4]}</span>${esc(p[2])}${p[5]?`<span class="rb-note" title="${esc(p[5])}">${esc(p[5])}</span>`:''}</div>
+        <div class="rb-alt">${p[1]} m</div></div>`;}).join('');
     const stays=day.stays.length?`
       <div class="aside"><h4>Segment map · day ${day.n}</h4>
         <div class="viewtog segtog" role="group" aria-label="Segment map view">
