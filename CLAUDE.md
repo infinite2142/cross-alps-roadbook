@@ -55,6 +55,11 @@ stale copy and draw the wrong conclusion.
   only the passes lets Google cut corners; dropping a pass sends it down the valley instead.
 - Touch fires `mouseover` but often no `mouseout` and never `mousemove`, so hover tooltips
   strand themselves unpositioned. Anything hover-driven needs a scroll/pointerdown escape.
+- **Profile labels need reserved sky.** `ridgeSVG` places a label by searching *upward* from its
+  marker and rejecting anything that crosses `top`, so a peak near `ALT_MAX` has nowhere to go
+  and its label is dropped in silence — no warning, no fallback. `headroom` keeps two label lines
+  clear above the highest ground. Count rendered `text.peak-label` against the `'pass'` points in
+  the data before believing a profile is complete; the Stelvio was missing for a long time.
 
 ## Verifying a change
 

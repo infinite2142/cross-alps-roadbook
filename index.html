@@ -1717,9 +1717,17 @@ function ridgeSVG(segments,opts){
   const padT=opts.tall?(fT*3.4):(opts.axis?fT*2.1:22), padB=fG*2.4, padL=Math.max(24,fG*3.4), padR=8;
   if(opts.tall||opts.axis) H=Math.max(H,opts.tall?300:240);
   if(px<620) H=Math.round(H*1.42);        /* portrait: trade width for height */
-  const plotH=H-padT-padB,plotW=W-padL-padR;
+  /* Reserve two label lines of sky above the highest ground. A pass at the top
+     of the range sits flush against padT, and the placer only ever tries positions
+     ABOVE a marker and rejects anything crossing `top` — so the highest peak on
+     the route had nowhere to put its name and was dropped without a trace. That
+     is how the Stelvio and the Gavia lost their labels. The box grows by the
+     reserved strip rather than the profile being squashed into it. */
+  const headroom=fL*2.4;
+  H+=headroom;
+  const plotH=H-padT-padB,plotW=W-padL-padR,curveH=plotH-headroom;
   let total=0;const segs=segments.map(s=>{const len=s.pts[s.pts.length-1][0];const o={...s,offset:total,len};total+=len;return o;});
-  const x=km=>padL+(km/total)*plotW, y=a=>padT+plotH-((Math.max(ALT_MIN,Math.min(ALT_MAX,a))-ALT_MIN)/(ALT_MAX-ALT_MIN))*plotH;
+  const x=km=>padL+(km/total)*plotW, y=a=>padT+plotH-((Math.max(ALT_MIN,Math.min(ALT_MAX,a))-ALT_MIN)/(ALT_MAX-ALT_MIN))*curveH;
   let all=[];segs.forEach(s=>s.pts.forEach((p,pi)=>all.push({x:x(p[0]+s.offset),y:y(p[1]),p,i:pi})));
   all.sort((a,b)=>a.x-b.x);
   const d='M'+all.map(pt=>pt.x.toFixed(1)+','+pt.y.toFixed(1)).join(' L');
