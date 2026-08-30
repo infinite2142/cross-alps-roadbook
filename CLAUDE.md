@@ -36,6 +36,10 @@ stale copy and draw the wrong conclusion.
   but closes for a day or two after heavy snow, `'open'` is a through route. **A pass you are not
   sure about goes in `'storm'`** — that is the claim that holds either way. Drives the season card's
   route-aware closure list, so a new pass needs an entry or it is silently treated as fine.
+- `seasonLabel` — the calendar season at month granularity ("Late summer"), shown in the hero and
+  the sticky header. It is deliberately **not** the same thing as the `SEASONS` band: in March the
+  header reads "Early spring" while the band is still winter, because the passes are. Band labels
+  therefore describe the roads, never the season's name, or the two contradict each other on screen.
 - `SEASONS` — five bands keyed off today's date (`seasonFor`), each with a lede and points; winter
   wraps the year end and so is resolved separately from the others. `seasonLive` layers the live
   seven-day forecast on top. **The page must read correctly in any month** — never write a season
@@ -63,6 +67,10 @@ stale copy and draw the wrong conclusion.
   only the passes lets Google cut corners; dropping a pass sends it down the valley instead.
 - Touch fires `mouseover` but often no `mouseout` and never `mousemove`, so hover tooltips
   strand themselves unpositioned. Anything hover-driven needs a scroll/pointerdown escape.
+- **Invisible hit targets go last in an SVG.** The day map painted its `.p-hit` circles before the
+  pins, so a tap on the marker itself landed on the polygon, `closest('.p-hit')` found nothing, and
+  the tooltip handler read it as a tap on blank space and closed. Painting them last fixed hopping
+  between points. The altitude profile already appended its hits last, which is why it never had this.
 - **Profile labels need reserved sky.** `ridgeSVG` places a label by searching *upward* from its
   marker and rejecting anything that crosses `top`, so a peak near `ALT_MAX` has nowhere to go
   and its label is dropped in silence — no warning, no fallback. `headroom` keeps two label lines
