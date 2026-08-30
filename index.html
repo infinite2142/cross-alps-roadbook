@@ -297,7 +297,7 @@
   .day-head{display:flex;flex-wrap:wrap;gap:6px 20px;align-items:baseline;margin-bottom:4px;
     position:sticky;top:calc(var(--hdrH,60px) - 1px);z-index:900;padding:10px 0 8px;
     box-shadow:0 10px 12px -12px rgba(0,0,0,.35)}
-  .day-head h3{font-size:clamp(19px,3.2vw,27px)}
+  .day-head h3,.sechead h3{font-size:clamp(19px,3.2vw,27px)}
   .daydot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:9px;vertical-align:1px}
   .day-head .when{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
     color:var(--slate);display:flex;gap:4px 16px}
@@ -341,7 +341,7 @@
 
   section.block{border-top:1px solid var(--ink);padding:26px 0 34px}
   section.block > h3{font-size:clamp(19px,3vw,25px);margin-bottom:4px}
-  .lede{color:#3B3D39;max-width:70ch;margin:0 0 18px;font-size:14.5px}
+  .lede{color:#3B3D39;margin:0 0 18px;font-size:14.5px}
   .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
   .card{background:var(--panel);border:1px solid var(--line);padding:14px 16px}
   .card h5{margin:0 0 6px;font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:600}
@@ -369,9 +369,11 @@
   /* ── icons ─────────────────────────────── */
   .ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.14em;flex:0 0 auto}
   .ic-x{width:1.1em;height:1.1em}
-  .sechead{display:flex;align-items:center;gap:11px;margin-bottom:4px;
+  .sechead{display:flex;align-items:center;gap:10px;margin-bottom:4px;
     position:sticky;top:calc(var(--hdrH,60px) - 1px);z-index:900;padding:10px 0 8px;
     box-shadow:0 10px 12px -12px rgba(0,0,0,.35)}
+  .sechead h3{margin:0}
+  .sechead .ic{color:var(--glow);width:24px;height:24px;stroke-width:1.5}
   /* the bar takes the section's own background, so the heading colour is what
      makes it noticeable rather than a block of tone */
   .t-rock .sechead{background:var(--rock)}
@@ -389,12 +391,10 @@
   .sechead h3,.day-head h3{color:var(--headline)}
   .t-ink .sechead h3{color:#8FB8E0}
   @media (max-width:760px),(max-height:560px){
-    .sechead{padding:7px 0 6px}
+    .sechead{padding:6px 0 5px}
     .sechead h3{font-size:16px}
-    .sechead .ic{width:17px;height:17px}
+    .sechead .ic{width:16px;height:16px}
   }
-  .sechead h3{margin:0}
-  .sechead .ic{color:var(--glow);width:22px;height:22px;stroke-width:1.5}
 
   /* ── hero banner ───────────────────────── */
   .banner{position:relative;overflow:hidden;background:#0E1218;border-bottom:1px solid var(--ink)}
@@ -566,8 +566,9 @@
     .daydot{width:8px;height:8px;margin-right:6px}
   }
   @media (max-height:560px){
-    .day-head h3{font-size:14.5px}
-    .day-head{padding:4px 0 3px}
+    .day-head h3,.sechead h3{font-size:14.5px}
+    .day-head,.sechead{padding:4px 0 3px}
+    .sechead .ic{width:15px;height:15px}
   }
 
   /* portrait phones: the options will not fit one row legibly, so let them wrap.
@@ -974,8 +975,8 @@ A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',short:'Garda',sub:'South t
     [283,262,'Bolzano','','IT',''],[340,194,'Trento','','IT',''],
     [415,67,'Garda','stop','IT','Overnight. East shore, olive terraces behind the town.']],
    evening:'Garda has a proper waterfront promenade and enough restaurants to not need a booking in September. The centre is a ZTL — use a signed car park on the edge and walk in.',
-   staysNote:'Nothing researched here yet. Aim for the lakefront north of the centre with parking included; the ZTL makes street parking a false economy.',
-   stays:[]},
+   stays:[{n:'La Vittoria Boutique Hotel',pick:'Pick',loc:'Lungolago Regina Adelaide 57, Garda',
+     why:'On the lakefront promenade, a few minutes from the old centre on foot. Ask where to leave the car when you book — the centre is a ZTL and the lungolago is not a place to park on spec.',tel:'+39 045 6270473'}]},
   {n:1,from:'Garda',to:'Ponte di Legno',km:310,time:'5h 00m',passes:0,depart:'09:00',arrive:'≈18:30',
    note:'<strong>Lake, plain, then back up.</strong> The one day with no passes at all, and the only one that leaves the mountains entirely. South past Peschiera along the Mincio, then out onto the Po plain to Mantova — three artificial lakes, a ducal palace with Mantegna\'s frescoes, and almost no tourists. Lunch there. Afterwards the autostrada does the boring work back to Brescia and Salò, where you rejoin the lake for twenty minutes of shoreline before turning north. The Val Camonica climbs slowly through Darfo and Edolo, industrial at first and then increasingly alpine, until Ponte di Legno appears at 1,258 m with the Gavia road running out of the top of the village. Flat, fast, hot and then suddenly cold — a day of two halves.',
    pts:[[0,67,'Garda','stop','IT',''],
@@ -987,8 +988,8 @@ A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',short:'Garda',sub:'South t
     [285,699,'Edolo','','IT','Fuel before the climb.'],
     [310,1258,'Ponte di Legno','stop','IT','Overnight, at the foot of the Gavia.']],
    evening:'Ponte di Legno is a small ski town that empties in September — quiet, cheap, and the Gavia starts at the end of the street. Kitchens close early, so do not arrive after 20:00 expecting dinner.',
-   staysNote:'Not researched. Anything in the village centre works; ask for a garage and confirm dinner is served, since half the places shut their kitchens out of season.',
-   stays:[]},
+   stays:[{n:'Blu Hotel Acquaseria',pick:'Pick',loc:'Località Acquaseria, Ponte di Legno',
+     why:'Spa hotel in its own grounds just outside the village, at the foot of the Tonale road. Confirm dinner when you book — kitchens here stop early out of season.',tel:'+39 0364 015100'}]},
   {n:2,from:'Ponte di Legno',to:'Bormio',km:233,time:'6h 00m',passes:5,depart:'09:00',arrive:'≈19:00',
    note:'<strong>The Engadin loop, and the best day of the five.</strong> The Gavia first thing while it is still empty — single track in places, no barrier, and worth the early start. Drop into Bormio, leave the bags at the spa, then go round rather than back: Foscagno and Eira lift you into Livigno, a duty-free valley where the fuel is half price and worth a full tank. The Forcola crosses into Switzerland on a bare treeless shoulder, the Bernina runs past glaciers with the red railway crossing below it, and St Moritz arrives in time for lunch. The way home is the Bernina\'s south side — hairpins down through Poschiavo into chestnut woods and vineyards, out at Tirano at 441 m, then the Valtellina back up to Bormio. No road driven twice, and the Stelvio deliberately left for tomorrow morning when it is empty.',
    pts:[[0,1258,'Ponte di Legno','stop','IT',''],
@@ -1007,9 +1008,8 @@ A:{key:'A',tag:'Option A',title:'Garda &amp; Stelvio',short:'Garda',sub:'South t
     [230,1225,'Bormio','','IT','Up the Valtellina.'],
     [233,1270,'Bagni Vecchi','stop','IT','Overnight.']],
    evening:'Bagni Vecchi is a thermal spa built into the hillside — Roman baths, a tunnel cut through the rock to a grotto, and an outdoor pool looking down the valley. Open late, and the whole point of arriving at six rather than eight.',
-   staysNote:'QC Terme Bagni Vecchi sits on the SS38 about 3 km above Bormio, at roughly 1,270 m, and the Stelvio climb starts at its door. Confirm the room and the spa entry together — details here are from memory and were not verified.',
-   stays:[{n:'QC Terme Bagni Vecchi',pick:'Pick',loc:'Strada Statale dello Stelvio, Valdidentro, Bormio',
-     why:'Thermal spa in the old baths above Bormio, with the Stelvio starting outside. Listing details deliberately left blank — not verified.'}]},
+   stays:[{n:'QC Hotel Bagni Vecchi',pick:'Pick',loc:'Località Bagni Vecchi, Valdidentro, Bormio',
+     why:'The old thermal baths above Bormio, at roughly 1270 m with the Stelvio climb starting outside. Book the room and the spa entry together.',tel:'+39 02 8974 7201'}]},
   {n:3,from:'Bormio',to:'Munich',km:390,time:'6h 30m',passes:5,depart:'09:00',arrive:'≈20:00',
    note:'<strong>Four countries before dinner.</strong> The Stelvio north side first, then into Switzerland at Müstair and up the Engadin — Ofenpass, Scuol, out at Martina. No Swiss vignette needed — the Ofenpass and the Engadin valley road are ordinary roads, not motorway. Long day, but the 20:00 target leaves real slack.',
    pts:[[0,1270,'Bagni Vecchi','stop','IT',''],
@@ -1348,7 +1348,7 @@ const TODO_ALL=[
  {t:'Check the Swiss passes and skip the vignette',d:'Ofenpass, Forcola and Bernina are high and shut early in a bad autumn. None of them is motorway, so the CHF 40 sticker is not needed unless you divert onto one.',when:s=>country(s,'CH')},
  {t:'Sort a ZTL-safe car park for every Italian night',d:'Most centres on this route are camera-controlled and the fine arrives months later through the rental company. Book a hotel with a garage, or note a signed car park on the edge. On the street: white is free but may need a disc, blue is paid, yellow is residents only and gets towed.',when:s=>country(s,'IT')},
  {t:'Call the hotels',d:'Ask for half board when you book rather than on arrival — several of these kitchens stop serving early out of season.',when:s=>s.days.some(d=>d.stays.length)},
- {t:'Pick the two unbooked nights',d:'This route still has stops with nothing researched. Sort them before anything else — everything downstream depends on where you sleep.',when:s=>s.days.some((d,i)=>i<s.days.length-1&&!d.stays.length)},
+ {t:'Pick the nights that are still open',d:'This route still has stops with nothing researched. Sort them before anything else — everything downstream depends on where you sleep.',when:s=>s.days.some((d,i)=>i<s.days.length-1&&!d.stays.length)},
  {t:'Download offline maps for the whole corridor',d:'Google Maps offline areas cover a box, not a route — take four overlapping boxes. Signal drops on the north side of most of these passes.',when:()=>true},
  {t:'Check pass status the morning before',d:'alpen-paesse.ch, suedtirol.com/verkehr, grossglockner.at webcams. Roadworks near Umbrail have run alternating closures. Ignore the blogs claiming Passo Gardena is shut — the province confirmed no restriction.',when:()=>true},
  {t:'Take a fleece and gloves in the cabin, not the boot',d:'It is 20°C in the valley and 4°C at 2,700 m, and you will want them at the top, not after unpacking at the hotel.',when:()=>true}
