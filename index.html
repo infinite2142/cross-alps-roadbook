@@ -1771,31 +1771,57 @@ function ridgeSVG(segments,opts){
     const taken=[];
     const hit=r=>taken.some(q=>r.x0<q.x1+1&&q.x0<r.x1+1&&r.y0<q.y1+1&&q.y0<r.y1+1);
     const lineH=fL*1.06, top=padT-fL*.2, floor=padT+plotH-2;
+    /* Rungs to try, in order: just above the marker, then one up, one down, two
+       up, two down... Upward alone is what forced the ordering to break — a label
+       blocked from climbing had no other escape, so it fell through to the relaxed
+       pass and climbed anyway. Below its own marker is both free space and the
+       correct place for a lower pass to sit. */
+    const LADDER=[0]; for(let i=1;i<10;i++){LADDER.push(i);LADDER.push(-i);}
     cand.forEach(q=>{
       const label=shortName(q.o.p[2]);
-      const chW=q.pass?fL*.53:fL*.47;
+      /* Width is estimated, not measured — the collision test runs while the SVG
+         is still a string. The estimate ran a shade narrow, which cost nothing
+         while labels were sparse and started showing as touching pairs once the
+         ladder began placing most of them. */
+      const chW=q.pass?fL*.575:fL*.51;
       const w=Math.max(label.length*chW, q.pass?(String(q.o.p[1]).length+1)*fA*.6:0);
       const h=lineH*(q.pass?2:1);
       let done=false;
-      /* straight up from the marker, then nudged sideways if still blocked */
-      for(let step=0;step<26;step++){
-        const dy=-(fL*1.0)-step*(lineH*0.92);
-        const side=step%3;                       /* centre, then right, then left */
-        const anchor=side===0?'middle':(side===1?'start':'end');
-        const lx=q.o.x+(side===1?3:(side===2?-3:0));
-        const ly=q.o.y+dy;
-        const x0=anchor==='middle'?lx-w/2:(anchor==='start'?lx:lx-w);
-        const r={x0,x1:x0+w,y0:ly-lineH*.85,y1:ly-lineH*.85+h};
-        if(r.x0<padL-14||r.x1>W-2||r.y0<top||r.y1>floor) continue;
-        if(hit(r)) continue;
-        taken.push(r);
-        const far=Math.abs(dy)>fL*2.3;
-        if(far) marks+=`<line class="peak-lead${q.pass?'':' faint'}" x1="${q.o.x.toFixed(1)}" y1="${(q.o.y-2).toFixed(1)}" x2="${q.o.x.toFixed(1)}" y2="${(ly+lineH*.25).toFixed(1)}"/>`;
-        marks+= q.pass
-          ? `<text class="peak-label stacked" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}</text>`
-            +`<text class="peak-alt-in stacked" x="${lx.toFixed(1)}" y="${(ly+fA*1.02).toFixed(1)}" text-anchor="${anchor}">${q.o.p[1]}m</text>`
-          : `<text class="way-label stacked${q.end?' endpt':''}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}</text>`;
-        done=true; break;
+      /* Try all three anchors at a level before climbing to the next. `side` used
+         to advance with the same counter as `dy`, so a label needing nothing more
+         than a sideways nudge climbed a level instead — and a label that has
+         climbed is exactly what puts a low pass above a high one.
+         Then: a pass label may not sit above the label of any taller pass. Passes
+         are placed tallest first, so every taller one is already down and can be
+         checked against. Enforced on a first attempt and dropped on a second, so
+         the ordering is tidied wherever it can be without ever costing a label. */
+      /* Three tries, loosening only as far as it must: order against every taller
+         pass, then against only the ones close enough to be read side by side,
+         then not at all. On a wide chart the first try succeeds everywhere; a
+         phone-width chart falls to the second rather than giving up entirely. */
+      for(let relax=0;relax<(q.pass?2:3)&&!done;relax++){
+        for(let li=0;li<LADDER.length&&!done;li++){
+          for(let side=0;side<3;side++){
+            const dy=-(fL*1.0)-LADDER[li]*(lineH*0.92);
+            const anchor=side===0?'middle':(side===1?'start':'end');
+            const lx=q.o.x+(side===1?3:(side===2?-3:0));
+            const ly=q.o.y+dy;
+            const x0=anchor==='middle'?lx-w/2:(anchor==='start'?lx:lx-w);
+            const r={x0,x1:x0+w,y0:ly-lineH*.85,y1:ly-lineH*.85+h,pass:q.pass,alt:q.o.p[1]};
+            if(r.x0<padL-14||r.x1>W-2||r.y0<top||r.y1>floor) continue;
+            if(hit(r)) continue;
+            if(relax<2&&q.pass&&taken.some(t=>t.pass&&t.alt>r.alt&&r.y0<t.y0-.5
+                 &&(relax===0||Math.abs(((t.x0+t.x1)/2)-((r.x0+r.x1)/2))<plotW*0.28))) continue;
+            taken.push(r);
+            const far=Math.abs(dy)>fL*2.3;
+            if(far) marks+=`<line class="peak-lead${q.pass?'':' faint'}" x1="${q.o.x.toFixed(1)}" y1="${(q.o.y-2).toFixed(1)}" x2="${q.o.x.toFixed(1)}" y2="${(ly+lineH*.25).toFixed(1)}"/>`;
+            marks+= q.pass
+              ? `<text class="peak-label stacked" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}</text>`
+                +`<text class="peak-alt-in stacked" x="${lx.toFixed(1)}" y="${(ly+fA*1.02).toFixed(1)}" text-anchor="${anchor}">${q.o.p[1]}m</text>`
+              : `<text class="way-label stacked${q.end?' endpt':''}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}">${esc(label)}</text>`;
+            done=true; break;
+          }
+        }
       }
       /* an endpoint is worth a slight clash — put it at the edge regardless */
       if(!done && q.end){

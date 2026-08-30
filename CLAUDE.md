@@ -60,6 +60,11 @@ stale copy and draw the wrong conclusion.
   and its label is dropped in silence — no warning, no fallback. `headroom` keeps two label lines
   clear above the highest ground. Count rendered `text.peak-label` against the `'pass'` points in
   the data before believing a profile is complete; the Stelvio was missing for a long time.
+- **A profile has two failure modes, and fixing one worsens the other.** Labels can go missing,
+  and they can print out of altitude order — a lower pass sitting above a higher one, which reads
+  as though it were the taller. Passes are placed tallest first and may not sit above an already
+  placed taller pass; where that cannot be honoured the label is dropped rather than printed
+  misleading. Measure both counts at ~1030, 620, 430 and 360px before and after any change here.
 
 ## Verifying a change
 
