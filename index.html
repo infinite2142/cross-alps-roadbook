@@ -804,7 +804,7 @@
 
 
   <section class="sec t-rock" id="sec-book"><div class="wrap">
-    <div class="sechead"><svg class="ic"><use href="#i-check"/></svg><h3>Book before you drive</h3></div>
+    <div class="sechead"><svg class="ic"><use href="#i-check"/></svg><h3>Check before you drive</h3></div>
     <p class="lede">Ordered by how badly it goes wrong if you skip it. Some of it keeps until the morning of the drive.</p>
     <ul class="todo" id="todo"></ul>
   </div></section>
@@ -2078,7 +2078,7 @@ function buildNav(s){
   const items = s.days.map((d,i)=>({id:'sec-day'+d.n, label:'Day '+d.n, dot:DAYC[i]}))
     .concat([{id:'sec-weather',label:'Weather',icon:'i-w-part'},
              {id:'sec-tolls',label:'Tolls',icon:'i-ticket'},
-             {id:'sec-book',label:'Book first',icon:'i-check'}]);
+             {id:'sec-book',label:'Check',icon:'i-check'}]);
   document.getElementById('secnav').innerHTML =
     `<a href="#sec-overview" data-t="sec-overview"><svg class="ic"><use href="#i-map"/></svg>Overview</a>` +
     items.map(i=>`<a href="#${i.id}" data-t="${i.id}">`+
