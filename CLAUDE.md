@@ -32,6 +32,14 @@ stale copy and draw the wrong conclusion.
   the card degrades without them. `pid` is a Google Place ID; absent, the map link falls back to
   a name search. **Do not invent hotel names, phone numbers or Place IDs.** A day with
   `stays: []` renders a "Not chosen yet" card using its `staysNote`.
+- `PASS_SEASON` — per-pass winter behaviour: `'winter'` shuts for the season, `'storm'` is cleared
+  but closes for a day or two after heavy snow, `'open'` is a through route. **A pass you are not
+  sure about goes in `'storm'`** — that is the claim that holds either way. Drives the season card's
+  route-aware closure list, so a new pass needs an entry or it is silently treated as fine.
+- `SEASONS` — five bands keyed off today's date (`seasonFor`), each with a lede and points; winter
+  wraps the year end and so is resolved separately from the others. `seasonLive` layers the live
+  seven-day forecast on top. **The page must read correctly in any month** — never write a season
+  into prose that is not gated on this. `TODO_ALL` items can gate on it too via `when`.
 - `TODO_ALL` — the Check before you drive list. Each item carries a `when:` predicate using the
   `has(s, name)` and `country(s, cc)` helpers, so items appear only on routes they apply to.
 

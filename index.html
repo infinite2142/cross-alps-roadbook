@@ -347,6 +347,18 @@
   section.block{border-top:1px solid var(--ink);padding:26px 0 34px}
   section.block > h3{font-size:clamp(19px,3vw,25px);margin-bottom:4px}
   .lede{color:#3B3D39;margin:0 0 18px;font-size:14.5px}
+  .season{background:var(--panel);border-left:3px solid var(--glow);padding:12px 15px 13px;margin:0 0 20px}
+  .season-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 11px;margin-bottom:6px}
+  .season-tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--slate)}
+  .season-head b{font-size:15.5px;color:var(--headline)}
+  .season-lede{margin:0;font-size:14px;line-height:1.55;color:var(--ink)}
+  .season-live{margin:8px 0 0;font-size:13.5px;line-height:1.5;color:var(--ink);
+    border-left:2px solid var(--line);padding-left:10px}
+  .season-list{list-style:none;margin:11px 0 0;padding:0;display:grid;gap:9px}
+  .season-list li{font-size:13.5px;line-height:1.5}
+  .season-list b{display:block;color:var(--ink);font-weight:600}
+  .season-list span{color:var(--slate)}
   .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
   .card{background:var(--panel);border:1px solid var(--line);padding:14px 16px}
   .card h5{margin:0 0 6px;font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:600}
@@ -797,6 +809,7 @@
     <p class="lede">Read off the option selected above, alternating valley and pass, so every high crossing sits next
       to the valley you would retreat to. If the pass is cold and grey while the valley below it is mild, that is the
       day to stay low. Anything past three days out is a hint, not a plan.</p>
+    <div id="seasonCard"></div>
     <div class="wx-bar">
       <button class="wx-btn" id="wxBtn" type="button"><svg class="ic"><use href="#i-clock"/></svg><span id="wxBtnTxt">Refresh</span></button>
       <span class="wx-stamp mono" id="wxStamp">Loading…</span>
@@ -1360,16 +1373,162 @@ Object.values(D).forEach(sc=>sc.days.forEach(d=>d.pts.forEach(pt=>{
   pt[5] = pt[5] || base;
 })));
 
+/* ---------- seasonality ----------------------------------------------------
+   This route was planned for one week in September, and most of the prose still
+   assumes it. Everything below exists so the page tells the truth in February
+   too: a band is picked from today's date, and the live forecast can add a line
+   on top of it. Typical dates only — an Alpine pass opens when its operator says
+   so, and a bad autumn closes one a month early. Never state a date as a fact. */
+
+/* How a pass behaves once the weather turns. 'winter' shuts for the season and
+   stays shut; 'storm' is cleared and normally open but closes for a day or two
+   after heavy snow; 'open' is a through route kept open whatever happens.
+   Where a pass was genuinely uncertain it is filed under 'storm', which is the
+   claim that is safe to make either way. */
+const PASS_SEASON={
+  'Passo dello Stelvio':'winter','Passo Gavia':'winter','Edelweissspitze':'winter',
+  'Timmelsjoch / Passo del Rombo':'winter','Hochtor tunnel':'winter','Umbrail Pass':'winter',
+  'Fuscher Törl':'winter','Rifugio Auronzo · Tre Cime':'winter','Forcola di Livigno':'winter',
+  'Passo Sella':'winter','Staller Sattel':'winter','Jaufenpass':'winter','Hahntennjoch':'winter',
+  'Passo Giau':'storm','Passo Fedaia':'storm','Passo Valparola':'storm','Passo Pordoi':'storm',
+  'Passo Gardena':'storm','Passo Campolongo':'storm','Passo Falzarego':'storm',
+  'Passo di Costalunga':'storm','Passo del Tonale':'storm','Passo di Foscagno':'storm',
+  "Passo d'Eira":'storm','Ofenpass / Pass dal Fuorn':'storm','Passo del Bernina':'storm',
+  'Rossfeld Panoramastrasse':'storm','Norbertshöhe':'storm',
+  'Brenner Pass':'open','Reschenpass':'open','Fernpass':'open',
+  'Passo delle Palade':'open','Passo della Mendola':'open'
+};
+const passName=n=>n.replace(/^Passo (dello |del |della |di )?/,'').replace(' tunnel','')
+  .replace(' / Passo del Rombo','').replace(' · Tre Cime','').replace(' / Pass dal Fuorn','');
+
+/* Bands run start-inclusive to the next band's start. Ordered by month/day. */
+const SEASONS=[
+ {key:'winter', from:[11,16], label:'Deep winter',
+  lede:'The high passes are shut for the season — typically from the first sustained snow in November until late May, the highest of them into June. What is left is valley roads and tunnels, which makes this a different trip rather than a shorter one.',
+  points:[
+   {t:'Winter tyres are a legal requirement, not a suggestion',
+    d:'Austria from 1 November to 15 April in wintry conditions, Italy from 15 November to 15 April on most of these roads — winter tyres, or chains carried and usable. Switzerland has no blanket rule but you carry the liability if you block a road.'},
+   {t:'The through routes are tunnels, and they are tolled',
+    d:'The Brenner stays open as motorway. Felbertauern replaces the Grossglockner, Munt la Schera reaches Livigno when the Forcola is shut, and the Vinschgau replaces the Stelvio.'},
+   {t:'You lose the afternoon',
+    d:'Under nine hours of daylight around the solstice, and it goes early behind a south wall. Plan to be off the mountain roads well before dark.'}]},
+
+ {key:'thaw', from:[4,1], label:'Spring — the passes are still opening',
+  lede:'They reopen roughly in order of altitude, lowest first, across May, with the highest not until the first days of June. The dates move by weeks from one year to the next and nothing is certain until the barrier is actually up.',
+  points:[
+   {t:'Check each pass on its own, not the region',
+    d:'alpen-paesse.ch, suedtirol.com/verkehr and the operator sites. Two passes forty kilometres apart can be a fortnight apart on opening.'},
+   {t:'A pass that opened last week can shut again',
+    d:'Late snow closes them for days at a time in May. Carry the valley alternative for every high crossing and be willing to use it.'},
+   {t:'It is the cheapest and emptiest the Alps get',
+    d:'Hotels are pre-season, the road is yours, and the snow banks at the top are still head-high. The trade is that you may not get over.'}]},
+
+ {key:'summer', from:[6,6], label:'High summer — all open, all busy',
+  lede:'Every pass on this route should be open. The thing that constrains a day stops being snow and becomes traffic, heat and somewhere to leave the car.',
+  points:[
+   {t:'Start early or do not bother',
+    d:'The famous climbs fill with motorbikes, cyclists and coaches from mid-morning, and the Stelvio and the Sella group are worst at weekends. First light to eleven is the whole prize.'},
+   {t:'Book beds well ahead',
+    d:'The Dolomites and Lake Garda run near capacity through July and August, and Ferragosto in mid-August is the peak of it. This is the one time of year that arriving without a booking goes badly.'},
+   {t:'Heat below, storms above',
+    d:'The plain runs into the mid-thirties while the passes stay pleasant, and the ridges build thunderstorms through the afternoon. Another argument for early.'}]},
+
+ {key:'late', from:[8,21], label:'Late summer into early autumn — the good window',
+  lede:'The passes are still open, the summer crowds have gone, and the light is long enough for a full day on the mountain. The catch is that the season is ending underneath you rather than at a fixed date.',
+  points:[
+   {t:'Everything should be open, but nothing is promised',
+    d:'The highest roads run into October in a normal year and shut on the first serious snow. Check the morning before, not the week before.'},
+   {t:'Toll roads move to shorter hours',
+    d:'The Grossglockner and Timmelsjoch drop to autumn timetables, enforced with gates rather than signs. Arriving late means not going.'},
+   {t:'The ski towns have emptied',
+    d:'Quiet and cheap, but half the kitchens stop serving early and some close between seasons. Ask about dinner when you book rather than on arrival.'}]},
+
+ {key:'autumn', from:[10,1], label:'Autumn — the passes are closing',
+  lede:'In a good year the high roads run into late October or early November. The first sustained snow ends it, and once a pass is shut for the season it stays shut.',
+  points:[
+   {t:'Check the day before, and have the valley plan ready',
+    d:'This is the month where a route planned in advance stops being available. Every high crossing needs an answer for what you do if the barrier is down.'},
+   {t:'Toll roads shorten, then stop',
+    d:'The Grossglockner and Timmelsjoch close for the season entirely, usually in the first half of November, and the last hours before that are short.'},
+   {t:'Dark by five, and winter tyre rules begin',
+    d:'Austria requires winter tyres in wintry conditions from 1 November, Italy from 15 November on most of these roads.'}]}
+];
+
+function seasonFor(d){
+  d=d||new Date();
+  const md=(d.getMonth()+1)*100+d.getDate();      /* 831 = 31 Aug, so bands compare as numbers */
+  const at=b=>b.from[0]*100+b.from[1];
+  const win=SEASONS.find(b=>b.key==='winter');
+  const rest=SEASONS.filter(b=>b.key!=='winter').sort((a,b)=>at(a)-at(b));
+  /* winter is the one band that wraps the year end, so it is settled first and
+     separately — folding it into the comparison below always let it win. */
+  if(md>=at(win) || md<at(rest[0])) return win;
+  let best=rest[0];
+  rest.forEach(b=>{ if(md>=at(b)) best=b; });
+  return best;
+}
+
+/* What the next seven days add to the picture, from the forecast already on the
+   page. Only worth saying when it contradicts the season — snow in June, or a
+   week warm enough that an October pass will still be open. */
+function seasonLive(wx){
+  if(!wx||!wx.rows||!wx.spots) return null;
+  const high=[]; wx.spots.forEach((sp,i)=>{ if(sp.alt>=1800) high.push({sp,row:wx.rows[i]||[]}); });
+  if(!high.length) return null;
+  let snow=null, freeze=null, warm=true;
+  high.forEach(h=>h.row.forEach(d=>{
+    if(d.code>=71&&d.code<=77||d.code>=85&&d.code<=86){ if(!snow) snow=h.sp.n; }
+    if(d.lo<=0 && !freeze) freeze=h.sp.n;
+    if(d.hi<6) warm=false;
+  }));
+  if(snow)  return 'The seven-day forecast has snow at '+snow+'. Assume the high passes are the first thing to go, and check before you set off.';
+  if(freeze) return 'The forecast drops below freezing overnight at '+freeze+'. Ice on the descents before the sun reaches them is the risk, more than the snow.';
+  if(warm)  return 'Nothing in the seven-day forecast threatens the high roads.';
+  return null;
+}
+
+function paintSeason(){
+  const el=document.getElementById('seasonCard');
+  if(el && CURRENT) el.innerHTML=seasonCardHTML(CURRENT);
+}
+function seasonCardHTML(s){
+  const b=seasonFor();
+  const seen=new Set(), shut=[], iffy=[];
+  s.days.forEach(d=>d.pts.forEach(p=>{
+    if(p[3]!=='pass'||seen.has(p[2])) return; seen.add(p[2]);
+    const k=PASS_SEASON[p[2]];
+    if(k==='winter') shut.push(passName(p[2]));
+    else if(k==='storm') iffy.push(passName(p[2]));
+  }));
+  const pts=b.points.slice();
+  if(b.key==='winter'&&shut.length)
+    pts.splice(1,0,{t:(shut.length===1?'One of this route’s passes is normally shut'
+                                       :shut.length+' of this route’s passes are normally shut'),
+      d:shut.join(', ')+'. '+(iffy.length?'The rest are cleared but close for a day or two after heavy snow.':'')+' Driving this option as planned is not on until they reopen.'});
+  if(b.key==='thaw'&&shut.length)
+    pts.splice(1,0,{t:'The ones that decide whether this route works',
+      d:shut.join(', ')+' — these are the seasonal closures, and the highest of them are the last to open.'});
+  const live=seasonLive(wxStore.get(CURRENT.key));
+  return `<div class="season">
+    <div class="season-head"><span class="season-tag">This time of year</span><b>${esc(b.label)}</b></div>
+    <p class="season-lede">${esc(b.lede)}</p>
+    ${live?`<p class="season-live">${esc(live)}</p>`:''}
+    <ul class="season-list">${pts.map(q=>`<li><b>${esc(q.t)}</b><span>${esc(q.d)}</span></li>`).join('')}</ul>
+  </div>`;
+}
+
 const TODO_ALL=[
+ {t:'Fit winter tyres, or carry chains and know how to fit them',d:'Austria requires them in wintry conditions from 1 November to 15 April, Italy from 15 November to 15 April on most of these roads. Hire cars do not come with them by default — ask when you book, and expect to pay.',when:()=>['winter','autumn'].includes(seasonFor().key)},
+ {t:'Book the beds before you commit to the route',d:'The Dolomites and Lake Garda run near capacity through July and August, and mid-August is the worst of it. Where you can sleep decides the route this time of year, not the other way round.',when:()=>seasonFor().key==='summer'},
  {t:'Reserve the Tre Cime toll road slot',d:'auronzo.info · €40 · mandatory, no booking means no entry. You can book without a plate now and add it the day before.',when:s=>has(s,'Rifugio Auronzo · Tre Cime')},
- {t:'Note the gate times and build the day backwards from them',d:'Grossglockner runs 06:00–19:30 on the autumn timetable, last entry 18:45. Timmelsjoch is 07:00–20:00. Both are enforced with gates rather than signs, so arriving late means not going.',when:s=>has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel')||has(s,'Timmelsjoch / Passo del Rombo')},
+ {t:'Note the gate times and build the day backwards from them',d:'Both are enforced with gates rather than signs, and the hours shorten as the season goes on — in autumn the Grossglockner runs 06:00–19:30 with last entry 18:45, and the Timmelsjoch 07:00–20:00. Check the current hours on the operator\'s site and build the day backwards from them.',when:s=>has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel')||has(s,'Timmelsjoch / Passo del Rombo')},
  {t:'Buy the Grossglockner ticket online',d:'grossglockner.at · €46.50 · 10% off in the road\'s shops if bought in advance, and it saves a queue at Ferleiten.',when:s=>has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel')},
  {t:'Buy the Austrian 10-day digital vignette',d:'€12.80. Buy at a petrol station or ADAC office once you have the plate, not online — online purchases can have a delayed start. Fine is €200+.',when:s=>country(s,'AT')},
  {t:'Budget for the Felbertauern tunnel',d:'€13.00 single, no advance booking. It is the all-weather crossing this route is built around, so plan the toll rather than be surprised by it.',when:s=>has(s,'Felbertauern tunnel')},
  {t:'Time the Staller Sattel window',d:'Alternating one-way on the Italian side, thirty minutes each way on the half hour. Miss it and you wait, so keep the Pustertal via Sillian in reserve.',when:s=>has(s,'Staller Sattel')},
  {t:'Fill up in Livigno, not before',d:'The valley is duty-free and roughly half the Italian pump price — the cheapest tank of the trip. Customs post at Foscagno; allowances are per person and they do check.',when:s=>has(s,'Livigno')},
- {t:'Check the Gavia and the Stelvio are open',d:'Both normally run into October but shut on the first serious snow. The Gavia is single track in places with no barrier — if it is wet or in cloud, drop to the Aprica and rejoin at Bormio.',when:s=>has(s,'Passo Gavia')||has(s,'Passo dello Stelvio')},
- {t:'Check the Swiss passes and skip the vignette',d:'Ofenpass, Forcola and Bernina are high and shut early in a bad autumn. None of them is motorway, so the CHF 40 sticker is not needed unless you divert onto one.',when:s=>country(s,'CH')},
+ {t:'Check the Gavia and the Stelvio are open',d:'Both are seasonal — open roughly June to October, and shut on the first serious snow. The Gavia is single track in places with no barrier, so if it is wet or in cloud, drop to the Aprica and rejoin at Bormio.',when:s=>has(s,'Passo Gavia')||has(s,'Passo dello Stelvio')},
+ {t:'Check the Swiss passes and skip the vignette',d:'Ofenpass and Bernina are cleared through the winter, the Forcola is not, and all three shut early in a bad autumn. None of them is motorway, so the CHF 40 sticker is not needed unless you divert onto one.',when:s=>country(s,'CH')},
  {t:'Sort a ZTL-safe car park for every Italian night',d:'Most centres on this route are camera-controlled and the fine arrives months later through the rental company. Book a hotel with a garage, or note a signed car park on the edge. On the street: white is free but may need a disc, blue is paid, yellow is residents only and gets towed.',when:s=>country(s,'IT')},
  {t:'Call the hotels',d:'Ask for half board when you book rather than on arrival — several of these kitchens stop serving early out of season.',when:s=>s.days.some(d=>d.stays.length)},
  {t:'Pick the nights that are still open',d:'This route still has stops with nothing researched. Sort them before anything else — everything downstream depends on where you sleep.',when:s=>s.days.some((d,i)=>i<s.days.length-1&&!d.stays.length)},
@@ -1613,7 +1772,13 @@ function dayMapSVG(day,di){
   pts.forEach((o,pi)=>{
     const x=X(o.g[1]),y=Y(o.g[0]),id='dm-'+di+'-'+day.pts.indexOf(o.p);
     const t=`<title>${esc(o.p[2])} — ${o.p[1]} m</title>`;
-    marks+=`<circle class="dm-hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="transparent"/>`;
+    /* Same class and dataset as the altitude chart's targets, so the one tooltip
+       handler covers both — a point on the map now says what it says in the
+       roadbook. No data-i here on purpose: the roadbook's hover lookup searches
+       the section for .p-hit[data-i] and would find the map's copy instead. */
+    marks+=`<circle class="p-hit dm-hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9"`+
+      ` data-n="${esc(o.p[2])}" data-a="${o.p[1]}" data-km="${o.p[0]}" data-c="${esc(o.p[4]||'')}"`+
+      ` data-k="${esc(o.p[3]||'')}" data-note="${esc(o.p[5]||'')}">${t}</circle>`;
     const halo=`<circle class="dm-halo" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7" fill-opacity=".26"/>`;
     if(o.p[3]==='pass')
       marks+=`<g class="pin" id="${id}">${halo}<polygon points="${x},${(y-4).toFixed(1)} ${(x+4).toFixed(1)},${y} ${x},${(y+4).toFixed(1)} ${(x-4).toFixed(1)},${y}" fill="${DAYC[di]}" stroke="#F3F1EC" stroke-width=".9">${t}</polygon></g>`;
@@ -2111,14 +2276,15 @@ function renderDays(s){
           return `<div class="leglinks">`+L.map((g,i)=>
             `<a class="gbtn" href="${g.url}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-map"/></svg>Day ${day.n} · leg ${i+1} of ${L.length} · ${esc(g.from.split(' / ')[0])} → ${esc(g.to.split(' / ')[0])}</a>`
           ).join('')+`</div>`;})()}
-        <details class="aboutmaps" style="margin-top:10px">
-          <summary>Why the route is split</summary>
-          <p>Google takes nine stops per route and the app is no different, so a long day is split into legs — every
-          waypoint is in there, which is what stops it cutting a corner. Navigate one leg, then start the next where
-          it ended. Check that “avoid tolls” is off, or it will send you down the valley.</p>
-          <p>The last leg of each day ends at that night's hotel rather than the town centre, so
-          the final turn is to the door. The roadbook still lists the town.</p>
-        </details>
+        ${(()=>{const split=gdirLegs(day).length>1, night=dayDest(day);
+          return `<details class="aboutmaps" style="margin-top:10px">
+          <summary>${split?'Why this day is split into legs':'About these directions'}</summary>
+          <p>Google takes nine stops per route${split
+            ? `, and this day needs more — hence the legs. Every waypoint is in there, which is what stops it cutting a corner. Navigate one, then start the next where it ended.`
+            : `. This day fits inside that, so it is a single link.`}</p>
+          <p>Turn “avoid tolls” off before you start, or it will route you down the valley to dodge a pass.${
+            night?` The link ends at ${esc(night.n)} rather than the middle of ${esc(day.to)}.`:''}</p>
+        </details>`;})()}
       </div>${stays}</div></div></section>`;
   }).join('');
 }
@@ -2168,6 +2334,7 @@ function render(k){
     r.addEventListener('mouseenter',()=>els().forEach(e=>e.classList.add('hot')));
     r.addEventListener('mouseleave',()=>els().forEach(e=>e.classList.remove('hot')));
   });
+  paintSeason();
   document.getElementById('todo').innerHTML=todoFor(s).map(t=>`<li><label><input type="checkbox"><span class="txt">${esc(t.t)}<em>${esc(t.d)}</em></span></label></li>`).join('');
   document.getElementById('costTable').innerHTML=
     `<tr><th>Item</th><th>When</th><th style="text-align:right">Cost</th></tr>`+
@@ -2337,6 +2504,7 @@ function wxPaint(data){
     h+='</tr>';
   });
   wrap.innerHTML=h+'</tbody></table>';
+  paintSeason();          /* the season card's live line reads this forecast */
   const st=document.getElementById('wxStamp');
   if(st){
     const age=Date.now()-data.at;
