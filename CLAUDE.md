@@ -38,7 +38,9 @@ stale copy and draw the wrong conclusion.
 ## Traps that have already caused bugs here
 
 - A later `header{position:…}` rule silently overrode `position:sticky`. Check for duplicate
-  selectors before adding CSS.
+  selectors before adding CSS. **A media query does not raise specificity**: `.sechead .ic`
+  written after an `@media(max-width:760px)` block beat the rule inside it, so the narrow-viewport
+  icon size never applied. Base rules go above their media blocks, not below.
 - Leaflet must be visible before `fitBounds`, or it measures a zero-size box and zooms out fully.
 - `localStorage` is fine here but fails in the Claude artifact sandbox — keep it in a try/catch.
 - **Boot order.** `render('A')` runs last in the script on purpose: it calls `wxLoad()`, which
