@@ -27,7 +27,7 @@
     --line:#CBC7BE; --glow:#C2496A; --signal:#16457A; --snow:#FFFFFF;
     --d1:#26557F; --d2:#6E4A87; --d3:#A8467E; --d4:#C24966;
     --at:#7A6A4E; --it:#3E6B4B; --de:#55525A; --ch:#8E3F3A;
-    --ghost:#CFCAC0;
+    --ghost:#CFCAC0; --headline:#16457A;
     --pad: clamp(16px, 4vw, 44px);
   }
   *{box-sizing:border-box}
@@ -58,7 +58,6 @@
   .tab[aria-selected="true"] .t{color:var(--snow)}
   .tab:focus-visible{outline:3px solid var(--glow);outline-offset:-3px}
 
-  .sub-eyebrow{opacity:.72;margin-top:-2px}
   .hero{padding:clamp(22px,4vw,38px) 0 8px}
   .hero-top{display:flex;flex-wrap:wrap;gap:18px 40px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
   .hero h2{font-size:clamp(26px,4.8vw,46px);line-height:1.04;max-width:16ch}
@@ -387,8 +386,8 @@
   .day.alt .day-head{background:#EAE6DD}
   body.dark .day-head{background:#141619}
   body.dark .day.alt .day-head{background:#191C21}
-  .sechead h3,.day-head h3{color:var(--glow)}
-  .t-ink .sechead h3{color:#E4849F}
+  .sechead h3,.day-head h3{color:var(--headline)}
+  .t-ink .sechead h3{color:#8FB8E0}
   @media (max-width:760px),(max-height:560px){
     .sechead{padding:7px 0 6px}
     .sechead h3{font-size:16px}
@@ -502,7 +501,7 @@
 
   /* ── dark theme ────────────────────────── */
   body.dark{--rock:#141619;--panel:#1C1F24;--ink:#E9EAE7;--slate:#969C9C;--line:#2F343B;
-            --snow:#101216;--ghost:#262B32}
+            --snow:#101216;--ghost:#262B32;--headline:#8FB8E0}
   body.dark .mnote,body.dark .hero .blurb,body.dark .evening,body.dark .card p,body.dark .lede{color:#A7ADAD}
   body.dark .t-rock{background:#141619} body.dark .t-warm{background:#191C21}
   body.dark .t-cool{background:#171A20} body.dark .t-ink{background:#0B0D10}
@@ -697,7 +696,6 @@
   </g></svg>
   <div class="banner-copy"><div class="inner">
     <p class="eyebrow"><svg class="ic"><use href="#i-peak"/></svg> Mountains, passes and lakes. And more passes.</p>
-    <p class="eyebrow sub-eyebrow">Three days · five options · up to 16 passes</p>
     <h1>Cross-Alps Trip <span style="opacity:.62;font-weight:400">(short&nbsp;version)</span></h1>
   </div></div>
 </div>
