@@ -28,6 +28,7 @@
     --d1:#26557F; --d2:#6E4A87; --d3:#A8467E; --d4:#C24966;
     --at:#7A6A4E; --it:#3E6B4B; --de:#55525A; --ch:#8E3F3A;
     --ghost:#CFCAC0;
+    --bar:#DCD7CC; --barline:#C4BEB1; --barink:#191A18; --barmute:#5B5E58;
     --pad: clamp(16px, 4vw, 44px);
   }
   *{box-sizing:border-box}
@@ -58,6 +59,7 @@
   .tab[aria-selected="true"] .t{color:var(--snow)}
   .tab:focus-visible{outline:3px solid var(--glow);outline-offset:-3px}
 
+  .sub-eyebrow{opacity:.72;margin-top:-2px}
   .hero{padding:clamp(22px,4vw,38px) 0 8px}
   .hero-top{display:flex;flex-wrap:wrap;gap:18px 40px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
   .hero h2{font-size:clamp(26px,4.8vw,46px);line-height:1.04;max-width:16ch}
@@ -227,10 +229,11 @@
     font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
 
   .rbhead{font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:600;
-    text-transform:uppercase;letter-spacing:.12em;color:var(--slate);margin:0 0 0;
-    padding-bottom:9px;border-bottom:1px solid var(--line)}
+    text-transform:uppercase;letter-spacing:.12em;color:var(--glow);margin:0 0 0;
+    padding-bottom:9px;border-bottom:2px solid var(--glow)}
   .legend h4,.aside h4{font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:600;
-    letter-spacing:.16em;text-transform:uppercase;margin:0 0 10px;color:var(--slate)}
+    letter-spacing:.16em;text-transform:uppercase;margin:0 0 10px;color:var(--glow);
+    padding-bottom:7px;border-bottom:2px solid var(--glow)}
   .legchip{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;background:none;
     border:0;border-bottom:1px solid var(--line);padding:10px 0;cursor:pointer;font-family:inherit;
     color:var(--ink);transition:opacity .18s}
@@ -294,12 +297,8 @@
 
   .day{border-top:1px solid var(--ink);padding:26px 0 30px}
   .day-head{display:flex;flex-wrap:wrap;gap:6px 20px;align-items:baseline;margin-bottom:4px;
-    position:sticky;top:calc(var(--hdrH,60px) - 1px);z-index:900;
-    background:var(--rock);padding:10px 0 8px;
+    position:sticky;top:calc(var(--hdrH,60px) - 1px);z-index:900;padding:10px 0 8px;
     box-shadow:0 10px 12px -12px rgba(0,0,0,.35)}
-  .day.alt .day-head{background:#EAE6DD}
-  body.dark .day-head{background:#141619}
-  body.dark .day.alt .day-head{background:#191C21}
   .day-head h3{font-size:clamp(19px,3.2vw,27px)}
   .daydot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:9px;vertical-align:1px}
   .day-head .when{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
@@ -375,14 +374,13 @@
   .sechead{display:flex;align-items:center;gap:11px;margin-bottom:4px;
     position:sticky;top:calc(var(--hdrH,60px) - 1px);z-index:900;padding:10px 0 8px;
     box-shadow:0 10px 12px -12px rgba(0,0,0,.35)}
-  .t-rock .sechead{background:var(--rock)}
-  .t-warm .sechead{background:#EAE6DD}
-  .t-cool .sechead{background:#E1E4E1}
-  .t-ink  .sechead{background:#1B1D1A}
-  body.dark .t-rock .sechead{background:#141619}
-  body.dark .t-warm .sechead{background:#191C21}
-  body.dark .t-cool .sechead{background:#171A20}
-  body.dark .t-ink  .sechead{background:#0B0D10}
+  .sechead,.day-head{margin-left:calc(var(--pad) * -1);margin-right:calc(var(--pad) * -1);
+    padding-left:var(--pad);padding-right:var(--pad)}
+  /* the sticky bars get their own tone so they read as chrome, not as content */
+  .sechead,.day-head{background:var(--bar);border-bottom:1px solid var(--barline)}
+  .t-ink .sechead{background:#23262A;border-bottom-color:#33373C}
+  .sechead h3,.day-head h3{color:var(--barink)}
+  .day-head .when{color:var(--barmute)}
   @media (max-width:760px),(max-height:560px){
     .sechead{padding:7px 0 6px}
     .sechead h3{font-size:16px}
@@ -496,7 +494,8 @@
 
   /* ── dark theme ────────────────────────── */
   body.dark{--rock:#141619;--panel:#1C1F24;--ink:#E9EAE7;--slate:#969C9C;--line:#2F343B;
-            --snow:#101216;--ghost:#262B32}
+            --snow:#101216;--ghost:#262B32;
+            --bar:#23272D;--barline:#343A41;--barink:#F0F1EE;--barmute:#A7ADAD}
   body.dark .mnote,body.dark .hero .blurb,body.dark .evening,body.dark .card p,body.dark .lede{color:#A7ADAD}
   body.dark .t-rock{background:#141619} body.dark .t-warm{background:#191C21}
   body.dark .t-cool{background:#171A20} body.dark .t-ink{background:#0B0D10}
@@ -690,7 +689,8 @@
     <circle class="s-core" cx="1108" cy="112" r="25" fill="#F6E6DA"/>
   </g></svg>
   <div class="banner-copy"><div class="inner">
-    <p class="eyebrow"><svg class="ic"><use href="#i-peak"/></svg> Three days · five options · up to 16 passes</p>
+    <p class="eyebrow"><svg class="ic"><use href="#i-peak"/></svg> Mountains, passes and lakes. And more passes.</p>
+    <p class="eyebrow sub-eyebrow">Three days · five options · up to 16 passes</p>
     <h1>Cross-Alps Trip <span style="opacity:.62;font-weight:400">(short&nbsp;version)</span></h1>
   </div></div>
 </div>
@@ -1289,6 +1289,12 @@ E:{key:'E',tag:'Option E',title:'Valleys &amp; Lakes',short:'Valleys',sub:'The w
 /* One descriptive line per waypoint. Applied where the roadbook entry has
    none, or prepended where the existing note is a bare instruction.        */
 const NOTES={
+ 'Garda':'Quiet end of the east shore, olive terraces climbing behind the town and a car-free waterfront.',
+ 'Trento':'Prince-bishops\' city in the Adige, arcaded squares and painted facades under the Dolomite foothills.',
+ 'Munich':'End of the trip. Park in a signed Parkhaus rather than on the street.',
+ 'Matrei in Osttirol':'Valley town under the Grossvenediger, at the southern mouth of the Felbertauern tunnel.',
+ 'Pontresina':'Engadine village below the Bernina, larch woods and a long south-facing terrace.',
+ 'Bagni Vecchi':'Thermal baths cut into the hillside above Bormio, in use since Roman times.',
  'A8 east toward Salzburg':'Two hours of unrestricted autobahn to settle into the car before anything technical starts.',
  'Berchtesgaden':'Königssee and the Eagle\'s Nest are here if you ever come back with a spare day; today it is just the turn-off for the Rossfeld.',
  'Lofer':'Tight limestone gorge on the B311 with the Loferer Steinberge standing over the road the whole way.',
