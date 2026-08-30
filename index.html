@@ -449,10 +449,10 @@
   /* indented past the country tag so it starts under the name, and held to
      two lines — most notes need one, and the row stays short either way */
   .rb-note{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
-    margin-top:2px;padding-left:29px;margin-right:-70px;color:var(--slate);font-size:12.5px;line-height:1.45}
+    margin-top:2px;padding-left:var(--noteIndent,29.3px);margin-right:-70px;color:var(--slate);font-size:12.5px;line-height:1.45}
   @media(max-width:640px){
     .rb-row{grid-template-columns:32px 48px 1fr 46px;gap:3px 6px}
-    .rb-note{font-size:11.8px;line-height:1.4;padding-left:27px;margin-right:-52px}
+    .rb-note{font-size:11.8px;line-height:1.4;margin-right:-52px}
     .rb-name{font-size:13.5px}
     .rb-alt{font-size:11px}
   }
@@ -2044,6 +2044,14 @@ function render(k){
   document.querySelectorAll('.legchip').forEach(c=>c.onclick=()=>{
     isolated = isolated===+c.dataset.day ? null : +c.dataset.day; applyIsolate();});
   document.getElementById('days').innerHTML=renderDays(s);
+  /* the note lines up with the name text, which starts after the country tag.
+     Measure the tag instead of guessing at it — a hardcoded value drifted by
+     2px on one breakpoint and not the other. */
+  (function(){
+    const f=document.querySelector('.rb-row .flag'); if(!f) return;
+    const w=f.getBoundingClientRect().width+parseFloat(getComputedStyle(f).marginRight||0);
+    document.documentElement.style.setProperty('--noteIndent', w.toFixed(2)+'px');
+  })();
   paintProfiles();
   document.querySelectorAll('.rb-row').forEach(r=>{
     const ids=[r.dataset.pin, r.dataset.pin.replace(/^pin-/,'dm-')];
