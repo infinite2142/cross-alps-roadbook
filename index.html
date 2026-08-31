@@ -846,6 +846,11 @@
 <footer>
   <div class="wrap">
     <p>The per-day figure is moving time on the routing shown. The clock times in each roadbook are not — they spread the whole day, departure to arrival, across the distance, so stops, food and toll queues are already in them. That slack runs from about a fifth of moving time on the motorway transfer up to double it on the easy last days, median around two thirds. You will still spend longer at Fuscher Törl than you plan to.</p>
+    <p>Distances are planning estimates, measured along the intended route rather than driven. Checked against a
+    road router across all twenty days, most sit within a few per cent, but individual days run from about twenty
+    per cent under to fifteen per cent over — in both directions, so it is estimation rather than a consistent bias.
+    Altitudes and the climbed totals are approximate for the same reason. <b>The Google Maps link on each day is the
+    authority</b>: it knows the current roadworks, closures and diversions, and this page does not.</p>
     <p>Hotel links open Google Maps, where the current photo gallery, opening hours and directions live. Details were correct at time of writing.</p>
   </div>
 </footer>
@@ -2315,7 +2320,7 @@ function renderDays(s){
       <div class="day-head"><h3><i class="daydot" style="background:${DAYC[di]}"></i>Day ${day.n} · ${esc(day.from)} → ${esc(day.to)}</h3>
         <span class="when mono"><span>depart ${day.depart}</span><span>arrive ${day.arrive}</span></span></div>
       <div class="day-metrics mono">
-        <span><svg class="ic"><use href="#i-road"/></svg> <b>${day.km} km</b> distance</span>
+        <span title="Planning estimate along the intended route — the Google Maps link below is the authority"><svg class="ic"><use href="#i-road"/></svg> <b>${day.km} km</b> distance</span>
         <span><svg class="ic"><use href="#i-clock"/></svg> <b>${day.time}</b> moving</span>
         <span><svg class="ic"><use href="#i-peak"/></svg> <b>${day.passes}</b> ${day.passes===1?'pass':'passes'}</span>
         <span><svg class="ic"><use href="#i-gauge"/></svg> <b>${Math.max(...day.pts.map(p=>p[1]))} m</b> high point</span>
