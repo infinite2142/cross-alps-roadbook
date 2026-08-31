@@ -231,6 +231,7 @@
   .mapfoot{display:flex;justify-content:space-between;gap:10px;padding:6px 6px 2px;
     font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
 
+  .subhead{margin-bottom:14px}
   .rbhead{font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:600;
     text-transform:uppercase;letter-spacing:.12em;color:var(--glow);margin:0 0 0;
     padding-bottom:9px;border-bottom:2px solid var(--glow)}
@@ -427,6 +428,8 @@
     color:#E4B9C6;margin:0 0 10px;display:flex;align-items:flex-start;gap:9px;line-height:1.5}
   .banner .eyebrow .ic{margin-top:.25em}
   .banner h1{font-size:clamp(28px,5.6vw,60px);line-height:.98;color:#fff;max-width:19ch;letter-spacing:-.03em}
+  /* on its own line: inline, the phrase wrapped between "Late" and "summer" */
+  .banner h1 #heroSeason{display:block}
   .banner .sub{font-family:'IBM Plex Mono',monospace;font-size:clamp(11px,1.5vw,13px);letter-spacing:.1em;
     color:#B8BFC8;margin:12px 0 0;text-transform:uppercase}
 
@@ -556,7 +559,6 @@
   .mast .right{display:flex;align-items:center;gap:14px;margin-left:auto}
   .mast h1 .sv{font-weight:400;opacity:.55}
   header.compact .dates{display:none}
-  header.compact .mast h1 .sv{display:none}
   header.compact .tab{padding:6px 13px 7px;min-width:0;flex:1 1 auto;
     display:flex;align-items:baseline;gap:9px;white-space:nowrap}
   header.compact .tab .k{font-size:9.5px;letter-spacing:.14em}
@@ -811,7 +813,9 @@
     <p class="lede">Read off the option selected above, alternating valley and pass, so every high crossing sits next
       to the valley you would retreat to. If the pass is cold and grey while the valley below it is mild, that is the
       day to stay low. Anything past three days out is a hint, not a plan. The card below reaches further than the table does.</p>
+    <h4 class="rbhead subhead">Season · the next four weeks</h4>
     <div id="seasonCard"></div>
+    <h4 class="rbhead subhead">Forecast · the next seven days</h4>
     <div class="wx-bar">
       <button class="wx-btn" id="wxBtn" type="button"><svg class="ic"><use href="#i-clock"/></svg><span id="wxBtnTxt">Refresh</span></button>
       <span class="wx-stamp mono" id="wxStamp">Loading…</span>
