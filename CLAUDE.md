@@ -36,6 +36,11 @@ stale copy and draw the wrong conclusion.
   but closes for a day or two after heavy snow, `'open'` is a through route. **A pass you are not
   sure about goes in `'storm'`** — that is the claim that holds either way. Drives the season card's
   route-aware closure list, so a new pass needs an entry or it is silently treated as fine.
+- `sunTimes` / `sunFor` — NOAA sunrise and sunset, computed locally rather than fetched: no network,
+  any date, and it agrees with Open-Meteo to within a minute. The route is entirely on Central
+  European Time, so one zone covers it and `Intl` handles DST. `dayDate(i)` treats **day 0 as today**,
+  so the roadbook's light moves with the calendar. Longitude is east-positive here — the textbook
+  formula uses west-positive, so check the sign against a real source before trusting a change.
 - `seasonLabel` — the calendar season at month granularity ("Late summer"), shown in the hero and
   the sticky header. It is deliberately **not** the same thing as the `SEASONS` band: in March the
   header reads "Early spring" while the band is still winter, because the passes are. Band labels

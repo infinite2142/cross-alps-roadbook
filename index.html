@@ -324,6 +324,9 @@
   .rb-name{font-size:14.5px;line-height:1.35}
   .rb-name em{font-style:normal;display:block;font-size:12.5px;color:var(--slate);margin-top:1px}
   .rb-alt{font-family:'IBM Plex Mono',monospace;font-size:12px;text-align:right;color:var(--slate);font-variant-numeric:tabular-nums}
+  .rb-sun{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--slate);border:1px solid var(--line);border-radius:2px;padding:1px 5px;margin-left:8px;
+    white-space:nowrap;vertical-align:1px}
   .rb-row.is-pass{background:linear-gradient(90deg,rgba(194,73,106,.09),rgba(194,73,106,0) 62%)}
   .rb-row.is-pass:hover{background:linear-gradient(90deg,rgba(194,73,106,.17),rgba(194,73,106,.02) 62%)}
   .rb-row.is-pass .rb-name{font-weight:600}
@@ -483,6 +486,8 @@
     margin-top:2px;padding-left:var(--noteIndent,29.3px);margin-right:-70px;color:var(--slate);font-size:12.5px;line-height:1.45}
   @media(max-width:640px){
     .rb-row{grid-template-columns:32px 48px 1fr 46px;gap:3px 6px}
+    /* just tight enough to stay on the name's line on a narrow phone */
+    .rb-sun{font-size:9px;letter-spacing:.04em;padding:1px 4px;margin-left:6px}
     .rb-note{font-size:11.8px;line-height:1.4;margin-right:-52px}
     .rb-name{font-size:13.5px}
     .rb-alt{font-size:11px}
@@ -1385,6 +1390,39 @@ Object.values(D).forEach(sc=>sc.days.forEach(d=>d.pts.forEach(pt=>{
   pt[5] = pt[5] || base;
 })));
 
+/* ---------- sun times ------------------------------------------------------
+   NOAA's sunrise/sunset, computed here rather than fetched: it needs no network,
+   works for any date rather than the forecast's seven days, and costs nothing.
+   Good to about a minute at these latitudes, which is all a departure time needs.
+   Every country on this route is on Central European Time, so one zone covers it
+   and Intl deals with the March and October switches. */
+function sunTimes(lat,lon,date){
+  const rad=Math.PI/180, deg=180/Math.PI;
+  const jd=date.getTime()/86400000 + 2440587.5;
+  const nDay=Math.round(jd - 2451545.0 + 0.0008);
+  const Js=nDay - lon/360;                                   /* mean solar noon  */
+  const M=(357.5291 + 0.98560028*Js)%360;                    /* solar mean anomaly */
+  const C=1.9148*Math.sin(M*rad)+0.0200*Math.sin(2*M*rad)+0.0003*Math.sin(3*M*rad);
+  const lam=(M + C + 180 + 102.9372)%360;                    /* ecliptic longitude */
+  const Jt=2451545.0 + Js + 0.0053*Math.sin(M*rad) - 0.0069*Math.sin(2*lam*rad);
+  const sinD=Math.sin(lam*rad)*Math.sin(23.4397*rad);
+  const cosD=Math.cos(Math.asin(sinD));
+  /* -0.833° puts the sun's upper limb on the horizon, refraction included */
+  const cosW=(Math.sin(-0.833*rad) - Math.sin(lat*rad)*sinD)/(Math.cos(lat*rad)*cosD);
+  if(cosW>1||cosW<-1) return null;                           /* never rises or sets */
+  const w=Math.acos(cosW)*deg;
+  const toD=j=>new Date((j-2440587.5)*86400000);
+  return {rise:toD(Jt - w/360), set:toD(Jt + w/360)};
+}
+const HHMM=d=>d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Berlin'});
+/* day 0 is today, so the whole roadbook slides forward with the calendar */
+const dayDate=i=>{const d=new Date(); d.setDate(d.getDate()+i); d.setHours(12,0,0,0); return d;};
+function sunFor(name,dayIndex,which){
+  const g=GEO[name]; if(!g) return null;
+  const t=sunTimes(g[0],g[1],dayDate(dayIndex));
+  return t?HHMM(which==='rise'?t.rise:t.set):null;
+}
+
 /* ---------- seasonality ----------------------------------------------------
    This route was planned for one week in September, and most of the prose still
    assumes it. Everything below exists so the page tells the truth in February
@@ -2281,7 +2319,15 @@ function renderDays(s){
       return `<div class="rb-row ${p[3]==='pass'?'is-pass':''}" data-pin="pin-${di}-${pi}">
         <div class="rb-km">${p[0]}<span class="lg unit">km</span></div>
         <div class="rb-leg">${leg>0?`+${leg}`:'—'}<span class="lg eta">${eta(day,p[0])}</span></div>
-        <div class="rb-name"><span class="flag f-${p[4]}">${p[4]}</span>${esc(p[2])}${p[5]?`<span class="rb-note" title="${esc(p[5])}">${esc(p[5])}</span>`:''}</div>
+        <div class="rb-name"><span class="flag f-${p[4]}">${p[4]}</span>${esc(p[2])}${(()=>{
+          /* light at the two ends of the day: when it comes up where you set off,
+             and when it goes down where you stop. Day 0 is today, so these move
+             with the calendar rather than being written for one week in September. */
+          const rise=pi===0, set=pi===day.pts.length-1;
+          if(!rise&&!set) return '';
+          const t=sunFor(p[2],day.n,rise?'rise':'set');
+          return t?`<span class="rb-sun" title="${rise?'Sunrise':'Sunset'} at ${esc(p[2])}, day ${day.n}">${rise?'sunrise':'sunset'} ${t}</span>`:'';
+        })()}${p[5]?`<span class="rb-note" title="${esc(p[5])}">${esc(p[5])}</span>`:''}</div>
         <div class="rb-alt">${p[1]} m</div></div>`;}).join('');
     const stays=day.stays.length?`
       <div class="aside"><h4>Segment map · day ${day.n}</h4>
