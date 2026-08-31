@@ -348,7 +348,7 @@
   section.block{border-top:1px solid var(--ink);padding:26px 0 34px}
   section.block > h3{font-size:clamp(19px,3vw,25px);margin-bottom:4px}
   .lede{color:#3B3D39;margin:0 0 18px;font-size:14.5px}
-  .season{background:var(--panel);border-left:3px solid var(--glow);padding:12px 15px 13px;margin:0 0 20px}
+  .season{background:var(--panel);padding:13px 15px 14px;margin:0 0 22px}
   .season-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 11px;margin-bottom:6px}
   .season-tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.16em;
     text-transform:uppercase;color:var(--slate)}
@@ -834,7 +834,7 @@
 
   <section class="sec t-rock" id="sec-book"><div class="wrap">
     <div class="sechead"><svg class="ic"><use href="#i-check"/></svg><h3>Check before you drive</h3></div>
-    <p class="lede">Ordered by how badly it goes wrong if you skip it. Some of it keeps until the morning of the drive.</p>
+    <p class="lede" id="checkLede"></p>
     <ul class="todo" id="todo"></ul>
   </div></section>
 
@@ -1518,11 +1518,25 @@ function paintSeason(){
   const el=document.getElementById('seasonCard');
   if(el && CURRENT) el.innerHTML=seasonCardHTML(CURRENT);
   const lab=seasonLabel();
+  const cl=document.getElementById('checkLede');
+  if(cl) cl.innerHTML='Ordered by how badly it goes wrong if you skip it, and written for <b>'
+    + esc(lab.charAt(0).toLowerCase()+lab.slice(1)) + '</b> and the four weeks after it — anything that '
+    + 'only bites in another season is left off. Some of it keeps until the morning of the drive.';
   const hero=document.getElementById('heroSeason'), nav=document.getElementById('navSeason');
   if(hero) hero.textContent=lab;
   if(nav)  nav.textContent=lab;
   document.title='Cross-Alps Trip · '+lab;
 }
+/* The list is filtered to what matters now or within about four weeks, so a check
+   you still have time to act on appears, and one whose road is shut for the season
+   does not. Anything general — vignettes, ZTLs, the opening months of the main
+   passes — carries no season test at all and stays on the list all year. */
+const seasonNowKey =()=>seasonFor().key;
+const seasonSoonKey=()=>seasonFor(new Date(Date.now()+26*864e5)).key;
+const inWindow=(...k)=>k.includes(seasonNowKey())||k.includes(seasonSoonKey());
+/* a seasonal road is not worth a checklist item while it is shut for the winter */
+const roadOpen=nm=>!(PASS_SEASON[nm]==='winter' && seasonNowKey()==='winter');
+
 function seasonCardHTML(s){
   const b=seasonFor();
   const seen=new Set(), shut=[], iffy=[];
@@ -1551,16 +1565,17 @@ function seasonCardHTML(s){
 }
 
 const TODO_ALL=[
- {t:'Fit winter tyres, or carry chains and know how to fit them',d:'Austria requires them in wintry conditions from 1 November to 15 April, Italy from 15 November to 15 April on most of these roads. Hire cars do not come with them by default — ask when you book, and expect to pay.',when:()=>['winter','autumn'].includes(seasonFor().key)},
- {t:'Book the beds before you commit to the route',d:'The Dolomites and Lake Garda run near capacity through July and August, and mid-August is the worst of it. Where you can sleep decides the route this time of year, not the other way round.',when:()=>seasonFor().key==='summer'},
- {t:'Confirm the toll roads are still running on your dates',d:'The Grossglockner and the Timmelsjoch close for the season, usually in the first half of November, and shorten their hours for weeks before that. A date that works in September may not exist in November.',when:s=>['late','autumn'].includes(seasonFor().key)&&(has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel')||has(s,'Timmelsjoch / Passo del Rombo'))},
- {t:'Have a version of every day that needs no pass',d:'Opening dates move by weeks and a pass that opened last week can shut again. Work out the valley alternative for each high crossing before you leave, not at the barrier.',when:()=>['thaw','autumn'].includes(seasonFor().key)},
- {t:'Reserve the Tre Cime toll road slot',d:'auronzo.info · €40 · mandatory, no booking means no entry. You can book without a plate now and add it the day before.',when:s=>has(s,'Rifugio Auronzo · Tre Cime')},
- {t:'Note the gate times and build the day backwards from them',d:'Both are enforced with gates rather than signs, and the hours shorten as the season goes on — in autumn the Grossglockner runs 06:00–19:30 with last entry 18:45, and the Timmelsjoch 07:00–20:00. Check the current hours on the operator\'s site and build the day backwards from them.',when:s=>has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel')||has(s,'Timmelsjoch / Passo del Rombo')},
- {t:'Buy the Grossglockner ticket online',d:'grossglockner.at · €46.50 · 10% off in the road\'s shops if bought in advance, and it saves a queue at Ferleiten.',when:s=>has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel')},
+ {t:'Fit winter tyres, or carry chains and know how to fit them',d:'Austria requires them in wintry conditions from 1 November to 15 April, Italy from 15 November to 15 April on most of these roads. Hire cars do not come with them by default — ask when you book, and expect to pay.',when:()=>inWindow('winter','autumn')},
+ {t:'Book the beds before you commit to the route',d:'The Dolomites and Lake Garda run near capacity through July and August, and mid-August is the worst of it. Where you can sleep decides the route this time of year, not the other way round.',when:()=>inWindow('summer')},
+ {t:'Confirm the toll roads are still running on your dates',d:'The Grossglockner and the Timmelsjoch close for the season, usually in the first half of November, and shorten their hours for weeks before that. A date that works in September may not exist in November.',when:s=>inWindow('late','autumn')&&(has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel')||has(s,'Timmelsjoch / Passo del Rombo'))},
+ {t:'Have a version of every day that needs no pass',d:'Opening dates move by weeks and a pass that opened last week can shut again. Work out the valley alternative for each high crossing before you leave, not at the barrier.',when:()=>inWindow('thaw','autumn','winter')},
+ {t:'Price the tunnel alternatives',d:'With the high passes shut the route runs on Felbertauern, Munt la Schera and the Brenner. All are tolled, none is cheap, and which ones you need depends on the day. Work that out before you set off, not at the portal.',when:()=>inWindow('winter')},
+ {t:'Reserve the Tre Cime toll road slot',d:'auronzo.info · €40 · mandatory, no booking means no entry. You can book without a plate now and add it the day before.',when:s=>has(s,'Rifugio Auronzo · Tre Cime')&&roadOpen('Rifugio Auronzo · Tre Cime')},
+ {t:'Note the gate times and build the day backwards from them',d:'Both are enforced with gates rather than signs, and the hours shorten as the season goes on — in autumn the Grossglockner runs 06:00–19:30 with last entry 18:45, and the Timmelsjoch 07:00–20:00. Check the current hours on the operator\'s site and build the day backwards from them.',when:s=>(has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel')||has(s,'Timmelsjoch / Passo del Rombo'))&&roadOpen('Hochtor tunnel')},
+ {t:'Buy the Grossglockner ticket online',d:'grossglockner.at · €46.50 · 10% off in the road\'s shops if bought in advance, and it saves a queue at Ferleiten.',when:s=>(has(s,'Ferleiten toll gate')||has(s,'Hochtor tunnel'))&&roadOpen('Hochtor tunnel')},
  {t:'Buy the Austrian 10-day digital vignette',d:'€12.80. Buy at a petrol station or ADAC office once you have the plate, not online — online purchases can have a delayed start. Fine is €200+.',when:s=>country(s,'AT')},
  {t:'Budget for the Felbertauern tunnel',d:'€13.00 single, no advance booking. It is the all-weather crossing this route is built around, so plan the toll rather than be surprised by it.',when:s=>has(s,'Felbertauern tunnel')},
- {t:'Time the Staller Sattel window',d:'Alternating one-way on the Italian side, thirty minutes each way on the half hour. Miss it and you wait, so keep the Pustertal via Sillian in reserve.',when:s=>has(s,'Staller Sattel')},
+ {t:'Time the Staller Sattel window',d:'Alternating one-way on the Italian side, thirty minutes each way on the half hour. Miss it and you wait, so keep the Pustertal via Sillian in reserve.',when:s=>has(s,'Staller Sattel')&&roadOpen('Staller Sattel')},
  {t:'Fill up in Livigno, not before',d:'The valley is duty-free and roughly half the Italian pump price — the cheapest tank of the trip. Customs post at Foscagno; allowances are per person and they do check.',when:s=>has(s,'Livigno')},
  {t:'Check the Gavia and the Stelvio are open',d:'Both are seasonal — open roughly June to October, and shut on the first serious snow. The Gavia is single track in places with no barrier, so if it is wet or in cloud, drop to the Aprica and rejoin at Bormio.',when:s=>has(s,'Passo Gavia')||has(s,'Passo dello Stelvio')},
  {t:'Check the Swiss passes and skip the vignette',d:'Ofenpass and Bernina are cleared through the winter, the Forcola is not, and all three shut early in a bad autumn. None of them is motorway, so the CHF 40 sticker is not needed unless you divert onto one.',when:s=>country(s,'CH')},
@@ -1569,7 +1584,7 @@ const TODO_ALL=[
  {t:'Pick the nights that are still open',d:'This route still has stops with nothing researched. Sort them before anything else — everything downstream depends on where you sleep.',when:s=>s.days.some((d,i)=>i<s.days.length-1&&!d.stays.length)},
  {t:'Download offline maps for the whole corridor',d:'Google Maps offline areas cover a box, not a route — take four overlapping boxes. Signal drops on the north side of most of these passes.',when:()=>true},
  {t:'Check pass status the morning before',d:'alpen-paesse.ch, suedtirol.com/verkehr, grossglockner.at webcams. Roadworks near Umbrail have run alternating closures. Ignore the blogs claiming Passo Gardena is shut — the province confirmed no restriction.',when:()=>true},
- {t:'Take a fleece and gloves in the cabin, not the boot',d:'It is 20°C in the valley and 4°C at 2,700 m, and you will want them at the top, not after unpacking at the hotel.',when:()=>true}
+ {t:'Take a fleece and gloves in the cabin, not the boot',d:'It is 20°C in the valley and 4°C at 2,700 m, and you will want them at the top, not after unpacking at the hotel.',when:()=>seasonNowKey()!=='winter'}
 ];
 const has=(s,name)=>s.days.some(d=>d.pts.some(p=>p[2]===name));
 const country=(s,cc)=>s.days.some(d=>d.pts.some(p=>p[4]===cc));
