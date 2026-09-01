@@ -145,8 +145,6 @@
   .moon .m-r1{opacity:.30}
   .moon .m-core{opacity:.93}
   .moon .m-cr{opacity:.34}
-  /* landscape phones: keep enough sky above the ridgeline for the sun to show */
-  @media (max-height:560px){ .banner{min-height:210px} }
 
   /* touch-action:none took the page's scroll with it — a finger landing anywhere on
      the map stopped the page dead, and the map covers most of a phone screen. pan-y
@@ -578,7 +576,11 @@
   header.compact .themebtn{width:27px;height:27px}
   /* landscape phones: assume compact from the start */
   @media (max-height:560px){
-    .banner .pano{height:clamp(150px,30vh,210px)}
+    /* the artwork alone sets the banner's height. It used to be clamped to 150px
+       inside a banner floored at 210px, and the 60px difference showed as a black
+       band of the banner's own background below the ridgeline. One source of
+       truth, so the gap cannot come back. */
+    .banner .pano{height:210px}
     .mast{padding:5px 0 4px}
     .mast h1{font-size:14px}
     .mast .dates{display:none}
@@ -1492,7 +1494,11 @@ function paintSky(){
     const visL=700-halfVis, visR=700+halfVis, visB=Math.min(420, r.height/scale);
     /* the disc is drawn around (1108,112) at r=66; scaling about that point keeps
        the arc maths in one place whatever size it ends up */
-    const sc=hdr?0.52:1, halo=66*sc;
+    /* A very wide, very short banner leaves less height than the halo is tall, so the
+       disc is sized to the box rather than assumed to fit. At normal proportions this
+       is 1 and nothing changes. */
+    const sc = hdr ? 0.52 : Math.min(1, Math.max(0.45, (visB-24)/150));
+    const halo=66*sc;
     let x,y;
     if(hdr){
       /* the compacted navigator is a wide letterbox: a ridge arc has nowhere to go
@@ -1504,10 +1510,13 @@ function paintSky(){
       const top=halo+8, bot=Math.max(top+30, visB-halo*0.25);
       y=top + (bot-top)*(1-Math.sin(Math.PI*f));
     } else {
-      const span=Math.max(40, halfVis-95);          /* keep the halo off both edges */
+      const span=Math.max(40, halfVis-halo-29);    /* keep the halo off both edges */
       x=700 - span + f*2*span;
-      const apex=76, horizon=Math.max(apex+52, Math.min(192, visB-40));
-      y=apex + (horizon-apex)*(1-Math.sin(Math.PI*f));   /* sinks toward the ridge */
+      /* the low points clear the bottom by a whole halo — 192 puts the disc into the
+         ridgeline at dawn and dusk, which is the look, but only where there is room */
+      const apex=halo+10;
+      const horizon=Math.max(apex, Math.min(192, visB-halo-8));
+      y=apex + (horizon-apex)*(1-Math.sin(Math.PI*f));
     }
     const tf='translate('+x.toFixed(1)+','+y.toFixed(1)+') scale('+sc+') translate(-1108,-112)';
     const sun=svg.querySelector('.sun'), moon=svg.querySelector('.moon');
