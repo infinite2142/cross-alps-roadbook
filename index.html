@@ -131,6 +131,10 @@
   @keyframes moonA{0%,100%{transform:scale(.95);opacity:.08}50%{transform:scale(1.11);opacity:.15}}
   /* an ibex that turns up on a ridge now and then, one at a time */
   .goat{fill:#8E8A93;color:#8E8A93;opacity:0}
+  /* after sunset an ibex on a ridge is a silhouette. #0E1218 is the banner's own
+     darkest tone rather than pure black, so it reads as a shape cut out of the night
+     rather than a foreign patch. Both properties: the horns are stroked currentColor. */
+  svg.night .goat{fill:#0E1218;color:#0E1218}
   @keyframes goatPop{
     0%,2%   {opacity:0}
     5%      {opacity:.95}
@@ -1537,6 +1541,7 @@ function paintSky(){
       y=apex + (horizon-apex)*(1-Math.sin(Math.PI*f));
     }
     const tf='translate('+x.toFixed(1)+','+y.toFixed(1)+') scale('+sc+') translate(-1108,-112)';
+    svg.classList.toggle('night', !st.day);
     const sun=svg.querySelector('.sun'), moon=svg.querySelector('.moon');
     if(sun){  sun.setAttribute('transform',tf);  sun.classList.toggle('sky-off', !st.day); }
     if(moon){ moon.setAttribute('transform',tf); moon.classList.toggle('sky-off', st.day); }
