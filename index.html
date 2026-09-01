@@ -137,8 +137,14 @@
   @media (prefers-reduced-motion: reduce){ .goat{display:none} }
 
   /* the pano is cropped from the sides on a phone, and the sun sits at 79% across */
-  @media (max-width:820px){ .sun{transform:translateX(-250px)} }
-  @media (max-width:520px){ .sun{transform:translateX(-330px)} }
+  /* the sun's position is set from the clock in paintSky(), which measures how much
+     of the viewBox a sliced panorama is actually showing — these fixed nudges were
+     doing the same job by hand for two breakpoints. */
+  .sky-off{display:none}
+  .moon .m-halo{opacity:.10}
+  .moon .m-r1{opacity:.30}
+  .moon .m-core{opacity:.93}
+  .moon .m-cr{opacity:.34}
   /* landscape phones: keep enough sky above the ridgeline for the sun to show */
   @media (max-height:560px){ .banner{min-height:210px} }
 
@@ -724,7 +730,16 @@
     <circle class="s-r2" cx="1108" cy="112" r="46" fill="none" stroke="#D98F7E" stroke-width="1.6"/>
     <circle class="s-r1" cx="1108" cy="112" r="35" fill="none" stroke="#EFC3AC" stroke-width="2"/>
     <circle class="s-core" cx="1108" cy="112" r="25" fill="#F6E6DA"/>
-  </g></svg>
+  </g>
+  <g class="moon sky-off" aria-hidden="true">
+    <circle class="m-halo" cx="1108" cy="112" r="60" fill="#7FA6D8"/>
+    <circle class="m-r1" cx="1108" cy="112" r="34" fill="none" stroke="#BFD1EA" stroke-width="1.5"/>
+    <circle class="m-core" cx="1108" cy="112" r="24" fill="#E6EDF8"/>
+    <circle class="m-cr" cx="1099" cy="105" r="6.5" fill="#BCC9DC"/>
+    <circle class="m-cr" cx="1116" cy="118" r="4.2" fill="#BCC9DC"/>
+    <circle class="m-cr" cx="1106" cy="123" r="3" fill="#BCC9DC"/>
+  </g>
+</svg>
   <div class="banner-copy"><div class="inner">
     <p class="eyebrow"><svg class="ic"><use href="#i-peak"/></svg> Mountains, passes and lakes. And more passes.</p>
     <h1>Cross-Alps Trip <span style="opacity:.62;font-weight:400" id="heroSeason"></span></h1>
@@ -738,7 +753,16 @@
     <circle class="s-r2" cx="1108" cy="112" r="46" fill="none" stroke="#D98F7E" stroke-width="1.6"/>
     <circle class="s-r1" cx="1108" cy="112" r="35" fill="none" stroke="#EFC3AC" stroke-width="2"/>
     <circle class="s-core" cx="1108" cy="112" r="25" fill="#F6E6DA"/>
-  </g></svg></div>
+  </g>
+  <g class="moon sky-off" aria-hidden="true">
+    <circle class="m-halo" cx="1108" cy="112" r="60" fill="#7FA6D8"/>
+    <circle class="m-r1" cx="1108" cy="112" r="34" fill="none" stroke="#BFD1EA" stroke-width="1.5"/>
+    <circle class="m-core" cx="1108" cy="112" r="24" fill="#E6EDF8"/>
+    <circle class="m-cr" cx="1099" cy="105" r="6.5" fill="#BCC9DC"/>
+    <circle class="m-cr" cx="1116" cy="118" r="4.2" fill="#BCC9DC"/>
+    <circle class="m-cr" cx="1106" cy="123" r="3" fill="#BCC9DC"/>
+  </g>
+</svg></div>
   <div class="lift">
   <div class="wrap">
     <div class="mast">
@@ -1424,6 +1448,59 @@ function sunFor(name,dayIndex,which){
   const g=GEO[name]; if(!g) return null;
   const t=sunTimes(g[0],g[1],dayDate(dayIndex));
   return t?HHMM(which==='rise'?t.rise:t.set):null;
+}
+
+/* ---------- sun and moon in the panorama ------------------------------------
+   Positioned from the browser's own clock: rising on the left, highest around
+   midday, setting on the right, then the moon over the same arc all night.
+
+   Recomputed hourly, not continuously. The sun moves fifteen degrees an hour and
+   nobody is watching it move, so a per-minute timer would burn battery to show
+   nothing. Resize matters more than time does, because the panorama is drawn
+   `xMidYMax slice` — a narrow viewport crops the sides, and how much of the
+   1400-unit viewBox is actually on screen has to be measured from the rendered
+   box rather than guessed. Two fixed translateX nudges used to do that job for
+   two breakpoints; this does it for all of them, including the short header
+   backdrop, whose visible span is quite different from the hero's. */
+const SKY_ANCHOR='Munich Airport';     /* the trip's own start, so it matches the roadbook's sun times */
+function skyState(now){
+  const g=GEO[SKY_ANCHOR]; if(!g) return null;
+  now=now||new Date();
+  const t=sunTimes(g[0],g[1],now); if(!t) return null;
+  if(now>=t.rise && now<=t.set)
+    return {day:true, frac:(now-t.rise)/(t.set-t.rise)};
+  /* night runs from one day's sunset to the next day's sunrise, so before dawn we
+     need yesterday's sunset and after dusk tomorrow's sunrise */
+  const beforeDawn = now < t.rise;
+  const a = beforeDawn ? sunTimes(g[0],g[1],new Date(now.getTime()-864e5)) : t;
+  const b = beforeDawn ? t : sunTimes(g[0],g[1],new Date(now.getTime()+864e5));
+  if(!a||!b) return null;
+  return {day:false, frac:(now-a.set)/(b.rise-a.set)};
+}
+function paintSky(){
+  const st=skyState(); if(!st) return;
+  const f=Math.min(1,Math.max(0,st.frac));
+  document.querySelectorAll('svg.pano, .hdr-art svg').forEach(svg=>{
+    const r=svg.getBoundingClientRect();
+    if(!r.width||!r.height) return;
+    /* 'slice' scales to cover, so the visible width in viewBox units is W/scale */
+    const scale=Math.max(r.width/1400, r.height/420);
+    const halfVis=Math.min(700, (r.width/scale)/2);
+    const span=Math.max(40, halfVis-95);            /* keep the halo off both edges */
+    const x=700 - span + f*2*span;
+    /* the slice crops the top as well, anchored yMax — so the apex has to clear
+       whatever the container is actually showing, not a fixed 76 */
+    const visTop=420-(r.height/scale);
+    const apex=Math.max(76, visTop+74);
+    const horizon=Math.max(apex+52, 192);           /* sinks into the ridge at both ends */
+    const y=apex + (horizon-apex)*(1-Math.sin(Math.PI*f));
+    const move=el=>{ if(el) el.setAttribute('transform',
+      'translate('+(x-1108).toFixed(1)+','+(y-112).toFixed(1)+')'); };
+    const sun=svg.querySelector('.sun'), moon=svg.querySelector('.moon');
+    move(sun); move(moon);
+    if(sun)  sun.classList.toggle('sky-off', !st.day);
+    if(moon) moon.classList.toggle('sky-off', st.day);
+  });
 }
 
 /* ---------- seasonality ----------------------------------------------------
@@ -2275,7 +2352,14 @@ function paintMap(){
   if(window.mapZoomRepaint) window.mapZoomRepaint();   /* re-apply any zoom */
 }
 let rsz;
-window.addEventListener('resize',()=>{clearTimeout(rsz);rsz=setTimeout(()=>{paintProfiles();paintMap();},180);});
+window.addEventListener('resize',()=>{clearTimeout(rsz);rsz=setTimeout(()=>{paintProfiles();paintMap();paintSky();},180);});
+/* one repaint an hour, lined up with the hour itself so the sun steps when the
+   clock does. A tab left open overnight also catches up when it comes back. */
+(function skyClock(){
+  const next=3600000-(Date.now()%3600000)+1000;
+  setTimeout(function tick(){ paintSky(); setInterval(paintSky,3600000); }, next);
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) paintSky(); });
+})();
 
 function renderTabs(a){
   document.getElementById('switch').innerHTML=Object.values(D).map(s=>`
@@ -2443,6 +2527,7 @@ function render(k){
     r.addEventListener('mouseleave',()=>els().forEach(e=>e.classList.remove('hot')));
   });
   paintSeason();
+  paintSky();
   document.getElementById('todo').innerHTML=todoFor(s).map(t=>`<li><label><input type="checkbox"><span class="txt">${esc(t.t)}<em>${esc(t.d)}</em></span></label></li>`).join('');
   document.getElementById('costTable').innerHTML=
     `<tr><th>Item</th><th>When</th><th style="text-align:right">Cost</th></tr>`+
