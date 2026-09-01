@@ -141,10 +141,8 @@
      of the viewBox a sliced panorama is actually showing — these fixed nudges were
      doing the same job by hand for two breakpoints. */
   .sky-off{display:none}
-  .moon .m-halo{opacity:.10}
-  .moon .m-r1{opacity:.30}
-  .moon .m-core{opacity:.93}
-  .moon .m-cr{opacity:.34}
+  .moon .m-halo{opacity:.11}
+  .moon .m-core{opacity:.95}
 
   /* touch-action:none took the page's scroll with it — a finger landing anywhere on
      the map stopped the page dead, and the map covers most of a phone screen. pan-y
@@ -734,12 +732,13 @@
     <circle class="s-core" cx="1108" cy="112" r="25" fill="#F6E6DA"/>
   </g>
   <g class="moon sky-off" aria-hidden="true">
-    <circle class="m-halo" cx="1108" cy="112" r="60" fill="#7FA6D8"/>
-    <circle class="m-r1" cx="1108" cy="112" r="34" fill="none" stroke="#BFD1EA" stroke-width="1.5"/>
-    <circle class="m-core" cx="1108" cy="112" r="24" fill="#E6EDF8"/>
-    <circle class="m-cr" cx="1099" cy="105" r="6.5" fill="#BCC9DC"/>
-    <circle class="m-cr" cx="1116" cy="118" r="4.2" fill="#BCC9DC"/>
-    <circle class="m-cr" cx="1106" cy="123" r="3" fill="#BCC9DC"/>
+    <circle class="m-halo" cx="1108" cy="112" r="54" fill="#7FA6D8"/>
+    <!-- crescent as one evenodd path: a disc with a smaller disc cut out of it.
+         The cut-out sits wholly inside the outer circle (7 + 16.5 < 24), so the
+         two never cross and the result tapers to a point instead of closing into
+         a ring. No mask, so it survives the group transform untouched. -->
+    <path class="m-core" transform="translate(1108,112)" fill-rule="evenodd" fill="#E6EDF8"
+          d="M0,-24A24,24 0 1,0 0,24A24,24 0 1,0 0,-24ZM7,-16.5A16.5,16.5 0 1,0 7,16.5A16.5,16.5 0 1,0 7,-16.5Z"/>
   </g>
 </svg>
   <div class="banner-copy"><div class="inner">
@@ -757,12 +756,13 @@
     <circle class="s-core" cx="1108" cy="112" r="25" fill="#F6E6DA"/>
   </g>
   <g class="moon sky-off" aria-hidden="true">
-    <circle class="m-halo" cx="1108" cy="112" r="60" fill="#7FA6D8"/>
-    <circle class="m-r1" cx="1108" cy="112" r="34" fill="none" stroke="#BFD1EA" stroke-width="1.5"/>
-    <circle class="m-core" cx="1108" cy="112" r="24" fill="#E6EDF8"/>
-    <circle class="m-cr" cx="1099" cy="105" r="6.5" fill="#BCC9DC"/>
-    <circle class="m-cr" cx="1116" cy="118" r="4.2" fill="#BCC9DC"/>
-    <circle class="m-cr" cx="1106" cy="123" r="3" fill="#BCC9DC"/>
+    <circle class="m-halo" cx="1108" cy="112" r="54" fill="#7FA6D8"/>
+    <!-- crescent as one evenodd path: a disc with a smaller disc cut out of it.
+         The cut-out sits wholly inside the outer circle (7 + 16.5 < 24), so the
+         two never cross and the result tapers to a point instead of closing into
+         a ring. No mask, so it survives the group transform untouched. -->
+    <path class="m-core" transform="translate(1108,112)" fill-rule="evenodd" fill="#E6EDF8"
+          d="M0,-24A24,24 0 1,0 0,24A24,24 0 1,0 0,-24ZM7,-16.5A16.5,16.5 0 1,0 7,16.5A16.5,16.5 0 1,0 7,-16.5Z"/>
   </g>
 </svg></div>
   <div class="lift">
@@ -2377,10 +2377,35 @@ let rsz;
 window.addEventListener('resize',()=>{clearTimeout(rsz);rsz=setTimeout(()=>{paintProfiles();paintMap();paintSky();},180);});
 /* one repaint an hour, lined up with the hour itself so the sun steps when the
    clock does. A tab left open overnight also catches up when it comes back. */
+/* An hourly interval is not enough on its own: a phone suspends a backgrounded
+   tab's timers, so a page opened in the morning and looked at again in the evening
+   was still showing the morning sun in the morning's position. Two fixes — the next
+   repaint is scheduled for whichever comes first, the next hour or the next sunrise
+   or sunset, so the swap lands on time rather than up to an hour late; and it also
+   repaints whenever the page comes back into view, including from the back/forward
+   cache, which does not always fire visibilitychange. */
 (function skyClock(){
-  const next=3600000-(Date.now()%3600000)+1000;
-  setTimeout(function tick(){ paintSky(); setInterval(paintSky,3600000); }, next);
-  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) paintSky(); });
+  let timer=null;
+  function arm(){
+    clearTimeout(timer);
+    const now=Date.now();
+    let next=now + 3600000-(now%3600000) + 1000;      /* the next hour */
+    const g=GEO[SKY_ANCHOR];
+    if(g){ for(const d of [-1,0,1]){
+      const t=sunTimes(g[0],g[1],new Date(now+d*864e5));
+      if(!t) continue;
+      for(const e of [t.rise,t.set]){
+        const ms=e.getTime()+1000;
+        if(ms>now && ms<next) next=ms;                 /* ...or the next transition */
+      }
+    }}
+    timer=setTimeout(()=>{ paintSky(); arm(); }, Math.max(1000, next-now));
+  }
+  const wake=()=>{ paintSky(); arm(); };
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) wake(); });
+  window.addEventListener('pageshow', wake);
+  window.addEventListener('focus', wake);
+  arm();
 })();
 
 function renderTabs(a){
