@@ -733,12 +733,16 @@
   </g>
   <g class="moon sky-off" aria-hidden="true">
     <circle class="m-halo" cx="1108" cy="112" r="54" fill="#7FA6D8"/>
-    <!-- crescent as one evenodd path: a disc with a smaller disc cut out of it.
-         The cut-out sits wholly inside the outer circle (7 + 16.5 < 24), so the
-         two never cross and the result tapers to a point instead of closing into
-         a ring. No mask, so it survives the group transform untouched. -->
-    <path class="m-core" transform="translate(1108,112)" fill-rule="evenodd" fill="#E6EDF8"
-          d="M0,-24A24,24 0 1,0 0,24A24,24 0 1,0 0,-24ZM7,-16.5A16.5,16.5 0 1,0 7,16.5A16.5,16.5 0 1,0 7,-16.5Z"/>
+    <!-- A crescent is not a disc with a bite out of it: the outer edge is the moon's
+         limb, a circular arc, and the inner edge is the terminator, which is an
+         ELLIPSE arc. The two meet at two sharp cusps. Both arcs sweep the same way
+         but with opposite sweep flags, so the terminator curves back INTO the disc
+         rather than bulging out of it (it bulging out is a fat D, measured at 36.5
+         units wide instead of 24) —
+         the ellipse's x-radius alone sets how fat it is, 0 being a half moon and 24
+         a vanishing sliver. Tilted so it does not read as a letter D. -->
+    <path class="m-core" transform="translate(1108,112) rotate(-18)" fill="#E6EDF8"
+          d="M0,-24A24,24 0 0,0 0,24A12.5,24 0 0,1 0,-24Z"/>
   </g>
 </svg>
   <div class="banner-copy"><div class="inner">
@@ -757,12 +761,16 @@
   </g>
   <g class="moon sky-off" aria-hidden="true">
     <circle class="m-halo" cx="1108" cy="112" r="54" fill="#7FA6D8"/>
-    <!-- crescent as one evenodd path: a disc with a smaller disc cut out of it.
-         The cut-out sits wholly inside the outer circle (7 + 16.5 < 24), so the
-         two never cross and the result tapers to a point instead of closing into
-         a ring. No mask, so it survives the group transform untouched. -->
-    <path class="m-core" transform="translate(1108,112)" fill-rule="evenodd" fill="#E6EDF8"
-          d="M0,-24A24,24 0 1,0 0,24A24,24 0 1,0 0,-24ZM7,-16.5A16.5,16.5 0 1,0 7,16.5A16.5,16.5 0 1,0 7,-16.5Z"/>
+    <!-- A crescent is not a disc with a bite out of it: the outer edge is the moon's
+         limb, a circular arc, and the inner edge is the terminator, which is an
+         ELLIPSE arc. The two meet at two sharp cusps. Both arcs sweep the same way
+         but with opposite sweep flags, so the terminator curves back INTO the disc
+         rather than bulging out of it (it bulging out is a fat D, measured at 36.5
+         units wide instead of 24) —
+         the ellipse's x-radius alone sets how fat it is, 0 being a half moon and 24
+         a vanishing sliver. Tilted so it does not read as a letter D. -->
+    <path class="m-core" transform="translate(1108,112) rotate(-18)" fill="#E6EDF8"
+          d="M0,-24A24,24 0 0,0 0,24A12.5,24 0 0,1 0,-24Z"/>
   </g>
 </svg></div>
   <div class="lift">
