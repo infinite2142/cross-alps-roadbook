@@ -76,6 +76,12 @@ stale copy and draw the wrong conclusion.
   pins, so a tap on the marker itself landed on the polygon, `closest('.p-hit')` found nothing, and
   the tooltip handler read it as a tap on blank space and closed. Painting them last fixed hopping
   between points. The altitude profile already appended its hits last, which is why it never had this.
+- **`preserveAspectRatio` anchoring decides what a short viewport keeps.** The panorama is drawn
+  `slice`, so a landscape phone crops it vertically. Anchored `yMax` it kept the bottom of the
+  viewBox — solid mountain — threw the sky away, and left the hero's sun nowhere to sit but inside
+  the peaks. `yMin` keeps sky and summits and crops the dark foreground, which a 150px-tall hero
+  has no room for anyway. Note the `<symbol>` carries its own `preserveAspectRatio`; it is a no-op
+  here only because `<use>` maps it 1:1, so change the outer `<svg>`.
 - **Profile labels need reserved sky.** `ridgeSVG` places a label by searching *upward* from its
   marker and rejecting anything that crosses `top`, so a peak near `ALT_MAX` has nowhere to go
   and its label is dropped in silence — no warning, no fallback. `headroom` keeps two label lines

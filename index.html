@@ -685,7 +685,7 @@
 </symbol></defs></svg>
 
 <div class="banner">
-  <svg class="pano" viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Stylised alpine ridgelines with a switchback road"><use href="#pano"/>
+  <svg class="pano" viewBox="0 0 1400 420" preserveAspectRatio="xMidYMin slice" role="img" aria-label="Stylised alpine ridgelines with a switchback road"><use href="#pano"/>
     <g class="goat g1" transform="translate(603.1 164.3) scale(-1.80 1.80)" aria-hidden="true">
       <path d="M2.3 7.3 C2.3 6.0 3.4 5.4 4.8 5.4 L7.3 5.4 C8.5 5.4 9.2 6.0 9.3 6.9 C9.4 7.8 8.8 8.3 7.7 8.3 L3.9 8.3 C2.8 8.3 2.3 8.1 2.3 7.3 Z"/>
       <path d="M8.5 6.6 L9.7 4.4 L10.9 4.9 L9.9 7.1 Z"/>
@@ -747,7 +747,7 @@
 </div>
 
 <header id="hdr">
-  <div class="hdr-art"><svg viewBox="0 0 1400 420" preserveAspectRatio="xMidYMax slice"><use href="#pano"/>
+  <div class="hdr-art"><svg viewBox="0 0 1400 420" preserveAspectRatio="xMidYMin slice"><use href="#pano"/>
   <g class="sun">
     <circle class="s-halo" cx="1108" cy="112" r="66" fill="#C2496A"/>
     <circle class="s-r2" cx="1108" cy="112" r="46" fill="none" stroke="#D98F7E" stroke-width="1.6"/>
@@ -1483,23 +1483,36 @@ function paintSky(){
   document.querySelectorAll('svg.pano, .hdr-art svg').forEach(svg=>{
     const r=svg.getBoundingClientRect();
     if(!r.width||!r.height) return;
-    /* 'slice' scales to cover, so the visible width in viewBox units is W/scale */
+    const hdr=!svg.classList.contains('pano');
+    /* 'slice' scales to cover, so only part of the viewBox is on screen. Both are
+       anchored yMin, so the visible box starts at the top and runs as far down as
+       the container has room for. */
     const scale=Math.max(r.width/1400, r.height/420);
     const halfVis=Math.min(700, (r.width/scale)/2);
-    const span=Math.max(40, halfVis-95);            /* keep the halo off both edges */
-    const x=700 - span + f*2*span;
-    /* the slice crops the top as well, anchored yMax — so the apex has to clear
-       whatever the container is actually showing, not a fixed 76 */
-    const visTop=420-(r.height/scale);
-    const apex=Math.max(76, visTop+74);
-    const horizon=Math.max(apex+52, 192);           /* sinks into the ridge at both ends */
-    const y=apex + (horizon-apex)*(1-Math.sin(Math.PI*f));
-    const move=el=>{ if(el) el.setAttribute('transform',
-      'translate('+(x-1108).toFixed(1)+','+(y-112).toFixed(1)+')'); };
+    const visL=700-halfVis, visR=700+halfVis, visB=Math.min(420, r.height/scale);
+    /* the disc is drawn around (1108,112) at r=66; scaling about that point keeps
+       the arc maths in one place whatever size it ends up */
+    const sc=hdr?0.52:1, halo=66*sc;
+    let x,y;
+    if(hdr){
+      /* the compacted navigator is a wide letterbox: a ridge arc has nowhere to go
+         in it, so the sun runs corner to corner instead — up out of the bottom left,
+         over the middle, down into the bottom right. */
+      const padX=halo+14;
+      const xa=Math.min(visL+padX, 700-20), xb=Math.max(visR-padX, 700+20);
+      x=xa + f*(xb-xa);
+      const top=halo+8, bot=Math.max(top+30, visB-halo*0.25);
+      y=top + (bot-top)*(1-Math.sin(Math.PI*f));
+    } else {
+      const span=Math.max(40, halfVis-95);          /* keep the halo off both edges */
+      x=700 - span + f*2*span;
+      const apex=76, horizon=Math.max(apex+52, Math.min(192, visB-40));
+      y=apex + (horizon-apex)*(1-Math.sin(Math.PI*f));   /* sinks toward the ridge */
+    }
+    const tf='translate('+x.toFixed(1)+','+y.toFixed(1)+') scale('+sc+') translate(-1108,-112)';
     const sun=svg.querySelector('.sun'), moon=svg.querySelector('.moon');
-    move(sun); move(moon);
-    if(sun)  sun.classList.toggle('sky-off', !st.day);
-    if(moon) moon.classList.toggle('sky-off', st.day);
+    if(sun){  sun.setAttribute('transform',tf);  sun.classList.toggle('sky-off', !st.day); }
+    if(moon){ moon.setAttribute('transform',tf); moon.classList.toggle('sky-off', st.day); }
   });
 }
 
