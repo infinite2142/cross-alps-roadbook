@@ -122,7 +122,13 @@
   @keyframes sunB{0%,100%{transform:scale(.96);opacity:.40}50%{transform:scale(1.09);opacity:.14}}
   @keyframes sunC{0%,100%{transform:scale(.95);opacity:.60}50%{transform:scale(1.09);opacity:.26}}
   @keyframes sunD{0%,100%{transform:scale(1);opacity:.90}50%{transform:scale(1.06);opacity:1}}
-  @media (prefers-reduced-motion: reduce){ .sun circle{animation:none} }
+  @media (prefers-reduced-motion: reduce){ .sun circle,.moon circle{animation:none} }
+  /* the moon gets one slow breath rather than the sun's three: it is a quieter
+     object, and the crescent itself stays perfectly still — only the glow behind
+     it moves. Longer period and a smaller range than any of the sun's. */
+  .moon circle{transform-box:fill-box;transform-origin:50% 50%}
+  .moon .m-halo{animation:moonA 17s ease-in-out infinite}
+  @keyframes moonA{0%,100%{transform:scale(.95);opacity:.08}50%{transform:scale(1.11);opacity:.15}}
   /* an ibex that turns up on a ridge now and then, one at a time */
   .goat{fill:#8E8A93;color:#8E8A93;opacity:0}
   @keyframes goatPop{
@@ -733,16 +739,18 @@
   </g>
   <g class="moon sky-off" aria-hidden="true">
     <circle class="m-halo" cx="1108" cy="112" r="54" fill="#7FA6D8"/>
-    <!-- A crescent is not a disc with a bite out of it: the outer edge is the moon's
-         limb, a circular arc, and the inner edge is the terminator, which is an
-         ELLIPSE arc. The two meet at two sharp cusps. Both arcs sweep the same way
-         but with opposite sweep flags, so the terminator curves back INTO the disc
-         rather than bulging out of it (it bulging out is a fat D, measured at 36.5
-         units wide instead of 24) —
-         the ellipse's x-radius alone sets how fat it is, 0 being a half moon and 24
-         a vanishing sliver. Tilted so it does not read as a letter D. -->
+    <!-- A crescent is not a disc with a bite out of it. Two circles, one inside the
+         other, can only ever touch at a single point, so that shape wraps almost the
+         whole way round and reads as a bite. A crescent has two different curves: the
+         outer edge is the moon's limb, a circular arc, and the inner edge is the
+         terminator, an ELLIPSE arc. Same endpoints, opposite sweep flags, so the
+         terminator curves back into the disc instead of bulging out of it — bulging
+         out gives a fat D, which measures 36.5 units wide where a crescent must be
+         exactly 24. The ellipse's x-radius alone sets the phase: 0 is a half moon,
+         24 a vanishing sliver, 7 the fuller crescent here. Tilted so it does not
+         read as a letter D. -->
     <path class="m-core" transform="translate(1108,112) rotate(-18)" fill="#E6EDF8"
-          d="M0,-24A24,24 0 0,0 0,24A12.5,24 0 0,1 0,-24Z"/>
+          d="M0,-24A24,24 0 0,0 0,24A7,24 0 0,1 0,-24Z"/>
   </g>
 </svg>
   <div class="banner-copy"><div class="inner">
@@ -761,16 +769,18 @@
   </g>
   <g class="moon sky-off" aria-hidden="true">
     <circle class="m-halo" cx="1108" cy="112" r="54" fill="#7FA6D8"/>
-    <!-- A crescent is not a disc with a bite out of it: the outer edge is the moon's
-         limb, a circular arc, and the inner edge is the terminator, which is an
-         ELLIPSE arc. The two meet at two sharp cusps. Both arcs sweep the same way
-         but with opposite sweep flags, so the terminator curves back INTO the disc
-         rather than bulging out of it (it bulging out is a fat D, measured at 36.5
-         units wide instead of 24) —
-         the ellipse's x-radius alone sets how fat it is, 0 being a half moon and 24
-         a vanishing sliver. Tilted so it does not read as a letter D. -->
+    <!-- A crescent is not a disc with a bite out of it. Two circles, one inside the
+         other, can only ever touch at a single point, so that shape wraps almost the
+         whole way round and reads as a bite. A crescent has two different curves: the
+         outer edge is the moon's limb, a circular arc, and the inner edge is the
+         terminator, an ELLIPSE arc. Same endpoints, opposite sweep flags, so the
+         terminator curves back into the disc instead of bulging out of it — bulging
+         out gives a fat D, which measures 36.5 units wide where a crescent must be
+         exactly 24. The ellipse's x-radius alone sets the phase: 0 is a half moon,
+         24 a vanishing sliver, 7 the fuller crescent here. Tilted so it does not
+         read as a letter D. -->
     <path class="m-core" transform="translate(1108,112) rotate(-18)" fill="#E6EDF8"
-          d="M0,-24A24,24 0 0,0 0,24A12.5,24 0 0,1 0,-24Z"/>
+          d="M0,-24A24,24 0 0,0 0,24A7,24 0 0,1 0,-24Z"/>
   </g>
 </svg></div>
   <div class="lift">
