@@ -62,6 +62,10 @@ stale copy and draw the wrong conclusion.
 - `localStorage` is fine here but fails in the Claude artifact sandbox — keep it in a try/catch.
 - **Boot order.** `render('A')` runs last in the script on purpose: it calls `wxLoad()`, which
   touches `let`-bound state declared further down. Move the boot call up and every load throws.
+- **The day aside had the segment map inside each sleeping-arrangement branch**, and the last
+  day's branch — end of trip, no hotel — had no copy, so day 3 silently had no schematic on any
+  option for months. Anything every day should have belongs outside the branch that varies. When
+  a feature is conditional, count it across all 20 days rather than eyeballing one.
 - **Class-name collisions.** `.kw` was already the round waypoint marker in the map key; reusing
   it for a tab label drew a circle around the word. Grep a class name before inventing it.
 - **Don't hardcode a measured offset.** The roadbook note's indent must equal the country tag's

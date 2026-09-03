@@ -2490,14 +2490,20 @@ function renderDays(s){
           return t?`<span class="rb-sun" title="${rise?'Sunrise':'Sunset'} at ${esc(p[2])}, day ${day.n}">${rise?'sunrise':'sunset'} ${t}</span>`:'';
         })()}${p[5]?`<span class="rb-note" title="${esc(p[5])}">${esc(p[5])}</span>`:''}</div>
         <div class="rb-alt">${p[1]} m</div></div>`;}).join('');
-    const stays=day.stays.length?`
-      <div class="aside"><h4>Segment map · day ${day.n}</h4>
+    /* The segment map is drawn for every day. It used to live inside each of the
+       three sleeping-arrangement branches, and the last day's branch — end of trip,
+       no hotel — simply did not have a copy, so day 3 had no schematic on any
+       option. One copy now, and only the block underneath it varies. */
+    const segMap=`
+        <h4>Segment map · day ${day.n}</h4>
         <div class="viewtog segtog" role="group" aria-label="Segment map view">
           <button data-seg="s" data-day="${day.n}" aria-pressed="true">Schematic</button>
           <button data-seg="m" data-day="${day.n}" aria-pressed="false">Map (area only)</button>
         </div>
         <div class="segwrap" id="segwrap-${day.n}" data-bbox="${osmBox(day)}" data-marks="${osmMarks(day)}">${dayMapSVG(day,di)}</div>
-        <a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} in OSM (area only) ↗</a>
+        <a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} in OSM (area only) ↗</a>`;
+    const evening=day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:'';
+    const sleep = day.stays.length ? `
         <h4 style="margin-top:20px">Where to sleep · ${esc(day.to)}</h4>
         ${day.stays.map(h=>`<div class="stay ${h.pick?'pick':''}">
             <div class="nm"><span><svg class="ic"><use href="#i-bed"/></svg>${esc(h.n)}</span>${h.pick?`<span class="pk">${h.pick.toUpperCase()}</span>`:''}</div>
@@ -2506,24 +2512,20 @@ function renderDays(s){
               <a href="${site(h)}" target="_blank" rel="noopener">Website ↗</a>
               <a href="${bkg(h)}" target="_blank" rel="noopener">Booking.com ↗</a>
               <a href="${h.pid?gmap(h.pid):gsearch(h)}" target="_blank" rel="noopener">Map &amp; photos ↗</a>
-
             </div></div>`).join('')}
-        ${day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:''}</div>`
+        ${evening}`
       : di<s.days.length-1 ? `
-      <div class="aside"><h4>Segment map · day ${day.n}</h4>
-        <div class="viewtog segtog" role="group" aria-label="Segment map view">
-          <button data-seg="s" data-day="${day.n}" aria-pressed="true">Schematic</button>
-          <button data-seg="m" data-day="${day.n}" aria-pressed="false">Map (area only)</button>
-        </div>
-        <div class="segwrap" id="segwrap-${day.n}" data-bbox="${osmBox(day)}" data-marks="${osmMarks(day)}">${dayMapSVG(day,di)}</div>
-        <a class="osmlink" href="${osmDay(day)}" target="_blank" rel="noopener">Open day ${day.n} in OSM (area only) ↗</a>
         <h4 style="margin-top:20px">Where to sleep · ${esc(day.to)}</h4>
         <div class="stay"><div class="nm"><span><svg class="ic"><use href="#i-bed"/></svg>Not chosen yet</span></div>
           <div class="why">${esc(day.staysNote||'No hotels researched for this stop.')}</div></div>
-        ${day.evening?`<div class="evening"><b>Evening</b>${esc(day.evening)}</div>`:''}</div>`
-      :`<div class="aside"><h4>End of trip</h4><div class="stay"><div class="nm"><span>Munich, city centre</span></div>
-         <div class="loc">Munich by 20:00</div>
-         <div class="why">Park in a signed Parkhaus rather than on the street: the Altstadt is resident-permit only in the evening, and the Umweltzone inside the Mittlerer Ring needs a green sticker, which German plates carry as standard. Access is otherwise unrestricted.</div></div></div>`;
+        ${evening}`
+      : `
+        <h4 style="margin-top:20px">End of trip</h4>
+        <div class="stay"><div class="nm"><span><svg class="ic"><use href="#i-bed"/></svg>Munich, city centre</span></div>
+          <div class="loc">Munich by 20:00</div>
+          <div class="why">Park in a signed Parkhaus rather than on the street: the Altstadt is resident-permit only in the evening, and the Umweltzone inside the Mittlerer Ring needs a green sticker, which German plates carry as standard. Access is otherwise unrestricted.</div></div>
+        ${evening}`;
+    const stays=`<div class="aside">${segMap}${sleep}</div>`;
     return `<section class="sec day ${di%2?'alt':''}" id="sec-day${day.n}"><div class="daywrap">
       <div class="day-head"><h3><i class="daydot" style="background:${DAYC[di]}"></i>Day ${day.n} · ${esc(day.from)} → ${esc(day.to)}</h3>
         <span class="when mono"><span>depart ${day.depart}</span><span>arrive ${day.arrive}</span></span></div>
