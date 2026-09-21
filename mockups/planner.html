@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planner mockup · Cross-Alps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Tokens copied verbatim from index.html — if they drift, the mockup lies. */
+  :root{
+    --rock:#E4E1DA; --panel:#F3F1EC; --ink:#191A18; --slate:#63665F;
+    --line:#CBC7BE; --glow:#C2496A; --signal:#16457A; --snow:#FFFFFF;
+    --d1:#26557F; --d2:#6E4A87; --d3:#A8467E; --d4:#C24966;
+    --at:#7A6A4E; --it:#3E6B4B; --de:#55525A; --ch:#8E3F3A;
+    --ghost:#CFCAC0; --headline:#16457A;
+    --ps-open:#3E6B4B; --ps-edge:#74581C; --ps-shut:#9B3D38; --ps-through:#5A5D56;
+    --pad: clamp(16px, 4vw, 44px);
+  }
+  body.dark{--rock:#141619;--panel:#1C1F24;--ink:#E9EAE7;--slate:#969C9C;--line:#2F343B;
+            --snow:#101216;--ghost:#262B32;--headline:#8FB8E0;
+            --ps-open:#7FB894;--ps-edge:#D4AA5A;--ps-shut:#E0908A;--ps-through:#969C9C}
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--rock);color:var(--ink);
+    font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.55}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+  h1,h2,h3{font-family:'Bricolage Grotesque','IBM Plex Sans',sans-serif;font-weight:800;letter-spacing:-.02em;margin:0}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 var(--pad)}
+
+  /* ── mockup notice ─────────────────────────────────────── */
+  .mock{background:var(--glow);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:11px;
+    letter-spacing:.1em;text-transform:uppercase;padding:7px var(--pad);text-align:center}
+  .mock b{font-weight:600}
+
+  /* ── header, standing in for the real one ──────────────── */
+  header{border-bottom:1px solid var(--ink);background:var(--rock);position:sticky;top:0;z-index:40}
+  .mast{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:baseline;justify-content:space-between;padding:13px 0 11px}
+  .mast h1{font-size:clamp(17px,2.6vw,22px);text-transform:uppercase}
+  .mast .dates{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
+  .themebtn{background:none;border:1px solid var(--line);border-radius:50%;width:34px;height:34px;
+    cursor:pointer;color:var(--slate);font-size:15px;line-height:1;flex:0 0 auto}
+
+  /* the collapsed planner summary — appears once the hero scrolls away */
+  .hsum{display:none;align-items:center;gap:10px 14px;flex-wrap:wrap;
+    border-top:1px solid var(--line);padding:9px 0 10px}
+  header.compact .hsum{display:flex}
+  .hsum .s{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--slate)}
+  .hsum .s b{color:var(--ink);font-weight:600}
+  .hsum button{margin-left:auto;background:var(--ink);color:var(--rock);border:0;
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+    padding:6px 13px;cursor:pointer}
+
+  /* ── the planner ───────────────────────────────────────── */
+  .hero{padding:clamp(20px,4vw,34px) 0 10px}
+  .hero h2{font-size:clamp(24px,4.4vw,40px);line-height:1.05;max-width:17ch;margin-bottom:8px}
+  .hero .blurb{max-width:46ch;font-size:15px;color:#3B3D39;margin:0 0 22px}
+  body.dark .hero .blurb{color:#A7ADAD}
+
+  .planner{background:var(--panel);border:1px solid var(--line)}
+  .pl-row{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--line)}
+  .pl-row:last-of-type{border-bottom:0}
+  .pl-cell{flex:1 1 210px;min-width:0;padding:13px 16px 14px;border-right:1px solid var(--line)}
+  /* A class, not an inline style: inline beats the stylesheet outright, so the
+     narrow-viewport rule below could never override it and the cell kept a
+     260px basis on a phone — its divider stopping halfway across the row. */
+  .pl-cell.narrow{flex:0 1 260px}
+  .pl-cell:last-child{border-right:0}
+  .pl-lab{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--slate);margin-bottom:6px}
+  .pl-cell input,.pl-cell select{width:100%;background:var(--snow);color:var(--ink);
+    border:1px solid var(--line);border-radius:0;padding:8px 9px;font-family:inherit;font-size:15px}
+  .pl-cell input:focus-visible,.pl-cell select:focus-visible{outline:3px solid var(--glow);outline-offset:-3px}
+
+  /* segmented control for the route shape */
+  .pl-seg{display:flex;border:1px solid var(--line);background:var(--snow)}
+  .pl-seg button{flex:1;background:none;border:0;border-right:1px solid var(--line);padding:9px 8px;
+    cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--slate)}
+  .pl-seg button:last-child{border-right:0}
+  .pl-seg button[aria-pressed="true"]{background:var(--ink);color:var(--rock)}
+
+  /* the derived line: what the site worked out from what you typed */
+  .pl-derived{padding:10px 16px 12px;border-top:1px solid var(--line);background:var(--rock);
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.05em;color:var(--slate)}
+  .pl-derived b{color:var(--ink);font-weight:600}
+  .pl-derived .warn{color:var(--ps-shut)}
+
+  .pl-more{border-top:1px solid var(--line)}
+  .pl-more summary{cursor:pointer;padding:11px 16px;font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
+  .pl-opts{display:flex;flex-wrap:wrap;gap:9px 18px;padding:2px 16px 15px}
+  .pl-opts label{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--ink)}
+
+  .pl-go{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:14px 16px;border-top:1px solid var(--ink)}
+  .pl-go button{background:var(--ink);color:var(--rock);border:0;padding:12px 22px;cursor:pointer;
+    font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:15px}
+  /* --signal is a light-theme blue and is not redefined for dark; index.html
+     handles that with `body.dark a{color:#8FB8E0}`. Same treatment here. */
+  body.dark .pl-go .alt{color:#8FB8E0}
+  .pl-go .alt{background:none;color:var(--signal);border:1px solid var(--line);
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:10px 14px}
+
+  /* ── results strip, where the option tabs are today ────── */
+  .sec{padding:clamp(26px,4vw,44px) 0}
+  .sechead{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .sechead h3{font-size:clamp(19px,2.8vw,25px)}
+  .lede{max-width:64ch;font-size:14.5px;color:var(--slate);margin:0 0 20px}
+
+  .rstrip{display:flex;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+    overflow-x:auto;scrollbar-width:none}
+  .rstrip::-webkit-scrollbar{display:none}
+  .rtab{flex:1 1 0;min-width:200px;text-align:left;background:none;border:0;
+    border-right:1px solid var(--line);padding:13px 16px 15px;cursor:pointer;font-family:inherit;color:var(--slate)}
+  .rtab:last-child{border-right:0}
+  .rtab .k{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase}
+  .rtab .t{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:15.5px;
+    color:var(--ink);margin-top:2px}
+  .rtab .s{display:block;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.5;margin-top:4px}
+  .rtab[aria-pressed="true"]{background:var(--ink);color:#B9B6AE}
+  .rtab[aria-pressed="true"] .t{color:var(--snow)}
+  /* --ink inverts in dark, so a selected tab becomes light-on-light unless it
+     is told otherwise. index.html gives .tab the same two overrides. */
+  body.dark .rtab[aria-pressed="true"]{background:#E9EAE7;color:#4A4E52}
+  body.dark .rtab[aria-pressed="true"] .t{color:#101216}
+
+  /* ── a generated day header ────────────────────────────── */
+  .day-head{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;margin-bottom:10px}
+  .day-head h3{font-size:clamp(19px,2.9vw,26px);color:var(--headline)}
+  .daydot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:9px;background:var(--d2)}
+  .day-metrics{display:flex;flex-wrap:wrap;gap:7px 20px;font-family:'IBM Plex Mono',monospace;
+    font-size:12px;color:var(--slate);padding:11px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .day-metrics b{color:var(--ink);font-weight:600}
+  /* the band is the point: one number would be a lie at this accuracy */
+  .tband{color:var(--slate)}
+  .daylight{display:flex;flex-wrap:wrap;gap:7px 20px;font-family:'IBM Plex Mono',monospace;
+    font-size:12px;color:var(--slate);padding:11px 0;border-bottom:1px solid var(--line)}
+  .daylight b{color:var(--ink);font-weight:600}
+  .daylight .spare{color:var(--ps-open)}
+  .daylight .tight{color:var(--ps-edge)}
+
+  .pchip{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.08em;
+    text-transform:uppercase;border:1px solid currentColor;border-radius:2px;padding:1px 5px;margin-left:8px;
+    white-space:nowrap;vertical-align:1px;text-decoration:none}
+  .pchip.is-soft{border-style:dashed}
+  .pchip.s-season{color:var(--ps-open)} .pchip.s-edge{color:var(--ps-edge)}
+  .pchip.s-shut{color:var(--ps-shut)}   .pchip.s-through{color:var(--ps-through)}
+
+  .note{max-width:66ch;font-size:13.5px;line-height:1.55;color:var(--slate);margin:18px 0 0}
+  .note b{color:var(--ink)}
+
+  @media(max-width:640px){
+    /* Stacked one per row the planner ran 715px on a 812px phone and pushed
+       the primary action below the fold. The four short fields pair up two to
+       a row; only the place fields, which hold a long name, take a full row. */
+    .pl-cell,.pl-cell.narrow{flex:1 1 calc(50% - .5px);border-right:1px solid var(--line);
+      border-bottom:1px solid var(--line)}
+    .pl-cell.wide,.pl-cell.narrow{flex:1 1 100%;border-right:0}
+    .pl-row{border-bottom:0}
+    .pl-row:last-of-type .pl-cell{border-bottom:0}
+    .pl-row:last-of-type .pl-cell:last-child{border-bottom:0}
+    .pchip{font-size:9px;letter-spacing:.04em;padding:1px 4px;margin-left:6px}
+    /* Three segments plus a button do not fit on one line at 375px, and the
+       auto margin then throws Edit onto a row of its own — 240px of header
+       before any content. Drop the least load-bearing segment and tighten. */
+    .hsum{padding:7px 0 8px;gap:8px 10px}
+    .hsum .s{font-size:10px;letter-spacing:.03em}
+    .hsum #sumDay{display:none}
+    .hsum button{padding:5px 11px;font-size:9.5px;letter-spacing:.1em}
+  }
+</style>
+</head>
+<body>
+
+<div class="mock"><b>Mockup</b> — no generator behind this. Route numbers below are placeholders, not computed.</div>
+
+<header id="hdr">
+  <div class="wrap">
+    <div class="mast">
+      <h1>Cross-Alps</h1>
+      <span class="dates mono">Late summer</span>
+      <button class="themebtn" id="theme" title="Light / dark">◐</button>
+    </div>
+    <div class="hsum">
+      <span class="s" id="sumShape"><b>Munich → Munich</b></span>
+      <span class="s" id="sumWhen"><b>12 Jun</b> · 4 nights</span>
+      <span class="s" id="sumDay">home by <b>18:00</b></span>
+      <button onclick="window.scrollTo({top:0,behavior:'smooth'})">Edit</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <h2>Where do you want to cross?</h2>
+  <p class="blurb">Pick a start, some dates and how long a day you want to be out. The passes,
+    the daylight and the weather are read off those, and nothing here will tell you a pass is open.</p>
+
+  <div class="planner">
+    <div class="pl-row">
+      <div class="pl-cell narrow">
+        <span class="pl-lab">Shape</span>
+        <div class="pl-seg">
+          <button id="segLoop" aria-pressed="true">Round trip</button>
+          <button id="segAB" aria-pressed="false">A to B</button>
+        </div>
+      </div>
+      <div class="pl-cell wide">
+        <span class="pl-lab" id="fromLab">Starting and ending at</span>
+        <input id="from" value="Munich">
+      </div>
+      <div class="pl-cell wide" id="toCell" hidden>
+        <span class="pl-lab">Finishing at</span>
+        <input id="to" value="Ljubljana">
+      </div>
+    </div>
+
+    <div class="pl-row">
+      <div class="pl-cell"><span class="pl-lab">Leaving</span><input type="date" id="date" value="2027-06-12"></div>
+      <div class="pl-cell"><span class="pl-lab">Nights</span>
+        <select id="nights">
+          <option>2</option><option>3</option><option selected>4</option><option>5</option>
+          <option>6</option><option>7</option><option>8</option><option>10</option><option>12</option>
+        </select></div>
+      <div class="pl-cell"><span class="pl-lab">Leave each morning</span>
+        <select id="leave"><option>07:00</option><option>08:00</option><option selected>09:00</option>
+          <option>10:00</option><option>11:00</option><option>12:00</option></select></div>
+      <div class="pl-cell"><span class="pl-lab">Be there by</span>
+        <select id="arrive"><option>14:00</option><option>15:00</option><option>16:00</option>
+          <option>17:00</option><option selected>18:00</option><option>19:00</option><option>20:00</option></select></div>
+    </div>
+
+    <div class="pl-derived" id="derived"></div>
+
+    <details class="pl-more">
+      <summary>More — surfaces, tolls, vehicle</summary>
+      <div class="pl-opts">
+        <label><input type="checkbox"> Avoid unpaved</label>
+        <label><input type="checkbox"> Avoid tolls and vignettes</label>
+        <label><input type="checkbox"> Avoid gated or timed passes</label>
+        <label><input type="checkbox"> Caravan or trailer</label>
+        <label>Max altitude
+          <select style="margin-left:4px"><option>no limit</option><option>2,000 m</option><option>2,500 m</option></select></label>
+      </div>
+    </details>
+
+    <div class="pl-go">
+      <button>Build the route</button>
+      <button class="alt">Start from a preset</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap sec">
+  <div class="sechead"><h3>Three ways round</h3></div>
+  <p class="lede">Labelled by what they are, not by number — nobody can choose between "Option 3" and
+    "Option 4". Candidates that share most of their passes with a better-scoring one are dropped rather
+    than shown as a second option.</p>
+  <div class="rstrip">
+    <button class="rtab" aria-pressed="true"><span class="k">Most passes</span>
+      <span class="t">Stelvio, Gavia, Umbrail</span>
+      <span class="s">9 passes · 1,180 km<br>≈24h moving (21–27h)</span></button>
+    <button class="rtab" aria-pressed="false"><span class="k">Gentlest days</span>
+      <span class="t">Valleys and three crossings</span>
+      <span class="s">6 passes · 890 km<br>≈17h moving (15–19h)</span></button>
+    <button class="rtab" aria-pressed="false"><span class="k">Highest</span>
+      <span class="t">Over the Ötztal and the Bernina</span>
+      <span class="s">tops 2,757 m · 1,040 km<br>≈21h moving (18–24h)</span></button>
+  </div>
+</div>
+
+<div class="wrap sec" style="padding-top:0">
+  <div class="day-head">
+    <h3><i class="daydot"></i>Day 1 · Prad allo Stelvio → Canazei</h3>
+  </div>
+  <div class="day-metrics">
+    <span><b>288 km</b> distance</span>
+    <span class="tband"><b>≈6h 30m</b> moving <span id="bandTxt">(5h 45m – 7h 15m)</span></span>
+    <span><b>5</b> passes</span>
+    <span><b>2,757 m</b> high point</span>
+  </div>
+  <div class="daylight" id="daylight"></div>
+
+  <p class="note"><b>Two new things here.</b> The moving time carries its spread, because the router
+    is out by up to a third on hairpin roads and the error reverses on motorway — a single figure
+    would be a confident lie. And the daylight line is free: sunrise and sunset are already computed
+    locally for any date and place, and in October the margin goes negative before the driving does.</p>
+
+  <p class="note">Pass chips for reference, in all four states:
+    <span class="pchip s-season">usually open</span>
+    <span class="pchip s-edge">borderline</span>
+    <span class="pchip s-shut">usually shut</span>
+    <span class="pchip s-through is-soft">through route</span>
+    — the dashed border means a weaker claim: no dated record, medium confidence, or not checked in a year.</p>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+/* Stops are not a control — we decided the user sets the clock, not the driving
+   hours — but the assumption behind the derived budget is shown rather than
+   buried. Two hours is a placeholder and wants tuning against the real days. */
+const STOP_ALLOWANCE_H = 2;
+
+function hrs(t){const a=String(t||'').split(':').map(Number);
+  return Number.isFinite(a[0])&&Number.isFinite(a[1]) ? a[0]+a[1]/60 : NaN;}
+function fmtH(h){const m=Math.round(h*60); return (m/60|0)+'h '+String(m%60).padStart(2,'0')+'m';}
+
+function paint(){
+  const loop = $('segLoop').getAttribute('aria-pressed')==='true';
+  $('toCell').hidden = loop;
+  $('fromLab').textContent = loop ? 'Starting and ending at' : 'Starting at';
+
+  const d0=new Date($('date').value+'T12:00:00');
+  const n=+$('nights').value;
+  const d1=new Date(d0); d1.setDate(d1.getDate()+n);
+  const span = d0.getMonth()===d1.getMonth()
+    ? d0.getDate()+'–'+d1.getDate()+' '+MON[d0.getMonth()]
+    : d0.getDate()+' '+MON[d0.getMonth()].slice(0,3)+' – '+d1.getDate()+' '+MON[d1.getMonth()].slice(0,3);
+
+  const out = hrs($('arrive').value) - hrs($('leave').value);
+  const drive = out - STOP_ALLOWANCE_H;
+  const bad = !Number.isFinite(out) || drive < 2;
+
+  $('derived').innerHTML =
+    '<b>'+span+'</b> · '+n+' night'+(n===1?'':'s')+' &nbsp;·&nbsp; '
+    + '<b>'+fmtH(out)+'</b> out each day &nbsp;·&nbsp; about '+STOP_ALLOWANCE_H+'h for stops and lunch &nbsp;·&nbsp; '
+    + (bad ? '<span class="warn">that leaves under 2h of driving — widen the day</span>'
+           : '<b>≈'+fmtH(drive)+'</b> of driving to plan with');
+
+  $('sumShape').innerHTML = '<b>'+$('from').value+' → '+(loop?$('from').value:$('to').value)+'</b>';
+  $('sumWhen').innerHTML  = '<b>'+d0.getDate()+' '+MON[d0.getMonth()].slice(0,3)+'</b> · '+n+' nights';
+  $('sumDay').innerHTML   = 'home by <b>'+$('arrive').value+'</b>';
+
+  /* Illustrative only — the real figures come from sunFor, which already does
+     this locally for any date and place. The point is that the margin is shown. */
+  const sunset = d0.getMonth()>=9||d0.getMonth()<=2 ? '17:12' : '20:31';
+  const arriveEst='17:40';
+  const spare = hrs(sunset)-hrs(arriveEst);
+  $('daylight').innerHTML =
+    '<span>depart <b>'+$('leave').value+'</b></span>'
+    + '<span>arrive <b>≈'+arriveEst+'</b></span>'
+    + '<span>sunset <b>'+sunset+'</b></span>'
+    + '<span class="'+(spare<1?'tight':'spare')+'"><b>'+fmtH(Math.abs(spare))+'</b> '
+      +(spare<0?'after dark':'of daylight spare')+'</span>';
+}
+
+['segLoop','segAB'].forEach(id=>$(id).onclick=()=>{
+  $('segLoop').setAttribute('aria-pressed', String(id==='segLoop'));
+  $('segAB').setAttribute('aria-pressed', String(id==='segAB'));
+  paint();
+});
+['from','to','date','nights','leave','arrive'].forEach(id=>{
+  $(id).addEventListener('input',paint); $(id).addEventListener('change',paint);
+});
+document.querySelectorAll('.rtab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.rtab').forEach(x=>x.setAttribute('aria-pressed','false'));
+  b.setAttribute('aria-pressed','true');
+});
+$('theme').onclick=()=>document.body.classList.toggle('dark');
+addEventListener('scroll',()=>$('hdr').classList.toggle('compact', scrollY>150));
+paint();
+</script>
+</body>
+</html>
