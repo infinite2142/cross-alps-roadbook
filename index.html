@@ -418,7 +418,11 @@
   @media(max-width:640px){
     .pchip{font-size:9px;letter-spacing:.04em;padding:1px 4px;margin-left:6px}
     .cl-why{font-size:12.8px}
-    .pl-cell{flex:1 1 100%;border-right:0;border-bottom:1px solid var(--line)}
+    /* One field per row ran the planner to 948px on an 812px phone. The short
+       fields pair up; only the ones holding a long value take a full row. */
+    .pl-cell{flex:1 1 calc(50% - .5px);border-right:1px solid var(--line);
+      border-bottom:1px solid var(--line)}
+    .pl-cell.wide{flex:1 1 100%;border-right:0}
     .pl-row:last-child .pl-cell:last-child{border-bottom:0}
   }
   .rb-row.is-pass{background:linear-gradient(90deg,rgba(194,73,106,.09),rgba(194,73,106,0) 62%)}
@@ -891,26 +895,22 @@
 <div class="sec t-rock" id="sec-overview" style="border-top:0;padding-top:0">
 <div class="wrap">
   <div class="hero">
-    <div class="hero-top">
-      <h2 id="heroTitle"></h2>
-      <p class="blurb" id="heroBlurb"></p>
-    </div>
     <div class="planner">
       <div class="pl-row">
-        <div class="pl-cell">
+        <div class="pl-cell wide">
           <span class="pl-lab">Shape</span>
           <div class="pl-seg" role="group" aria-label="Route shape">
             <button id="segLoop" type="button" aria-pressed="true">Round trip</button>
             <button id="segAB" type="button" aria-pressed="false">A to B</button>
           </div>
         </div>
-        <div class="pl-cell">
+        <div class="pl-cell wide">
           <label class="pl-lab" for="plFrom" id="plFromLab">Starting and ending at</label>
-          <input id="plFrom" value="Munich" autocomplete="off">
+          <select id="plFrom"></select>
         </div>
-        <div class="pl-cell" id="plToCell" hidden>
+        <div class="pl-cell wide" id="plToCell" hidden>
           <label class="pl-lab" for="plTo">Finishing at</label>
-          <input id="plTo" value="Bolzano" autocomplete="off">
+          <select id="plTo"></select>
         </div>
       </div>
       <div class="pl-row">
@@ -929,9 +929,18 @@
             <option>10:00</option><option>11:00</option></select>
         </div>
         <div class="pl-cell">
-          <label class="pl-lab" for="plArrive">Be there by</label>
-          <select id="plArrive"><option>15:00</option><option>16:00</option><option>17:00</option>
-            <option selected>18:00</option><option>19:00</option><option>20:00</option></select>
+          <label class="pl-lab" for="plPace">How long a day</label>
+          <select id="plPace">
+            <option value="150">Gentle · 2h 30m driving</option>
+            <option value="210">Easy · 3h 30m</option>
+            <option value="270" selected>Balanced · 4h 30m</option>
+            <option value="330">Full · 5h 30m</option>
+            <option value="420">Long · 7h</option>
+          </select>
+        </div>
+        <div class="pl-cell wide">
+          <span class="pl-lab">Where this reaches</span>
+          <span class="pl-hint" id="plReach"></span>
         </div>
         <div class="pl-cell">
           <label class="pl-lab" for="plMaxAlt">Max altitude</label>
@@ -945,6 +954,12 @@
         <button id="plPreset" class="alt" type="button">Start from a preset</button>
         <span class="msg" id="plMsg"></span>
       </div>
+    </div>
+
+    <!-- The description answers the controls above it, so it reads after them. -->
+    <div class="hero-top">
+      <h2 id="heroTitle"></h2>
+      <p class="blurb" id="heroBlurb"></p>
     </div>
 
     <div class="stats" id="heroStats"></div>
@@ -2099,8 +2114,8 @@ function paintTrip(){
     der.innerHTML='<b>'+esc(dateLong(TRIP_START))+'</b> to <b>'+esc(dateLong(last))+'</b>'
       +' &nbsp;·&nbsp; '+n+' day'+(n===1?'':'s')
       +' &nbsp;·&nbsp; '+esc(seasonLabel(TRIP_START).toLowerCase())
-      +(o?' &nbsp;·&nbsp; <b>'+hm(o.driveMinPerDay)+'</b> of driving a day'
-          +' after about '+hm(o.stopMin)+' of stops':'')
+      +(o?' &nbsp;·&nbsp; leave <b>'+esc(o.leave)+'</b>, about <b>'+hm(o.driveMinPerDay)
+          +'</b> driving and '+hm(o.stopMin)+' of stops, in around <b>'+esc(o.arrive)+'</b>':'')
       +(isToday()?'' : ' &nbsp;·&nbsp; <button class="pl-reset" id="tripToday" type="button">back to today</button>');
   }
 
@@ -3267,21 +3282,71 @@ function loadRoutes(map,generated){
   GENERATED=!!generated;
 }
 
+/* ── Where a trip can start or end ─────────────────────────────────────────
+   Free text meant most things typed came back "no such place". The list is
+   built from the graph instead, so everything offered is somewhere the
+   generator can actually route from.
+
+   GEO calls everything a place, including summits, toll gates, tunnel portals
+   and a stretch of the A8 — all real waypoints, none of them somewhere you
+   begin a holiday. PASS_SEASON names the passes authoritatively; the rest is a
+   pattern, which is a heuristic and will need revisiting when the catalogue
+   brings its own places with a proper flag. Drops 32 of 95, leaving 63. */
+const NOT_A_BASE=/tunnel|toll gate|^A\d|Panoramastrasse|Hochalpenstrasse|spitze$|Törl|Höhe$|cesta|panoramska|^Passo |^Col |^Colle |joch$|sattel$|pass$/i;
+const CC_NAME={DE:'Germany',AT:'Austria',IT:'Italy',CH:'Switzerland',SI:'Slovenia',FR:'France'};
+const BASE_NODES=()=>NODE_LIST
+  .filter(n=>n.kind!=='pass' && !PASS_SEASON[n.name] && !NOT_A_BASE.test(n.name))
+  .sort((a,b)=>((CC_NAME[a.cc]||a.cc)+'|'+a.name).localeCompare((CC_NAME[b.cc]||b.cc)+'|'+b.name));
+function fillPlaces(sel,chosen){
+  const el=document.getElementById(sel); if(!el) return;
+  let cc=null, html='';
+  BASE_NODES().forEach(n=>{
+    if(n.cc!==cc){ if(cc!==null) html+='</optgroup>'; cc=n.cc;
+      html+='<optgroup label="'+esc(CC_NAME[cc]||cc)+'">'; }
+    html+='<option value="'+esc(n.id)+'"'+(n.id===chosen?' selected':'')+'>'+esc(n.name)+'</option>';
+  });
+  if(cc!==null) html+='</optgroup>';
+  el.innerHTML=html;
+}
+
+/* Five grades of day, driving minutes each. A longer day reaches more passes
+   on its own — the search is bounded by time, so this needs no separate
+   "more passes" lever. */
+const PACE_STOPS=d=>Math.min(150,Math.max(40,Math.round(d*0.3)));
+
+/* The coverage gap, stated rather than left for someone to discover by
+   choosing a longer day and getting the same answer back. A pass with no town
+   within an hour cannot end a day, so no route is offered over it: that is
+   26 of 34 today, all of France and Slovenia and most of Switzerland. The
+   catalogue has those passes; the place data does not have their towns yet. */
+function reachSummary(){
+  const near=PASS_NODES.filter(p=>PLACE_NODES().some(s=>{
+    const m=legMin(p.id,s.id); return m!==null&&m<=60; }));
+  return {near:near.length,total:PASS_NODES.length};
+}
+function paintReach(){
+  const el=document.getElementById('plReach'); if(!el) return;
+  const r=reachSummary();
+  el.textContent='Routes reach '+r.near+' of the '+r.total+' catalogue passes. The rest — France, '
+    +'Slovenia and most of Switzerland — have no town near enough to end a day, so nothing is '
+    +'offered over them rather than putting a night on a summit.';
+}
+
 function plannerOpts(){
   const g=id=>{const e=document.getElementById(id); return e?e.value:null;};
   const loop=document.getElementById('segLoop').getAttribute('aria-pressed')==='true';
-  const out=asMin(g('plArrive'))-asMin(g('plLeave'));
-  const stopMin=Math.min(150,Math.max(45,Math.round(out*0.22)));
+  const drive=+g('plPace')||300, stopMin=PACE_STOPS(drive);
+  /* The dropdowns carry node ids, so there is nothing left to resolve. */
   return {
-    startId:resolvePlace(g('plFrom')),
-    endId:loop?resolvePlace(g('plFrom')):resolvePlace(g('plTo')),
-    nights:+g('plNights'), leave:g('plLeave'), arrive:g('plArrive'),
-    stopMin, driveMinPerDay:Math.max(60,out-stopMin),
+    startId:g('plFrom'), endId:loop?g('plFrom'):g('plTo'),
+    nights:+g('plNights'), leave:g('plLeave'),
+    arrive:clockAt(asMin(g('plLeave'))+drive+stopMin),
+    stopMin, driveMinPerDay:drive,
     maxAlt:+g('plMaxAlt')||0
   };
 }
-/* Free text in, node id out. Exact name first, then a case-insensitive
-   prefix — enough for a mockup-grade field; a proper picker comes later. */
+/* Kept for a value arriving from somewhere other than the dropdown — a hash,
+   or a stored preference from before the list existed. */
 function resolvePlace(txt){
   if(!txt) return null;
   const t=String(txt).trim().toLowerCase();
@@ -3873,6 +3938,9 @@ syncHeader();
     if(e.target && e.target.id==='tripToday') setTripStart(new Date());
   });
 
+  fillPlaces('plFrom','geo_munich');
+  fillPlaces('plTo','geo_bolzano');
+  paintReach();
   const shape=loop=>{
     document.getElementById('segLoop').setAttribute('aria-pressed',String(loop));
     document.getElementById('segAB').setAttribute('aria-pressed',String(!loop));
@@ -3882,15 +3950,17 @@ syncHeader();
   };
   document.getElementById('segLoop').onclick=()=>shape(true);
   document.getElementById('segAB').onclick=()=>shape(false);
-  ['plNights','plLeave','plArrive','plMaxAlt','plFrom','plTo'].forEach(id=>{
+  ['plNights','plLeave','plPace','plMaxAlt','plFrom','plTo'].forEach(id=>{
     const e=document.getElementById(id); if(e){ e.addEventListener('change',paintTrip); e.addEventListener('input',paintTrip); }
   });
 
   const msg=t=>{ const m=document.getElementById('plMsg'); if(m) m.textContent=t||''; };
   document.getElementById('plBuild').onclick=()=>{
     const o=plannerOpts();
-    if(!o.startId) return msg('No such place in the catalogue yet.');
-    if(!o.endId)   return msg('No such finish in the catalogue yet.');
+    if(!o.startId||!NODES[o.startId]) return msg('Pick a starting point.');
+    if(!o.endId||!NODES[o.endId])     return msg('Pick a finish.');
+    if(o.startId===o.endId && document.getElementById('segAB').getAttribute('aria-pressed')==='true')
+      return msg('Start and finish are the same — use Round trip.');
     msg('');
     const routes=generateRoutes(o);
     if(!routes.length) return msg('Nothing fits those dates and hours — try more nights or a longer day.');
