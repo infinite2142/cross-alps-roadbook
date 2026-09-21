@@ -63,6 +63,33 @@ thousand calls against a free tier, run once and re-run only when the catalogue 
 Calibration check: the generator's estimate for the existing Option C days should land within
 about 10% of the times already in `D.C`, which were verified on the ground in September 2026.
 
+### Built, 2026-09-21 — and what the calibration found
+
+150 nodes (34 passes plus 116 places still read out of `GEO`), 11,175 edges, 9 API requests.
+`python3 tools/edges.py verify` chains all twenty authored days through the matrix.
+
+**Distance passes.** Worst case 7%, most days within 3%. Usable as-is.
+
+**Time does not, and not by a constant.** Worst case 31%, and the error changes sign with the
+character of the road:
+
+| day type | example | routed vs authored |
+|---|---|---|
+| hairpin passes | C day 1, Stelvio + Umbrail + Gavia | **−22%** (router too optimistic) |
+| hairpin passes | D day 2, Canazei → Zell am See | **−31%** |
+| motorway | E day 0, Munich → Zell am See | **+31%** (router too pessimistic) |
+| motorway | C day 3, Bruneck → Munich | **+22%** |
+
+Averaged: fast days (≥60 km/h routed) run +12%, slow days −7%. A single scale factor cannot
+fix a bias that reverses, so **the generator cannot use ORS durations directly** for its
+daily-hours constraint — the one thing that decides whether a day is drivable. This is an
+open question, below.
+
+Two bugs the calibration surfaced, both of the silent kind: a node 300 m off its road returned
+zero edges while every other node returned 148, and the `GEO` parser mangled every waypoint
+name containing an apostrophe. Both are recorded in `CLAUDE.md` under traps; `fetch` now fails
+loudly on an unroutable node.
+
 ## Generator
 
 Beam search over the node graph. Per candidate itinerary:
@@ -154,8 +181,31 @@ presets reachable from the planner.
 
 ## Still open
 
-- `data/edges.json` is not built. `tools/edges.py` is written and its offline paths pass:
-  150 nodes (34 passes + 116 places from `GEO`), no coordinate problems, full matrix in 9 ORS
-  requests. **Needs an OpenRouteService API key to run `fetch`.**
-- The catalogue is 34 of a target 110–130.
-- OpenTopoMap tiles must be replaced with Protomaps before any real traffic arrives.
+**1. Drive time needs a road-character correction.** See the calibration above. The ingredients
+are already in the catalogue — `drive.difficulty`, `drive.hairpins`, `drive.typical_minutes` —
+and there are twenty authored days to fit against, which is few but real. The honest options
+are to fit a two-parameter correction keyed on road character, or to use `typical_minutes` for
+the pass segments and the router only for the connecting roads. Until one is chosen, any
+generated "5 hours of driving" is wrong by up to a third in whichever direction flatters the
+route least.
+
+**2. Inlining does not scale to the full catalogue.** With 150 nodes the matrix inlines to
+498 KB — `index.html` is 748 KB raw, 169 KB gzipped, and loads in 135 ms. Fine. But the matrix
+is quadratic in nodes, and the target is 110–130 passes plus their places:
+
+| nodes | edges | inlined, raw |
+|---|---|---|
+| 150 (today) | 11,175 | 0.5 MB |
+| 250 | 31,125 | 1.4 MB |
+| 430 (target) | 92,235 | **4.2 MB** |
+
+Option (a) was chosen on the basis that the file "grows past 500 KB". At 4 MB that reasoning no
+longer holds and offline capability has to be bought another way. Pruning to edges under
+~150 km removes 46% of pairs, and a tighter encoding removes more; between them this is
+probably survivable, but it should be decided before the catalogue grows rather than after.
+
+**3. The catalogue is 34 of a target 110–130**, and covers only 6 of the 33 passes the existing
+roadbook names. The rest fall back to the coarse `PASS_SEASON` classification, which the
+closure card states plainly rather than hiding.
+
+**4. OpenTopoMap tiles** must be replaced with Protomaps before any real traffic arrives.

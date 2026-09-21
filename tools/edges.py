@@ -43,14 +43,14 @@ ORS_CALLS_PER_MIN = 40
 
 # ---------------------------------------------------------------- node set
 
-def _balanced(src, start):
-    """Return the {...} block beginning at or after `start`."""
-    i = src.index("{", start)
+def _balanced(src, start, opener="{", closer="}"):
+    """Return the bracketed block beginning at or after `start`."""
+    i = src.index(opener, start)
     depth = 0
     for j in range(i, len(src)):
-        if src[j] == "{":
+        if src[j] == opener:
             depth += 1
-        elif src[j] == "}":
+        elif src[j] == closer:
             depth -= 1
             if depth == 0:
                 return src[i:j + 1]
@@ -63,11 +63,19 @@ def read_geo():
     if not m:
         raise SystemExit("GEO not found in index.html")
     blk = _balanced(src, m.start())
+    # GEO keys are JS string literals and two of them bite. "Cortina
+    # d'Ampezzo" is double-quoted, so one character class for both quote types
+    # reads the apostrophe as an opening quote and yields "Ampezzo". 'Passo
+    # d\'Eira' is single-quoted with the apostrophe backslash-escaped, so a
+    # naive [^']* stops inside the name and yields "Eira". Both keep the right
+    # coordinate, which is why neither looks broken — the name is simply not
+    # the one the roadbook asks for later, and the lookup silently finds
+    # nothing. Match quote type and escapes the way JS does.
+    pat = r"""(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")\s*:\s*\[\s*([\d.\-]+)\s*,\s*([\d.\-]+)\s*\]"""
+    unescape = lambda s: re.sub(r"\\(.)", r"\1", s)
     return {
-        k: (float(a), float(b))
-        for k, a, b in re.findall(
-            r"['\"]([^'\"]+)['\"]\s*:\s*\[\s*([\d.\-]+)\s*,\s*([\d.\-]+)\s*\]", blk
-        )
+        unescape(sq if sq is not None and sq != "" else dq): (float(a), float(b))
+        for sq, dq, a, b in re.findall(pat, blk)
     }
 
 
@@ -243,53 +251,209 @@ def cmd_fetch(args):
         "nodes": len(nodes), "edges": edges,
     }, open(EDGES, "w"), indent=0)
     print(f"wrote {EDGES}: {len(edges)} edges")
-    return 0
+
+    # A node the router cannot snap to a road produces no edges at all, and
+    # nothing downstream would say so — the generator would simply never route
+    # through it, exactly the way a waypoint with no coordinate silently
+    # vanishes from the maps. Count degrees and name the offenders.
+    deg = {i: 0 for i, _, _, _ in nodes}
+    for k in edges:
+        a, b = k.split("|")
+        deg[a] += 1
+        deg[b] += 1
+    orphans = [(i, nm, c) for i, nm, c, _ in nodes if deg[i] == 0]
+    thin = [(i, nm, deg[i]) for i, nm, _, _ in nodes if 0 < deg[i] < (len(nodes) - 1) // 2]
+    if orphans:
+        print(f"\n{len(orphans)} node(s) the router could not reach at all — fix the coordinate:")
+        for i, nm, c in orphans:
+            print(f"  {i:<30} {nm:<36} {c}")
+    if thin:
+        print(f"\n{len(thin)} node(s) reachable from under half the network:")
+        for i, nm, d in thin:
+            print(f"  {i:<30} {nm:<36} {d}/{len(nodes) - 1}")
+    if not orphans and not thin:
+        print("every node is routable")
+    return 1 if orphans else 0
+
+
+def _split_top(s, opener, closer):
+    """Top-level bracketed groups inside `s`, quotes respected."""
+    out, depth, start, q, esc = [], 0, None, None, False
+    for i, ch in enumerate(s):
+        if esc:
+            esc = False
+            continue
+        if ch == "\\":
+            esc = True
+            continue
+        if q:
+            if ch == q:
+                q = None
+            continue
+        if ch in "'\"":
+            q = ch
+            continue
+        if ch == opener:
+            if depth == 0:
+                start = i
+            depth += 1
+        elif ch == closer:
+            depth -= 1
+            if depth == 0:
+                out.append(s[start:i + 1])
+    return out
+
+
+def _fields(group):
+    """Top-level comma-separated fields of one [...] literal."""
+    body = group[1:-1]
+    out, cur, depth, q, esc = [], "", 0, None, False
+    for ch in body:
+        if esc:
+            cur += ch
+            esc = False
+            continue
+        if ch == "\\":
+            cur += ch
+            esc = True
+            continue
+        if q:
+            cur += ch
+            if ch == q:
+                q = None
+            continue
+        if ch in "'\"":
+            q = ch
+            cur += ch
+            continue
+        if ch in "[{(":
+            depth += 1
+        elif ch in "]})":
+            depth -= 1
+        if ch == "," and depth == 0:
+            out.append(cur.strip())
+            cur = ""
+        else:
+            cur += ch
+    out.append(cur.strip())
+    return out
+
+
+def _pts_names(pts_block):
+    """Waypoint names from a pts array.
+
+    A point is [km, altitude, name, kind, country, note]; a regex over the
+    whole block cheerfully matches the country code as a name too, which is
+    how this first went wrong. Parse the positions instead of pattern-matching
+    the text. 'thru' points are kept: they are real places on the road, and
+    it is only Google that must not be handed them as stops.
+    """
+    names = []
+    for grp in _split_top(pts_block[1:-1], "[", "]"):
+        f = _fields(grp)
+        if len(f) < 3:
+            continue
+        nm = f[2].strip()
+        if len(nm) >= 2 and nm[0] in "'\"" and nm[-1] == nm[0]:
+            names.append(nm[1:-1].replace("\\'", "'").replace('\\"', '"'))
+    return names
+
+
+def _routes():
+    """Every authored option, as (key, day, [waypoint names], km, minutes).
+
+    Read straight out of index.html: those figures are the only ground truth
+    there is, and D is still the source of truth for the authored trip.
+    """
+    src = open(INDEX, encoding="utf-8").read()
+    out = []
+    for key in "ABCDE":
+        m = re.search(r"\b%s\s*:\s*\{key\s*:\s*'%s'" % (key, key), src)
+        if not m:
+            continue
+        blk = _balanced(src, m.start())
+        for d in re.finditer(
+                r"\{n:(\d+),from:'([^']*)',to:'([^']*)',km:(\d+),time:'(\d+)h (\d+)m'", blk):
+            tail = blk[d.end():]
+            pm = re.search(r"pts:\s*\[", tail)
+            if not pm:
+                continue
+            names = _pts_names(_balanced(tail, pm.start(), "[", "]"))
+            out.append((key, int(d.group(1)), names,
+                        int(d.group(4)), int(d.group(5)) * 60 + int(d.group(6))))
+    return out
 
 
 def cmd_verify(args):
-    """Option C's day totals were verified on the ground in September 2026."""
-    src = open(INDEX, encoding="utf-8").read()
-    m = re.search(r"\bC\s*:\s*\{", src)
-    blk = _balanced(src, m.start())
-    days = re.findall(
-        r"\{n:(\d+),from:'([^']*)',to:'([^']*)',km:(\d+),time:'(\d+)h (\d+)m'", blk)
+    """Chain every authored day through the matrix and compare.
 
-    print("Option C, measured on the ground:\n")
-    print(f"{'day':<5}{'from -> to':<48}{'km':>6}{'min':>6}")
-    tk = tm = 0
-    for n, f, t, km, h, mi in days:
-        mins = int(h) * 60 + int(mi)
-        tk += int(km)
-        tm += mins
-        print(f"{n:<5}{f + ' -> ' + t:<48}{km:>6}{mins:>6}")
-    print(f"{'':<5}{'total':<48}{tk:>6}{tm:>6}")
-
+    A direct A->B route is not the day's road — Option C's day 1 leaves Prad,
+    climbs the Stelvio, drops to Bormio over the Umbrail, takes the Gavia and
+    comes back east: 288 km where the direct line is 128. The only meaningful
+    check walks the waypoints in order, which is also what the generator will
+    do. Option C's figures were verified on the ground in September 2026; the
+    rest are the author's own estimates and are weaker evidence.
+    """
     if not os.path.exists(EDGES):
-        print("\nno data/edges.json yet — nothing to calibrate against.")
+        print("no data/edges.json yet — run `fetch` first.")
         return 0
 
     data = json.load(open(EDGES, encoding="utf-8"))
     edges = data["edges"]
     nodes, _ = load_nodes()
-    by_name = {n.lower(): i for i, n, _, _ in nodes}
+    by_name = {n: i for i, n, _, _ in nodes}
 
-    print("\nrouted vs measured:")
-    worst = 0.0
-    for n, f, t, km, h, mi in days:
-        a, b = by_name.get(f.lower()), by_name.get(t.lower())
-        e = edges.get(f"{a}|{b}") or edges.get(f"{b}|{a}") if a and b else None
-        if not e:
-            print(f"  day {n}: no edge for {f} -> {t}")
+    def leg(a, b):
+        return edges.get("%s|%s" % (a, b)) or edges.get("%s|%s" % (b, a))
+
+    print("Every authored day, chained waypoint by waypoint through the matrix.\n")
+    print("%-9s%-30s%9s%8s%7s   %9s%8s%7s"
+          % ("day", "route", "routed", "book", "delta", "routed", "book", "delta"))
+    print("%-9s%-30s%9s%8s%7s   %9s%8s%7s"
+          % ("", "", "km", "km", "", "min", "min", ""))
+
+    rows, gaps = [], []
+    for key, n, names, bkm, bmin in _routes():
+        km = mn = 0.0
+        ok = True
+        for a, b in zip(names, names[1:]):
+            ia, ib = by_name.get(a), by_name.get(b)
+            e = leg(ia, ib) if ia and ib else None
+            if not e:
+                gaps.append("%s day %d: %s -> %s" % (key, n, a, b))
+                ok = False
+                break
+            km += e[0]
+            mn += e[1]
+        if not ok:
             continue
-        meas = int(h) * 60 + int(mi)
-        dev = abs(e[1] - meas) / meas
-        worst = max(worst, dev)
-        flag = "  <-- over 10%" if dev > 0.10 else ""
-        print(f"  day {n}: routed {e[0]:>6} km {e[1]:>4} min | "
-              f"measured {km:>5} km {meas:>4} min | {dev * 100:>5.1f}%{flag}")
-    print(f"\nworst deviation {worst * 100:.1f}% (brief's gate: 10%)")
-    print("A direct A->B route is not the day's actual road: the generator must"
-          "\nchain each day's waypoints. Treat this as a floor, not the check itself.")
+        dk = 100 * (km - bkm) / bkm
+        dm = 100 * (mn - bmin) / bmin
+        rows.append((key, n, km, bkm, dk, mn, bmin, dm))
+        print("%s day %-3d%-30s%9.0f%8d%6.0f%%   %9.0f%8d%6.0f%%"
+              % (key, n, (names[0] + " to " + names[-1])[:29], km, bkm, dk, mn, bmin, dm))
+
+    if not rows:
+        print("nothing could be chained — check the node names.")
+        return 1
+
+    wk = max(abs(r[4]) for r in rows)
+    wm = max(abs(r[7]) for r in rows)
+    print("\n%d days chained, %d blocked by a missing edge" % (len(rows), len(gaps)))
+    for g in gaps:
+        print("  gap  " + g)
+    print("\nworst deviation: distance %.0f%%   moving time %.0f%%   (gate: 10%%)" % (wk, wm))
+
+    # The interesting part is not the worst case but its sign: the router is
+    # optimistic where the road is all hairpins and pessimistic where it is
+    # motorway, so a single scale factor cannot fix it.
+    fast = [r for r in rows if r[2] / max(r[5] / 60.0, 0.01) >= 60]
+    slow = [r for r in rows if r[2] / max(r[5] / 60.0, 0.01) < 60]
+    for label, g in (("fast days (>=60 km/h routed)", fast), ("slow days (<60 km/h routed)", slow)):
+        if g:
+            avg = sum(r[7] for r in g) / len(g)
+            print("  %-32s %2d days, mean time error %+.0f%%" % (label, len(g), avg))
+    print("\nDistance is usable as-is. Time is not: see docs/route-generator-brief.md.")
     return 0
 
 
