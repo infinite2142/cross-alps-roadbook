@@ -373,9 +373,37 @@
   .cl-link{display:inline-block;margin-top:6px;font-size:12.5px}
   .cl-gap{margin:17px 0 0;padding-top:15px;border-top:1px solid var(--line);
     font-size:13px;line-height:1.55;color:var(--slate);max-width:66ch}
+
+  /* ── the planner ──────────────────────────────────────────
+     Base rules first, narrow overrides in the media block below — a media
+     query adds no specificity, so a base rule written after one wins. */
+  .planner{background:var(--panel);border:1px solid var(--line);margin:0 0 22px}
+  .pl-row{display:flex;flex-wrap:wrap}
+  .pl-cell{flex:1 1 210px;min-width:0;padding:13px 16px 14px;border-right:1px solid var(--line)}
+  .pl-cell:last-child{border-right:0}
+  .pl-cell.wide{flex:1 1 100%;border-right:0}
+  .pl-lab{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--slate);margin-bottom:6px}
+  .pl-cell input{width:100%;background:var(--snow);color:var(--ink);border:1px solid var(--line);
+    border-radius:0;padding:8px 9px;font-family:inherit;font-size:15px}
+  .pl-cell input:focus-visible{outline:3px solid var(--glow);outline-offset:-3px}
+  .pl-hint{display:block;margin-top:7px;font-size:12.5px;line-height:1.45;color:var(--slate)}
+  .pl-derived{padding:10px 16px 12px;border-top:1px solid var(--line);background:var(--rock);
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.05em;color:var(--slate)}
+  .pl-derived b{color:var(--ink);font-weight:600}
+  .pl-reset{background:none;border:0;padding:0;cursor:pointer;color:var(--signal);
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .pl-reset:hover{text-decoration:underline}
+  /* --signal is a light-theme blue with no dark value; the site covers that
+     with `body.dark a`, which does not reach a <button>. Say it explicitly. */
+  body.dark .pl-reset{color:#8FB8E0}
+  .mast .trip{color:var(--ink);font-weight:600}
+
   @media(max-width:640px){
     .pchip{font-size:9px;letter-spacing:.04em;padding:1px 4px;margin-left:6px}
     .cl-why{font-size:12.8px}
+    .pl-cell{flex:1 1 100%;border-right:0;border-bottom:1px solid var(--line)}
+    .pl-row:last-child .pl-cell:last-child{border-bottom:0}
   }
   .rb-row.is-pass{background:linear-gradient(90deg,rgba(194,73,106,.09),rgba(194,73,106,0) 62%)}
   .rb-row.is-pass:hover{background:linear-gradient(90deg,rgba(194,73,106,.17),rgba(194,73,106,.02) 62%)}
@@ -851,6 +879,21 @@
       <h2 id="heroTitle"></h2>
       <p class="blurb" id="heroBlurb"></p>
     </div>
+    <div class="planner">
+      <div class="pl-row">
+        <div class="pl-cell">
+          <label class="pl-lab" for="tripDate">Planning to leave on</label>
+          <input type="date" id="tripDate">
+        </div>
+        <div class="pl-cell">
+          <span class="pl-lab">What this changes</span>
+          <span class="pl-hint">Pass windows, sunrise and sunset, the season card and the
+            check-list are all answered for these dates rather than for today.</span>
+        </div>
+      </div>
+      <div class="pl-derived" id="tripDerived"></div>
+    </div>
+
     <div class="stats" id="heroStats"></div>
 
     <div class="mapwrap">
@@ -913,6 +956,7 @@
     <h4 class="rbhead subhead">Season · the next four weeks</h4>
     <div id="seasonCard"></div>
     <h4 class="rbhead subhead">Forecast · the next seven days</h4>
+    <p class="lede" id="wxHorizon" hidden></p>
     <div class="wx-bar">
       <button class="wx-btn" id="wxBtn" type="button"><svg class="ic"><use href="#i-clock"/></svg><span id="wxBtnTxt">Refresh</span></button>
       <span class="wx-stamp mono" id="wxStamp">Loading…</span>
@@ -1518,7 +1562,51 @@ function sunTimes(lat,lon,date){
 }
 const HHMM=d=>d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Berlin'});
 /* day 0 is today, so the whole roadbook slides forward with the calendar */
-const dayDate=i=>{const d=new Date(); d.setDate(d.getDate()+i); d.setHours(12,0,0,0); return d;};
+/* ── The trip's first day ─────────────────────────────────────────────────
+   `dayDate` has always meant "day 0 plus i". The only thing that changes here
+   is that day 0 is no longer forced to be today: someone reading this in
+   January while planning for July must see July's light and July's pass
+   windows, not this morning's.
+
+   Resolution order is URL hash, then the last local choice, then today — a
+   shared link has to beat a stale preference, or the link does not mean what
+   the sender saw. localStorage is wrapped because it throws outright in a
+   sandboxed artifact frame. */
+const TRIP_KEY='cross-alps-trip-start';
+const midday =d=>{const x=new Date(d); x.setHours(12,0,0,0); return x;};
+const isoDay =d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const dateShort=d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+const dateLong =d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'long'});
+
+function parseDay(s){
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s||'').trim());
+  if(!m) return null;
+  const d=new Date(+m[1],+m[2]-1,+m[3],12,0,0,0);
+  /* Date rolls 2027-02-31 forward into March rather than refusing it, so the
+     parts are compared back against what was asked for. */
+  if(d.getFullYear()!==+m[1]||d.getMonth()!==+m[2]-1||d.getDate()!==+m[3]) return null;
+  const lo=midday(new Date()), hi=midday(new Date());
+  lo.setFullYear(lo.getFullYear()-1); hi.setFullYear(hi.getFullYear()+3);
+  return (d<lo||d>hi) ? null : d;
+}
+const hashDay  =()=>{const m=/(?:^|[#&])d=([0-9-]+)/.exec(location.hash||''); return m?parseDay(m[1]):null;};
+const storedDay=()=>{ try{ return parseDay(localStorage.getItem(TRIP_KEY)); }catch(e){ return null; } };
+
+let TRIP_START = hashDay() || storedDay() || midday(new Date());
+const isToday=()=>isoDay(TRIP_START)===isoDay(new Date());
+const daysOut=()=>Math.round((midday(TRIP_START)-midday(new Date()))/864e5);
+
+function setTripStart(d){
+  const v=parseDay(isoDay(d)); if(!v) return;
+  TRIP_START=v;
+  try{ localStorage.setItem(TRIP_KEY,isoDay(TRIP_START)); }catch(e){}
+  /* replaceState, not pushState: nobody wants the back button full of date
+     fiddling, and the link still carries the date for sharing. */
+  history.replaceState(null,'',location.pathname+location.search+(isToday()?'':'#d='+isoDay(TRIP_START)));
+  if(CURRENT) render(CURRENT.key);
+}
+
+const dayDate=i=>{const d=new Date(TRIP_START); d.setDate(d.getDate()+i); d.setHours(12,0,0,0); return d;};
 function sunFor(name,dayIndex,which){
   const g=GEO[name]; if(!g) return null;
   const t=sunTimes(g[0],g[1],dayDate(dayIndex));
@@ -1901,19 +1989,19 @@ const SEASONS=[
    old fixed subtitle, so the page announces when it is being read. */
 const SEASON_MONTHS=['Mid winter','Late winter','Early spring','Mid spring','Late spring',
   'Early summer','Mid summer','Late summer','Early autumn','Mid autumn','Late autumn','Early winter'];
-const seasonLabel=d=>SEASON_MONTHS[(d||new Date()).getMonth()];
+const seasonLabel=d=>SEASON_MONTHS[(d||dayDate(0)).getMonth()];
 
 /* The forecast table reaches seven days; a trip gets planned further out than
    that. This looks about four weeks ahead and says either what stays the same or,
    when the band changes inside that window, what the change costs you. */
 function seasonAhead(d){
-  d=d||new Date();
+  d=d||dayDate(0);
   const now=seasonFor(d), later=seasonFor(new Date(d.getTime()+26*864e5));
   return (later.key!==now.key && now.next) ? now.next : now.ahead;
 }
 
 function seasonFor(d){
-  d=d||new Date();
+  d=d||dayDate(0);
   const md=(d.getMonth()+1)*100+d.getDate();      /* 831 = 31 Aug, so bands compare as numbers */
   const at=b=>b.from[0]*100+b.from[1];
   const win=SEASONS.find(b=>b.key==='winter');
@@ -1945,6 +2033,34 @@ function seasonLive(wx){
   return null;
 }
 
+/* The date control, the line under it, and the one place the site has to admit
+   that a seven-day forecast is not a forecast for a trip five weeks out. */
+function paintTrip(){
+  const inp=document.getElementById('tripDate');
+  if(inp && inp.value!==isoDay(TRIP_START)) inp.value=isoDay(TRIP_START);
+
+  const der=document.getElementById('tripDerived');
+  if(der && CURRENT){
+    const last=dayDate(CURRENT.days.length-1), n=CURRENT.days.length;
+    der.innerHTML='<b>'+esc(dateLong(TRIP_START))+'</b> to <b>'+esc(dateLong(last))+'</b>'
+      +' &nbsp;·&nbsp; '+n+' day'+(n===1?'':'s')
+      +' &nbsp;·&nbsp; '+esc(seasonLabel(TRIP_START).toLowerCase())
+      +(isToday()?'' : ' &nbsp;·&nbsp; <button class="pl-reset" id="tripToday" type="button">back to today</button>');
+  }
+
+  /* Constraint 3 of the brief, made visible: never present climatology as a
+     forecast, and never let a forecast for this week look like one for June. */
+  const wh=document.getElementById('wxHorizon'), out=daysOut();
+  if(wh){
+    wh.hidden = out>=0 && out<=6;
+    if(!wh.hidden) wh.textContent = out<0
+      ? 'These dates have passed, so the forecast below is not about this trip. The season card above is.'
+      : 'The forecast below only reaches seven days out. This trip starts in '+out+' days, past that, '
+        +'so nothing in the table is a forecast for these dates — read the season card above instead, '
+        +'and come back to this nearer the time.';
+  }
+}
+
 function paintSeason(){
   const el=document.getElementById('seasonCard');
   if(el && CURRENT) el.innerHTML=seasonCardHTML(CURRENT);
@@ -1953,9 +2069,12 @@ function paintSeason(){
   if(cl) cl.innerHTML='Ordered by how badly it goes wrong if you skip it, and written for <b>'
     + esc(lab.charAt(0).toLowerCase()+lab.slice(1)) + '</b> and the four weeks after it — anything that '
     + 'only bites in another season is left off. Some of it keeps until the morning of the drive.';
+  /* Season alone is ambiguous once the date is settable — "late spring" could
+     be now or could be the trip. Name the date whenever it is not today. */
+  const suffix = isToday() ? '' : ' · ' + dateShort(TRIP_START);
   const hero=document.getElementById('heroSeason'), nav=document.getElementById('navSeason');
-  if(hero) hero.textContent=lab;
-  if(nav)  nav.textContent=lab;
+  if(hero) hero.textContent=lab+suffix;
+  if(nav)  nav.textContent=lab+suffix;
   document.title='Cross-Alps Trip · '+lab;
 }
 /* The list is filtered to what matters now or within about four weeks, so a check
@@ -1963,7 +2082,7 @@ function paintSeason(){
    does not. Anything general — vignettes, ZTLs, the opening months of the main
    passes — carries no season test at all and stays on the list all year. */
 const seasonNowKey =()=>seasonFor().key;
-const seasonSoonKey=()=>seasonFor(new Date(Date.now()+26*864e5)).key;
+const seasonSoonKey=()=>seasonFor(new Date(dayDate(0).getTime()+26*864e5)).key;
 const inWindow=(...k)=>k.includes(seasonNowKey())||k.includes(seasonSoonKey());
 /* a seasonal road is not worth a checklist item while it is shut for the winter */
 const roadOpen=nm=>!(PASS_SEASON[nm]==='winter' && seasonNowKey()==='winter');
@@ -2867,6 +2986,7 @@ function render(k){
     r.addEventListener('mouseleave',()=>els().forEach(e=>e.classList.remove('hot')));
   });
   paintSeason();
+  paintTrip();
   paintSky();
   document.getElementById('todo').innerHTML=todoFor(s).map(t=>`<li><label><input type="checkbox"><span class="txt">${esc(t.t)}<em>${esc(t.d)}</em></span></label></li>`).join('');
   document.getElementById('costTable').innerHTML=
@@ -3253,6 +3373,27 @@ document.addEventListener('click',e=>{
 /* boot last: render() calls wxLoad(), which touches let-bound state above */
 render('A');
 syncHeader();
+
+/* The date input is static markup, so it is bound once here rather than on
+   every render. The reset is delegated because paintTrip rebuilds it. */
+(function(){
+  const inp=document.getElementById('tripDate');
+  if(inp){
+    /* The picker is bounded to the same window parseDay accepts, minus the
+       past: a planner should not offer yesterday. A shared link can still
+       carry a date that has since passed, which paintTrip says plainly. */
+    const hi=midday(new Date()); hi.setFullYear(hi.getFullYear()+3);
+    inp.min=isoDay(new Date()); inp.max=isoDay(hi);
+    inp.addEventListener('change',()=>{
+      const d=parseDay(inp.value);
+      if(d) setTripStart(d); else paintTrip();   /* snap a rejected value back */
+    });
+  }
+  document.addEventListener('click',e=>{
+    if(e.target && e.target.id==='tripToday') setTripStart(new Date());
+  });
+  addEventListener('hashchange',()=>{ const d=hashDay(); if(d) setTripStart(d); });
+})();
 
 </script>
 </body>

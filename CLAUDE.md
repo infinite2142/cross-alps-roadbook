@@ -64,6 +64,16 @@ stale copy and draw the wrong conclusion.
   but closes for a day or two after heavy snow, `'open'` is a through route. **A pass you are not
   sure about goes in `'storm'`** — that is the claim that holds either way. Drives the season card's
   route-aware closure list, so a new pass needs an entry or it is silently treated as fine.
+- `TRIP_START` / `dayDate(i)` — the trip's first day, and every day derived from it. `dayDate`
+  has always meant "day 0 plus i"; day 0 is now the chosen start rather than forced to be today.
+  Resolution order is **URL hash (`#d=YYYY-MM-DD`), then localStorage, then today** — a shared
+  link has to beat a stale local preference or it does not show the sender what they saw.
+  `parseDay` refuses malformed and out-of-range values and, importantly, rejects `2027-02-31`,
+  which `Date` would otherwise roll forward into March. `seasonFor`, `seasonLabel` and
+  `seasonAhead` all default to `dayDate(0)`, so the season card and header describe **the trip**,
+  not this morning. The Open-Meteo forecast stays anchored to today because it is a forecast —
+  when the trip starts outside its seven-day reach, `#wxHorizon` says so rather than letting a
+  table about this week look like one about June.
 - `sunTimes` / `sunFor` — NOAA sunrise and sunset, computed locally rather than fetched: no network,
   any date, and it agrees with Open-Meteo to within a minute. The route is entirely on Central
   European Time, so one zone covers it and `Intl` handles DST. `dayDate(i)` treats **day 0 as today**,
