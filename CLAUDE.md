@@ -125,3 +125,23 @@ wrong.
 The Chrome tool's `resize_window` frequently reports success without changing `innerWidth`.
 Check `window.innerWidth` before trusting a "responsive" check; if it has not moved, apply the
 media query's declarations directly to validate the layout and say the breakpoint is unverified.
+
+## Where this is going
+
+The site is being turned from a single-trip roadbook into a public route generator covering
+the Alpine arc — France, Switzerland, Italy, Austria and Slovenia. **Read
+`docs/route-generator-brief.md` before starting work on that.** It carries the decisions
+already taken, the data layout, and one architectural question still open (single-file with a
+build step, or split files plus a service worker).
+
+Two rules from that brief apply to any change made in the meantime:
+
+- **No LLM at runtime, and no server.** The page makes exactly one network call, Open-Meteo
+  for weather. Keep it that way; the generator is deterministic JS over static data.
+- **Never assert that a pass is open.** State the typical window, the year-to-year variance,
+  and link the official source. `data/passes.json` carries a `confidence` field — `medium`
+  must render a visible caveat.
+
+`data/passes.json` will supersede the inline `PASS_SEASON`, `GEO` and `NOTES` maps. Until the
+migration happens, `index.html` remains the source of truth and the catalogue is not yet
+wired in — do not run both as sources of truth for the same pass.
