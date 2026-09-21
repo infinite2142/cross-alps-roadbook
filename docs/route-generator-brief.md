@@ -205,7 +205,13 @@ presets reachable from the planner.
 
 ## Still open
 
-**1. Drive time needs a road-character correction.** See the calibration above. The ingredients
+**0. The generator exists** as of 2026-09-21 and the display layer needed no changes at all,
+which was the bet worth checking. Remaining weaknesses, in order: days are still uneven because
+the search works over passes and only then densifies; the place data comes entirely out of the
+authored trips, so France and the western Alps have no towns and every route through them is
+rejected for having nowhere to sleep; and the three editing operations are not built.
+
+**1. Drive time needs a road-character correction.** Partly addressed — see `correctMin`. The ingredients
 are already in the catalogue — `drive.difficulty`, `drive.hairpins`, `drive.typical_minutes` —
 and there are twenty authored days to fit against, which is few but real. The honest options
 are to fit a two-parameter correction keyed on road character, or to use `typical_minutes` for

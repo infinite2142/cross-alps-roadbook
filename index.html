@@ -398,6 +398,22 @@
      with `body.dark a`, which does not reach a <button>. Say it explicitly. */
   body.dark .pl-reset{color:#8FB8E0}
   .mast .trip{color:var(--ink);font-weight:600}
+  .day-metrics .tband{color:var(--slate);font-weight:400}
+  .pl-go{display:flex;flex-wrap:wrap;gap:11px;align-items:center;padding:13px 16px;border-top:1px solid var(--ink)}
+  .pl-go button{background:var(--ink);color:var(--rock);border:0;padding:11px 20px;cursor:pointer;
+    font-family:'Bricolage Grotesque','IBM Plex Sans',sans-serif;font-weight:600;font-size:15px}
+  .pl-go .alt{background:none;color:var(--signal);border:1px solid var(--line);
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:10px 13px}
+  body.dark .pl-go .alt{color:#8FB8E0}
+  .pl-go .msg{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ps-shut)}
+  .pl-seg{display:flex;border:1px solid var(--line);background:var(--snow)}
+  .pl-seg button{flex:1;background:none;border:0;border-right:1px solid var(--line);padding:9px 8px;cursor:pointer;
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate)}
+  .pl-seg button:last-child{border-right:0}
+  .pl-seg button[aria-pressed="true"]{background:var(--ink);color:var(--rock)}
+  .pl-cell select{width:100%;background:var(--snow);color:var(--ink);border:1px solid var(--line);
+    border-radius:0;padding:8px 9px;font-family:inherit;font-size:15px}
+  .pl-cell select:focus-visible{outline:3px solid var(--glow);outline-offset:-3px}
 
   @media(max-width:640px){
     .pchip{font-size:9px;letter-spacing:.04em;padding:1px 4px;margin-left:6px}
@@ -882,16 +898,53 @@
     <div class="planner">
       <div class="pl-row">
         <div class="pl-cell">
-          <label class="pl-lab" for="tripDate">Planning to leave on</label>
+          <span class="pl-lab">Shape</span>
+          <div class="pl-seg" role="group" aria-label="Route shape">
+            <button id="segLoop" type="button" aria-pressed="true">Round trip</button>
+            <button id="segAB" type="button" aria-pressed="false">A to B</button>
+          </div>
+        </div>
+        <div class="pl-cell">
+          <label class="pl-lab" for="plFrom" id="plFromLab">Starting and ending at</label>
+          <input id="plFrom" value="Munich" autocomplete="off">
+        </div>
+        <div class="pl-cell" id="plToCell" hidden>
+          <label class="pl-lab" for="plTo">Finishing at</label>
+          <input id="plTo" value="Bolzano" autocomplete="off">
+        </div>
+      </div>
+      <div class="pl-row">
+        <div class="pl-cell">
+          <label class="pl-lab" for="tripDate">Leaving on</label>
           <input type="date" id="tripDate">
         </div>
         <div class="pl-cell">
-          <span class="pl-lab">What this changes</span>
-          <span class="pl-hint">Pass windows, sunrise and sunset, the season card and the
-            check-list are all answered for these dates rather than for today.</span>
+          <label class="pl-lab" for="plNights">Nights</label>
+          <select id="plNights"><option>2</option><option selected>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option></select>
+        </div>
+        <div class="pl-cell">
+          <label class="pl-lab" for="plLeave">Leave each morning</label>
+          <select id="plLeave"><option>07:00</option><option>08:00</option><option selected>09:00</option>
+            <option>10:00</option><option>11:00</option></select>
+        </div>
+        <div class="pl-cell">
+          <label class="pl-lab" for="plArrive">Be there by</label>
+          <select id="plArrive"><option>15:00</option><option>16:00</option><option>17:00</option>
+            <option selected>18:00</option><option>19:00</option><option>20:00</option></select>
+        </div>
+        <div class="pl-cell">
+          <label class="pl-lab" for="plMaxAlt">Max altitude</label>
+          <select id="plMaxAlt"><option value="0">no limit</option><option value="2000">2,000 m</option>
+            <option value="2500">2,500 m</option></select>
         </div>
       </div>
       <div class="pl-derived" id="tripDerived"></div>
+      <div class="pl-go">
+        <button id="plBuild" type="button">Build the route</button>
+        <button id="plPreset" class="alt" type="button">Start from a preset</button>
+        <span class="msg" id="plMsg"></span>
+      </div>
     </div>
 
     <div class="stats" id="heroStats"></div>
@@ -2042,9 +2095,12 @@ function paintTrip(){
   const der=document.getElementById('tripDerived');
   if(der && CURRENT){
     const last=dayDate(CURRENT.days.length-1), n=CURRENT.days.length;
+    const o=(function(){ try{ return plannerOpts(); }catch(e){ return null; } })();
     der.innerHTML='<b>'+esc(dateLong(TRIP_START))+'</b> to <b>'+esc(dateLong(last))+'</b>'
       +' &nbsp;·&nbsp; '+n+' day'+(n===1?'':'s')
       +' &nbsp;·&nbsp; '+esc(seasonLabel(TRIP_START).toLowerCase())
+      +(o?' &nbsp;·&nbsp; <b>'+hm(o.driveMinPerDay)+'</b> of driving a day'
+          +' after about '+hm(o.stopMin)+' of stops':'')
       +(isToday()?'' : ' &nbsp;·&nbsp; <button class="pl-reset" id="tripToday" type="button">back to today</button>');
   }
 
@@ -2812,10 +2868,433 @@ window.addEventListener('resize',()=>{clearTimeout(rsz);rsz=setTimeout(()=>{pain
   arm();
 })();
 
+
+/* ── Route generation ══════════════════════════════════════════════════════
+   Deterministic JS over the static catalogue and the committed drive-time
+   matrix. No network, no model, no server — the same answer every time for
+   the same inputs, which is what lets the URL carry a route rather than a
+   result id. */
+
+const EDGE = (typeof CATALOGUE!=='undefined' && CATALOGUE.edges && CATALOGUE.edges.edges) || {};
+const edgeOf=(a,b)=> EDGE[a+'|'+b] || EDGE[b+'|'+a] || null;
+
+/* Altitude and country per waypoint, harvested from the authored routes. GEO
+   carries coordinates and nothing else, and a roadbook row needs both of the
+   others, so a place the authored trips never used is left out of the graph
+   rather than emitted half-formed — the same rule as a missing coordinate. */
+const NODE_FACTS=(()=>{ const f={};
+  Object.values(D).forEach(s=>s.days.forEach(d=>d.pts.forEach(p=>{
+    if(!f[p[2]]) f[p[2]]={alt:p[1],cc:p[4]}; })));
+  return f; })();
+
+/* Must agree with tools/edges.py `slug`, or every id misses the matrix. */
+const nodeSlug=n=>n.normalize('NFKD').replace(/[̀-ͯ]/g,'')
+  .toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+
+const NODES=(()=>{
+  const out={};
+  ((typeof CATALOGUE!=='undefined'&&CATALOGUE.passes)||[]).forEach(r=>{
+    out[r.id]={id:r.id,name:r.name,coord:r.coord,alt:r.summit_m,
+      cc:(r.countries||[])[0]||'',kind:'pass',rec:r,scenic:r.scenic||3};
+  });
+  Object.keys(GEO).forEach(n=>{
+    /* A pass in the catalogue is also in GEO under its roadbook name, and
+       edges.py emits both as nodes. The catalogue one is canonical; keeping
+       the duplicate would let a route visit the same summit twice. */
+    if(passRec(n)) return;
+    const id='geo_'+nodeSlug(n), f=NODE_FACTS[n];
+    if(out[id] || !f) return;
+    out[id]={id,name:n,coord:GEO[n],alt:f.alt,cc:f.cc,kind:'',rec:null,scenic:2};
+  });
+  return out;
+})();
+const NODE_LIST=Object.values(NODES);
+const PASS_NODES=NODE_LIST.filter(n=>n.kind==='pass');
+
+/* ── Drive time ────────────────────────────────────────────────────────────
+   The router is optimistic on hairpins and pessimistic on motorway, and the
+   bias reverses, so a single scale factor cannot fix it. This corrects on the
+   leg's own routed speed.
+
+   Fitted on Option C's four days — the only ones verified on the ground.
+   Residual sd 0.022, worst 3%, which clears the brief's 10% gate. The other
+   sixteen authored days are the author's estimates and disagree with each
+   other: two days at the same routed speed imply corrections of 0.86 and
+   1.45, so they are not used as targets. Seventeen of the twenty still land
+   inside the band; the three that do not are days whose written times imply
+   motorway speed on pass roads.
+
+   Speed is clamped to the range Option C actually covers. Extrapolating a
+   four-point line to 87 km/h gave a 0.60 multiplier and a 30% error on its
+   own data; held at the endpoint it is 6%. Four points do not license
+   extrapolation. */
+const TIME_FIT={a:1.9864,b:-0.01632,loKmh:42.9,hiKmh:72.6};
+const TIME_BAND=0.20;   /* covers 17/20 authored days and all four verified */
+const MAX_DAY_KM=520;   /* the longest authored day is 480 km; this allows a little more */
+
+function correctMin(km,min){
+  if(!min) return 0;
+  const sp=km/(min/60);
+  const c=Math.min(TIME_FIT.hiKmh,Math.max(TIME_FIT.loKmh,sp));
+  return min*(TIME_FIT.a+TIME_FIT.b*c);
+}
+/* A leg's corrected minutes, and the same for a whole sequence. */
+function legMin(a,b){ const e=edgeOf(a,b); return e?correctMin(e[0],e[1]):null; }
+function seqCost(ids){
+  let km=0,min=0;
+  for(let i=0;i<ids.length-1;i++){
+    const e=edgeOf(ids[i],ids[i+1]); if(!e) return null;
+    km+=e[0]; min+=correctMin(e[0],e[1]);
+  }
+  return {km,min};
+}
+
+/* ── Search ────────────────────────────────────────────────────────────────
+   Beam search over passes. The state is a partial sequence; each step adds one
+   unvisited pass that is still affordable once the cost of getting home is
+   counted. Keeping "can I still finish" inside the frontier test is what stops
+   the beam filling with routes that strand themselves. */
+function generate(opts){
+  const start=NODES[opts.startId], end=NODES[opts.endId||opts.startId];
+  if(!start||!end) return [];
+  const days=Math.max(1,opts.nights+1);
+  const budgetPerDay=opts.driveMinPerDay;
+  const total=days*budgetPerDay;
+
+  /* Only passes that are reachable from both ends and open on the dates. */
+  const usable=PASS_NODES.filter(p=>{
+    if(!edgeOf(start.id,p.id)||!edgeOf(p.id,end.id)) return false;
+    if(opts.maxAlt && p.alt>opts.maxAlt) return false;
+    for(let i=0;i<days;i++){
+      const st=passStatus(p.name,dayDate(i));
+      if(st && st.state==='shut') return false;   /* never route over a pass that is normally shut */
+    }
+    return true;
+  });
+
+  const BEAM=opts.beam||140;
+  let frontier=[{ids:[start.id],passes:[],km:0,min:0}];
+  const done=[];
+  for(let depth=0; depth<Math.min(opts.maxPasses||12, usable.length); depth++){
+    const next=[];
+    frontier.forEach(st=>{
+      const last=st.ids[st.ids.length-1];
+      usable.forEach(p=>{
+        if(st.passes.indexOf(p.id)>=0) return;
+        const e=edgeOf(last,p.id); if(!e) return;
+        const home=edgeOf(p.id,end.id); if(!home) return;
+        const min=st.min+correctMin(e[0],e[1]);
+        if(min+correctMin(home[0],home[1])>total) return;
+        next.push({ids:st.ids.concat(p.id),passes:st.passes.concat(p.id),
+                   km:st.km+e[0],min});
+      });
+    });
+    if(!next.length) break;
+    /* Rank the frontier by value per minute so the beam keeps routes that are
+       doing something, not merely short ones. */
+    next.sort((x,y)=>beamScore(y)-beamScore(x));
+    frontier=next.slice(0,BEAM);
+    frontier.forEach(st=>{
+      const home=edgeOf(st.ids[st.ids.length-1],end.id);
+      if(!home) return;
+      done.push({ids:st.ids.concat(end.id),passes:st.passes,
+                 km:st.km+home[0],min:st.min+correctMin(home[0],home[1])});
+    });
+  }
+  return done;
+}
+/* Ranked by total value, not value per minute. Per-minute looks reasonable and
+   is not: it systematically prefers short routes, so the beam filled with trips
+   that never used the days asked for — against a 2,105-minute budget the longest
+   candidate came back at 1,436, and nothing ever needed a fifth day. Measured
+   across four rankings, total scenic was the only one that reached the budget
+   while keeping variety. The minute term is a tiebreak only, and exists so the
+   same inputs always give the same answer: the URL carries a route, not a
+   result id, and that only holds if the search is deterministic. */
+function beamScore(st){
+  const sc=st.passes.reduce((a,id)=>a+(NODES[id]?NODES[id].scenic:0),0);
+  return sc*1000 - st.min;
+}
+
+/* ── Days ──────────────────────────────────────────────────────────────────
+   A day ends where the driving budget runs out. Where that lands on a summit
+   the night is moved to the nearest town that is barely a detour — nobody
+   sleeps on the Gavia, and a roadbook that says they do is wrong in a way
+   that is hard to notice. */
+function splitDays(ids,budget,days){
+  const legs=[];
+  for(let i=0;i<ids.length-1;i++){
+    const e=edgeOf(ids[i],ids[i+1]); if(!e) return null;
+    legs.push({km:e[0],min:correctMin(e[0],e[1])});
+  }
+  const total=legs.reduce((a,l)=>a+l.min,0);
+  /* Filling each day to the brim and letting the remainder fall into the last
+     one gave a 766 km day beside a 68 km one. Aim at an even share instead and
+     break on whichever side of the target is closer — the budget is still the
+     ceiling, it is just no longer also the target. */
+  const target=days ? total/days : budget;
+  const maxCuts=days ? days-1 : Infinity;
+  const out=[]; let cur=[ids[0]],min=0,km=0;
+  for(let i=0;i<legs.length;i++){
+    const over=min+legs[i].min;
+    const cutsLeft=maxCuts-out.length;
+    /* Break before this leg if stopping here lands closer to an even share
+       than carrying on would, or if carrying on would break the ceiling. */
+    const closerToStop = min>0 && Math.abs(min-target) <= Math.abs(over-target);
+    const cut = cutsLeft>0 && cur.length>1 && (over>budget || (days && closerToStop));
+    if(cut){ out.push({ids:cur,km,min}); cur=[ids[i]]; min=0; km=0; }
+    cur.push(ids[i+1]); min+=legs[i].min; km+=legs[i].km;
+  }
+  out.push({ids:cur,km,min});
+  return out;
+}
+
+const PLACE_LIST=NODE_LIST.filter(n=>n.kind!=='pass');
+const PLACE_NODES=()=>PLACE_LIST;
+
+/* ── Putting the towns back in ──────────────────────────────────────────────
+   The search works over passes, so a finished route is summit to summit with
+   nothing between — legs of five hours that cannot be split into days and have
+   nowhere to sleep at either end. Half the candidates were dying on exactly
+   that. Densify first: on any long leg, add the towns that are already on the
+   way, costing almost nothing to pass through. The roadbook then reads like a
+   roadbook rather than a list of summits, days can be cut where a day should
+   end, and the night lands somewhere with beds. */
+const DENSIFY_DETOUR=12;   /* minutes: a town this close is on the road already */
+const DENSIFY_GAP=40;      /* keep them spread, not clustered at one end */
+function densify(ids){
+  const out=[ids[0]];
+  for(let i=0;i<ids.length-1;i++){
+    const a=ids[i], b=ids[i+1], base=legMin(a,b);
+    if(base===null||base<50){ out.push(b); continue; }
+    const on=[];
+    for(let k=0;k<PLACE_LIST.length;k++){
+      const s=PLACE_LIST[k];
+      if(s.id===a||s.id===b||out.indexOf(s.id)>=0) continue;
+      const x=legMin(a,s.id); if(x===null||x>=base) continue;
+      const y=legMin(s.id,b); if(y===null) continue;
+      if(x+y-base>DENSIFY_DETOUR) continue;
+      on.push({id:s.id,at:x});
+    }
+    on.sort((p,q)=>p.at-q.at);
+    let last=0;
+    on.forEach(c=>{ if(c.at-last>=DENSIFY_GAP){ out.push(c.id); last=c.at; } });
+    out.push(b);
+  }
+  return out;
+}
+function bestNightStop(atId,nextId){
+  let best=null, base=legMin(atId,nextId);
+  if(base===null) return null;
+  PLACE_NODES().forEach(s=>{
+    if(s.id===atId||s.id===nextId) return;
+    const a=legMin(atId,s.id), b=legMin(s.id,nextId);
+    if(a===null||b===null) return;
+    const detour=a+b-base;
+    if(detour>60) return;                      /* an hour off the route to sleep in a town, no more */
+    if(!best||detour<best.detour) best={node:s,detour,a,b};
+  });
+  return best;
+}
+function placeNights(split){
+  for(let i=0;i<split.length-1;i++){
+    const a=split[i], b=split[i+1];
+    const lastId=a.ids[a.ids.length-1];
+    if(NODES[lastId].kind!=='pass') continue;
+    if(b.ids.length<2) continue;
+    const pick=bestNightStop(lastId,b.ids[1]);
+    if(!pick) continue;
+    a.ids=a.ids.concat(pick.node.id); a.min+=pick.a;
+    const e=edgeOf(lastId,pick.node.id); if(e) a.km+=e[0];
+    b.ids=[pick.node.id].concat(b.ids.slice(1));
+    b.min=b.min-(legMin(lastId,b.ids[1])||0)+pick.b;
+    const e2=edgeOf(pick.node.id,b.ids[1]), e3=edgeOf(lastId,b.ids[1]);
+    if(e2&&e3) b.km=b.km-e3[0]+e2[0];
+  }
+  return split;
+}
+
+/* ── Emitting into the authored shape ──────────────────────────────────────
+   The renderer must not be able to tell whether a route was written by hand
+   or generated. Everything below builds the same object `D.A` is, so render(),
+   paintMap() and paintProfiles() need no changes at all. */
+const clockAt=m=>String(Math.floor(((m%1440)+1440)%1440/60)).padStart(2,'0')+':'+String(Math.round(m)%60).padStart(2,'0');
+const asMin=t=>{const a=String(t).split(':').map(Number); return a[0]*60+(a[1]||0);};
+const hm=m=>{m=Math.round(m); return Math.floor(m/60)+'h '+String(m%60).padStart(2,'0')+'m';};
+
+const BAND_TEXT={free:'free',under_20:'under €20','20_50':'€20–50',over_50:'over €50'};
+
+function routeCosts(passIds,countries){
+  const rows=[];
+  if(countries.indexOf('AT')>=0) rows.push(['Austrian motorway vignette','If you use the autobahn','under €20']);
+  if(countries.indexOf('CH')>=0) rows.push(['Swiss vignette','Needed for Swiss motorways','€20–50']);
+  passIds.forEach(id=>{
+    const r=NODES[id]&&NODES[id].rec; if(!r||!r.toll) return;
+    if(r.toll.type==='none') return;
+    rows.push([r.name, r.toll.type==='tunnel'?'Tunnel toll':'Road toll',
+               BAND_TEXT[r.toll.band]||'see operator']);
+  });
+  return rows;
+}
+
+function toRoute(key,split,opts,kicker,title,sub){
+  let allPass=[], countries=[];
+  const days=split.map((d,i)=>{
+    let km=0; const pts=[];
+    d.ids.forEach((id,j)=>{
+      if(j>0){ const e=edgeOf(d.ids[j-1],id); km+=e?e[0]:0; }
+      const n=NODES[id];
+      if(countries.indexOf(n.cc)<0&&n.cc) countries.push(n.cc);
+      if(n.kind==='pass') allPass.push(n.id);
+      pts.push([Math.round(km),n.alt,n.name,n.kind,n.cc,NOTES[n.name]||'']);
+    });
+    const depart=opts.leave;
+    const arriveM=asMin(opts.leave)+d.min+opts.stopMin;
+    const passes=pts.filter(p=>p[3]==='pass').length;
+    return {
+      n:i, from:pts[0][2], to:pts[pts.length-1][2],
+      km:Math.round(d.km), time:hm(d.min),
+      /* The band is the honest part: see TIME_FIT. */
+      timeBand:[hm(d.min*(1-TIME_BAND)),hm(d.min*(1+TIME_BAND))],
+      passes, depart, arrive:clockAt(arriveM), pts,
+      note:'<strong>'+esc(pts[0][2])+' to '+esc(pts[pts.length-1][2])+'.</strong> '
+        +Math.round(d.km)+' km and '+passes+' '+(passes===1?'pass':'passes')+'. '
+        +'Moving time is an estimate with a ±'+Math.round(TIME_BAND*100)+'% band — '
+        +'it is not a schedule, and it counts no stops.',
+      stays:[], staysNote:'Generated routes do not carry hotels. The overnight town is chosen '
+        +'for where the driving runs out, not for its beds.',
+      evening:''
+    };
+  });
+  const km=days.reduce((a,d)=>a+d.km,0);
+  const totalMin=split.reduce((a,d)=>a+d.min,0);
+  const high=Math.max.apply(null,days.flatMap(d=>d.pts.map(p=>p[1])));
+  return {
+    key, days, kicker, tag:kicker, title, short:title, sub,
+    heroTitle:esc(title)+'.',
+    blurb:sub,
+    stats:[[km.toLocaleString()+' km','total distance'],[hm(totalMin),'moving, ±'+Math.round(TIME_BAND*100)+'%'],
+           [String(allPass.length),'named passes'],[high.toLocaleString()+' m','highest point'],
+           [String(countries.length),'countries']],
+    costs:routeCosts(allPass,countries), total:'—  bands, not prices',
+    generated:true, passIds:allPass
+  };
+}
+
+/* ── Choosing what to show ─────────────────────────────────────────────────
+   Candidates are labelled by what they are. "Option 3" and "Option 4" are not
+   a choice anyone can make, and two routes over nine of the same ten passes
+   are not two options — the second is dropped rather than padded onto the
+   strip. */
+/* Ranks carry a pass-count term on purpose. Ranking "Highest" on altitude
+   alone ties every route that touches the Stelvio and then picks whichever
+   sorted first — which came back as a five-day trip over one pass, correct by
+   the letter and useless as an answer. The secondary term breaks those ties
+   toward the fuller trip. "Gentlest" and "Shortest" are left alone: there the
+   sparse route genuinely is the answer. */
+const CHARACTERS=[
+  {kicker:'Most passes',   rank:c=>c.passes.length*1000 - c.min},
+  {kicker:'Gentlest days', rank:c=>-c.maxDayMin},
+  {kicker:'Highest',       rank:c=>c.high*100 + c.passes.length*10},
+  {kicker:'Most scenic',   rank:c=>c.scenic*100 + c.passes.length*10},
+  {kicker:'Shortest',      rank:c=>-c.km}
+];
+const ROUTE_KEYS=['A','B','C','D','E'];
+
+function titleFor(c){
+  const top=c.passes.map(id=>NODES[id]).sort((a,b)=>b.alt-a.alt).slice(0,3).map(n=>passName(n.name));
+  return top.length ? top.join(', ') : 'Valleys and lakes';
+}
+function subFor(c){
+  return c.passes.length+' '+(c.passes.length===1?'pass':'passes')+' · '
+    + Math.round(c.km).toLocaleString()+' km · ≈'+hm(c.min)+' moving';
+}
+
+function generateRoutes(opts){
+  const raw=generate(opts), cands=[];
+  raw.forEach(r=>{
+    const sp=splitDays(densify(r.ids),opts.driveMinPerDay,opts.nights+1);
+    if(!sp||sp.length!==opts.nights+1) return;
+    const sp2=placeNights(sp.map(d=>({ids:d.ids.slice(),km:d.km,min:d.min})));
+    const maxDay=Math.max.apply(null,sp2.map(d=>d.min));
+    /* Moving the night to a town must not quietly blow the day the user asked
+       for; a little slack, not a lot. */
+    if(maxDay>opts.driveMinPerDay*1.15) return;
+    /* If a day still ends on a summit, no town was reachable and this route is
+       not offerable — nobody sleeps on the Iseran. That prunes most of France
+       and the western Alps, because the place data still comes out of the
+       authored trips and there are no towns there yet. Better an honest gap
+       than a roadbook that puts a night on a pass. */
+    for(let i=0;i<sp2.length-1;i++){
+      const endId=sp2[i].ids[sp2[i].ids.length-1];
+      if(NODES[endId].kind==='pass') return;
+    }
+    /* A time budget alone will happily hand back a 766 km motorway day. This
+       site is about alpine roads; the cap is a judgement, not a measurement. */
+    if(Math.max.apply(null,sp2.map(d=>d.km))>MAX_DAY_KM) return;
+    cands.push({split:sp2,passes:r.passes.slice(),
+      km:sp2.reduce((a,d)=>a+d.km,0), min:sp2.reduce((a,d)=>a+d.min,0),
+      maxDayMin:maxDay,
+      high:r.passes.length?Math.max.apply(null,r.passes.map(id=>NODES[id].alt)):0,
+      scenic:r.passes.reduce((a,id)=>a+NODES[id].scenic,0)});
+  });
+  if(!cands.length) return [];
+
+  /* Jaccard over the pass sets. Dividing by the smaller set made a ten-pass
+     route look identical to a six-pass subset of it and threw away three of
+     the five characters; over the union, a genuinely different route survives. */
+  const share=(a,b)=>{const n=a.filter(x=>b.indexOf(x)>=0).length;
+    return n/Math.max(1,a.length+b.length-n);};
+  const picked=[];
+  CHARACTERS.forEach(ch=>{
+    if(picked.length>=5) return;
+    const best=cands.slice().sort((x,y)=>ch.rank(y)-ch.rank(x))
+      .find(c=>!picked.some(p=>share(c.passes,p.c.passes)>0.6));
+    if(best) picked.push({ch,c:best});
+  });
+  return picked.map((x,i)=>
+    toRoute(ROUTE_KEYS[i],x.c.split,opts,x.ch.kicker,titleFor(x.c),subFor(x.c)));
+}
+
+/* ── Swapping the strip ────────────────────────────────────────────────────
+   D stays the live route table so render(), renderTabs() and everything below
+   them are untouched. The authored five are held aside and can come back. */
+const PRESETS=Object.assign({},D);
+let GENERATED=false;
+function loadRoutes(map,generated){
+  Object.keys(D).forEach(k=>delete D[k]);
+  Object.keys(map).forEach(k=>D[k]=map[k]);
+  GENERATED=!!generated;
+}
+
+function plannerOpts(){
+  const g=id=>{const e=document.getElementById(id); return e?e.value:null;};
+  const loop=document.getElementById('segLoop').getAttribute('aria-pressed')==='true';
+  const out=asMin(g('plArrive'))-asMin(g('plLeave'));
+  const stopMin=Math.min(150,Math.max(45,Math.round(out*0.22)));
+  return {
+    startId:resolvePlace(g('plFrom')),
+    endId:loop?resolvePlace(g('plFrom')):resolvePlace(g('plTo')),
+    nights:+g('plNights'), leave:g('plLeave'), arrive:g('plArrive'),
+    stopMin, driveMinPerDay:Math.max(60,out-stopMin),
+    maxAlt:+g('plMaxAlt')||0
+  };
+}
+/* Free text in, node id out. Exact name first, then a case-insensitive
+   prefix — enough for a mockup-grade field; a proper picker comes later. */
+function resolvePlace(txt){
+  if(!txt) return null;
+  const t=String(txt).trim().toLowerCase();
+  let hit=NODE_LIST.find(n=>n.name.toLowerCase()===t);
+  if(!hit) hit=NODE_LIST.find(n=>n.name.toLowerCase().indexOf(t)===0);
+  if(!hit) hit=NODE_LIST.find(n=>n.name.toLowerCase().indexOf(t)>=0);
+  return hit?hit.id:null;
+}
+
 function renderTabs(a){
   document.getElementById('switch').innerHTML=Object.values(D).map(s=>`
     <button class="tab" role="tab" aria-selected="${s.key===a}" data-k="${s.key}">
-      <span class="k"><i class="optw">Option</i> ${s.key}</span><span class="t"><span class="tl">${s.title}</span><span class="ts">${s.short||s.title}</span></span><span class="s">${s.sub}</span></button>`).join('');
+      <span class="k">${s.kicker?esc(s.kicker):'<i class="optw">Option</i> '+s.key}</span><span class="t"><span class="tl">${s.title}</span><span class="ts">${s.short||s.title}</span></span><span class="s">${s.sub}</span></button>`).join('');
   document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>render(b.dataset.k));
 }
 
@@ -2908,7 +3387,8 @@ function renderDays(s){
         <span class="when mono"><span>depart ${day.depart}</span><span>arrive ${day.arrive}</span></span></div>
       <div class="day-metrics mono">
         <span title="Planning estimate along the intended route — the Google Maps link below is the authority"><svg class="ic"><use href="#i-road"/></svg> <b>${day.km} km</b> distance</span>
-        <span><svg class="ic"><use href="#i-clock"/></svg> <b>${day.time}</b> moving</span>
+        <span><svg class="ic"><use href="#i-clock"/></svg> <b>${day.time}</b> moving${
+          day.timeBand?`<span class="tband"> (${day.timeBand[0]} – ${day.timeBand[1]})</span>`:''}</span>
         <span><svg class="ic"><use href="#i-peak"/></svg> <b>${day.passes}</b> ${day.passes===1?'pass':'passes'}</span>
         <span><svg class="ic"><use href="#i-gauge"/></svg> <b>${Math.max(...day.pts.map(p=>p[1]))} m</b> high point</span>
         <span title="Summed between waypoints, so the real figure is higher"><svg class="ic"><use href="#i-peak"/></svg> <b>${ascent(day)} m</b> climbed</span></div>
@@ -3392,6 +3872,35 @@ syncHeader();
   document.addEventListener('click',e=>{
     if(e.target && e.target.id==='tripToday') setTripStart(new Date());
   });
+
+  const shape=loop=>{
+    document.getElementById('segLoop').setAttribute('aria-pressed',String(loop));
+    document.getElementById('segAB').setAttribute('aria-pressed',String(!loop));
+    document.getElementById('plToCell').hidden=loop;
+    document.getElementById('plFromLab').textContent=loop?'Starting and ending at':'Starting at';
+    paintTrip();
+  };
+  document.getElementById('segLoop').onclick=()=>shape(true);
+  document.getElementById('segAB').onclick=()=>shape(false);
+  ['plNights','plLeave','plArrive','plMaxAlt','plFrom','plTo'].forEach(id=>{
+    const e=document.getElementById(id); if(e){ e.addEventListener('change',paintTrip); e.addEventListener('input',paintTrip); }
+  });
+
+  const msg=t=>{ const m=document.getElementById('plMsg'); if(m) m.textContent=t||''; };
+  document.getElementById('plBuild').onclick=()=>{
+    const o=plannerOpts();
+    if(!o.startId) return msg('No such place in the catalogue yet.');
+    if(!o.endId)   return msg('No such finish in the catalogue yet.');
+    msg('');
+    const routes=generateRoutes(o);
+    if(!routes.length) return msg('Nothing fits those dates and hours — try more nights or a longer day.');
+    const map={}; routes.forEach(r=>map[r.key]=r);
+    loadRoutes(map,true);
+    render('A');
+  };
+  document.getElementById('plPreset').onclick=()=>{
+    msg(''); loadRoutes(PRESETS,false); render('A');
+  };
   addEventListener('hashchange',()=>{ const d=hashDay(); if(d) setTripStart(d); });
 })();
 

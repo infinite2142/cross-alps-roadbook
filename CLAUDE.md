@@ -90,6 +90,37 @@ stale copy and draw the wrong conclusion.
 - `TODO_ALL` — the Check before you drive list. Each item carries a `when:` predicate using the
   `has(s, name)` and `country(s, cc)` helpers, so items appear only on routes they apply to.
 
+## The generator
+
+`D` is the live route table and stays that way: `render()`, `renderTabs()`, `paintMap()` and
+`paintProfiles()` never learn whether a route was authored or generated. `PRESETS` holds the
+five authored trips; `loadRoutes()` swaps the contents of `D`. **A generated route must be the
+same shape as `D.A`** — same `days[].pts` tuples, same fields — or the display layer breaks.
+
+- `NODES` — 129 nodes: 34 catalogue passes plus the places from `GEO` that the authored routes
+  supply an altitude and country for. A place with neither cannot be a roadbook row, so it is
+  left out of the graph rather than emitted half-formed. Node ids must match `tools/edges.py`'s
+  `slug()` exactly or every lookup misses the matrix.
+- `correctMin(km,min)` — the router is optimistic on hairpins and pessimistic on motorway, and
+  the bias reverses, so no single factor fixes it. Corrects on the leg's own routed speed,
+  **fitted on Option C's four days only** — the only ones verified on the ground (worst 3%).
+  The other sixteen are estimates that disagree with each other, so they are not targets.
+  Speed is clamped to the fitted range: extrapolating a four-point line to 87 km/h gave a
+  0.60 multiplier and a 30% error on its own data.
+- **Times are always shown as a band** (`day.timeBand`, ±20%). Never print a generated moving
+  time as a single figure — the band is the honest part, and it is what lets the generator ship
+  before the calibration is better.
+- `beamScore` ranks by **total** value, not value per minute. Per-minute reads as reasonable and
+  systematically prefers short routes: against a 2,105-minute budget the longest candidate came
+  back at 1,436 and no route ever needed its fifth day.
+- `densify()` puts towns back into a passes-only route. Without it half the candidates die with
+  five-hour legs that cannot be split into days and have nowhere to sleep at either end.
+- A day that would end on a summit is **rejected**, not patched. Nobody sleeps on the Iseran.
+  This prunes France and the western Alps, because the place data still comes out of the
+  authored trips and there are no towns there yet — an honest gap beats a wrong roadbook.
+- A pass whose window says it is normally shut on the chosen dates is never routed over. In
+  January the generator returns nothing and says so.
+
 ## Traps that have already caused bugs here
 
 - A later `header{position:…}` rule silently overrode `position:sticky`. Check for duplicate
