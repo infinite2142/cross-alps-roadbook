@@ -176,6 +176,30 @@ presets reachable from the planner.
   passes near the edge of their window for those dates, each with a concrete detour and the
   minutes it adds. Appears only when it applies. This card is the reason the site is worth
   more than a chatbot answer, and it is only possible because the edge matrix exists.
+### Interaction, decided 2026-09-21
+
+- **Every number the site cannot be sure of carries its spread.** Pass windows already do this
+  ("usually open 25 May – 5 Nov, ±14 days"). Drive times now do too: a generated day reads
+  "≈6h 30m moving (5h 45m – 7h 15m)", never a single confident figure. This is the site's one
+  distinctive move applied consistently, and it has a practical consequence — the drive-time
+  calibration becomes an improvement rather than a prerequisite, because a 20% uncertainty
+  stated is survivable where a 20% error hidden is not.
+- **The planner lives in the hero, not the header.** The sticky header is already three rows —
+  masthead, option tabs, section nav — and at 375px that is a third of the screen before any
+  content. Full controls sit in the hero and scroll away; once scrolled they collapse to a
+  one-line summary in the header with an Edit affordance, the same move the header already
+  makes with the season label.
+- **The day is expressed by the clock, not by driving hours.** "Leave 09:00, be there by 18:00",
+  not "max 5 hours driving". Nobody plans by moving time, and a user who asks for five hours of
+  driving and arrives at 20:00 will think it is broken — stops, lunch and a pass café are what
+  turn 5h moving into a 10h day. Driving hours remain the internal constraint; they are a
+  consequence, not a control. Daylight falls straight out of this, since `sunFor` already gives
+  sunrise and sunset for any date and place with no network.
+- **Generated candidates take over the tab strip; the presets move behind the planner.** The
+  strip has one meaning at any moment. The five authored trips stay reachable as "start from a
+  preset" — they keep their hand-written notes, hotels and evenings, and they remain the
+  regression test.
+
 - **URL hash** carries the inputs. Deterministic search over static data means reopening the
   hash reruns to the same itinerary — shareable and bookmarkable with no server and no storage.
 
