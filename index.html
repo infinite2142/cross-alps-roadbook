@@ -709,11 +709,23 @@
   @media (max-width:720px) and (orientation:portrait){
     .switch,header.compact .switch{flex-wrap:wrap;overflow-x:hidden}
     .tab,header.compact .tab{flex:1 1 30%;min-width:0;border-bottom:1px solid var(--line)}
-    .tab .t{font-size:11px;line-height:1.15;white-space:normal;overflow-wrap:anywhere;hyphens:auto}
+    /* One rule for the title size. There were two, 11px then 13.5px, and the
+       later one silently won — the same duplicate-selector trap CLAUDE.md
+       records, this time inside a single block rather than across one. */
+    .tab .t{font-size:13px;line-height:1.2;white-space:normal;overflow-wrap:anywhere;hyphens:auto}
     .tab .k{font-size:8.5px}
     .tab{padding:7px 9px 8px}
     .tab .s{display:none}
-    .tab .t{font-size:13.5px}
+    /* Three tabs to a row at 114px each. The authored titles fit; a generated
+       one is a list of pass names and does not, so the strip falls back to the
+       short form here. Both are in the markup already — `.ts` was written for
+       this and then never switched on. */
+    .tab .t .tl{display:none}
+    .tab .t .ts{display:inline}
+    /* Two lines' worth of box whether or not the name uses them, so a single
+       long title cannot leave one row taller than the other. Stated in em so
+       it tracks the font size rather than being a measured pixel value. */
+    .tab .t{display:block;min-height:2.4em}
   }
   /* the compact bar puts label and title on one line — no room for the word */
   header.compact .tab .k .optw{display:none}
@@ -3184,8 +3196,22 @@ function toRoute(key,split,opts,kicker,title,sub){
   const km=days.reduce((a,d)=>a+d.km,0);
   const totalMin=split.reduce((a,d)=>a+d.min,0);
   const high=Math.max.apply(null,days.flatMap(d=>d.pts.map(p=>p[1])));
+  /* `short` was a copy of `title`, so the narrow strip had nothing to fall back
+     to and rendered "Stelvio, Gavia, Berninapass / Passo del Bernina" in a
+     114px tab. Name the highest pass and count the rest. The bilingual records
+     carry both names on one string, so take the side before the slash and drop
+     any parenthetical — "Umbrailpass / Giogo di Santa Maria" is not a label. */
+  const shortTitle=(()=>{
+    if(!allPass.length) return 'Valleys';
+    const top=allPass.map(id=>NODES[id]).sort((a,b)=>b.alt-a.alt)[0];
+    const n=passName(top.name).split(/\s*[\/·]\s*/)[0]
+      .replace(/\s*\(.*\)$/,'')
+      .replace(/\s+(Hochalpenstrasse|Panoramastrasse|panoramska cesta|cesta|toll road)$/i,'')
+      .trim();
+    return allPass.length>1 ? n+' +'+(allPass.length-1) : n;
+  })();
   return {
-    key, days, kicker, tag:kicker, title, short:title, sub,
+    key, days, kicker, tag:kicker, title, short:shortTitle, sub,
     heroTitle:esc(title)+'.',
     blurb:sub,
     stats:[[km.toLocaleString()+' km','total distance'],[hm(totalMin),'moving, ±'+Math.round(TIME_BAND*100)+'%'],
@@ -3319,10 +3345,60 @@ const PACE_STOPS=d=>Math.min(150,Math.max(40,Math.round(d*0.3)));
    within an hour cannot end a day, so no route is offered over it: that is
    26 of 34 today, all of France and Slovenia and most of Switzerland. The
    catalogue has those passes; the place data does not have their towns yet. */
+const ROUTABLE=()=>PASS_NODES.filter(p=>PLACE_NODES().some(s=>{
+  const m=legMin(p.id,s.id); return m!==null&&m<=60; }));
 function reachSummary(){
-  const near=PASS_NODES.filter(p=>PLACE_NODES().some(s=>{
-    const m=legMin(p.id,s.id); return m!==null&&m<=60; }));
-  return {near:near.length,total:PASS_NODES.length};
+  return {near:ROUTABLE().length,total:PASS_NODES.length};
+}
+
+/* The longest drive the reachable graph can actually fill: a nearest-neighbour
+   tour from the start over every routable pass and back to the finish. It is a
+   loose upper bound and meant to be — the point is only that a budget above it
+   has nowhere to go. Today that is 1,162 minutes from Munich, so "Long · 7h"
+   over four days offers 518 minutes with no road left to spend them on, and
+   the answer stops changing however much further the dial is turned.
+
+   Measured rather than written down, so it lifts itself as the catalogue
+   grows: add the missing Dolomites records and the longer days come back on
+   their own, with no dropdown to remember to edit. */
+function usefulCeilingMin(startId,endId){
+  const near=ROUTABLE();
+  if(!near.length) return Infinity;
+  let cur=startId, left=near.slice(), tot=0;
+  while(left.length){
+    let bi=-1, bm=Infinity;
+    left.forEach((p,i)=>{ const m=legMin(cur,p.id); if(m!==null&&m<bm){ bm=m; bi=i; } });
+    if(bi<0) break;
+    tot+=bm; cur=left[bi].id; left.splice(bi,1);
+  }
+  return tot+(legMin(cur,endId)||0);
+}
+
+const PACE_CAP_NOTE=' — nothing further to reach';
+function paintPace(){
+  const sel=document.getElementById('plPace'); if(!sel) return;
+  const loopEl=document.getElementById('segLoop'), fromEl=document.getElementById('plFrom');
+  if(!loopEl||!fromEl) return;
+  const startId=fromEl.value;
+  const endId=loopEl.getAttribute('aria-pressed')==='true'
+    ? startId : (document.getElementById('plTo')||{}).value;
+  if(!NODES[startId]||!NODES[endId]) return;
+  const days=Math.max(1,(+document.getElementById('plNights').value||3)+1);
+  const ceil=usefulCeilingMin(startId,endId);
+  /* The first option that clears the ceiling is the one that covers the whole
+     graph, so it stays. Everything above it is the same trip with more slack. */
+  let covered=false;
+  Array.prototype.forEach.call(sel.options,o=>{
+    const over=(+o.value)*days>ceil, dead=over&&covered;
+    o.disabled=dead;
+    const base=o.textContent.replace(PACE_CAP_NOTE,'');
+    o.textContent=dead?base+PACE_CAP_NOTE:base;
+    if(over) covered=true;
+  });
+  if(sel.options[sel.selectedIndex] && sel.options[sel.selectedIndex].disabled){
+    const ok=Array.prototype.filter.call(sel.options,o=>!o.disabled).pop();
+    if(ok){ sel.value=ok.value; }
+  }
 }
 function paintReach(){
   const el=document.getElementById('plReach'); if(!el) return;
@@ -3941,17 +4017,20 @@ syncHeader();
   fillPlaces('plFrom','geo_munich');
   fillPlaces('plTo','geo_bolzano');
   paintReach();
+  paintPace();
   const shape=loop=>{
     document.getElementById('segLoop').setAttribute('aria-pressed',String(loop));
     document.getElementById('segAB').setAttribute('aria-pressed',String(!loop));
     document.getElementById('plToCell').hidden=loop;
     document.getElementById('plFromLab').textContent=loop?'Starting and ending at':'Starting at';
-    paintTrip();
+    paintTrip(); paintPace();
   };
   document.getElementById('segLoop').onclick=()=>shape(true);
   document.getElementById('segAB').onclick=()=>shape(false);
   ['plNights','plLeave','plPace','plMaxAlt','plFrom','plTo'].forEach(id=>{
-    const e=document.getElementById(id); if(e){ e.addEventListener('change',paintTrip); e.addEventListener('input',paintTrip); }
+    const e=document.getElementById(id); if(!e) return;
+    const upd=()=>{ paintTrip(); paintPace(); };
+    e.addEventListener('change',upd); e.addEventListener('input',upd);
   });
 
   const msg=t=>{ const m=document.getElementById('plMsg'); if(m) m.textContent=t||''; };
