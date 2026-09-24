@@ -726,6 +726,19 @@
        long title cannot leave one row taller than the other. Stated in em so
        it tracks the font size rather than being a measured pixel value. */
     .tab .t{display:block;min-height:2.4em}
+    /* The compact bar lays kicker and title side by side on one line, which
+       needs a tab wide enough for both. At 118px the kicker takes the width and
+       `overflow-wrap:anywhere` shattered what was left — "Timmelsjoch" came out
+       as eleven rows of one letter. Stack them here instead, the way the strip
+       above the fold already does, and hold each to a single line so a long
+       name truncates rather than reflowing the whole header.
+       `header.compact .tab .t` outranks `.tab .t`, so every property the stack
+       needs is restated rather than inherited. */
+    header.compact .tab{display:block;padding:6px 9px 7px;white-space:normal}
+    header.compact .tab .k,header.compact .tab .t{display:block;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    header.compact .tab .k{font-size:8.5px;letter-spacing:.1em}
+    header.compact .tab .t{font-size:12.5px;min-height:0;line-height:1.25}
   }
   /* the compact bar puts label and title on one line — no room for the word */
   header.compact .tab .k .optw{display:none}
