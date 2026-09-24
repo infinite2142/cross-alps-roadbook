@@ -1,1671 +1,2827 @@
 [
- {
-  "id": "roselend",
-  "name": "Cormet de Roselend",
-  "countries": [
-   "FR"
-  ],
-  "region": "beaufortain",
-  "summit_m": 1968,
-  "coord": [
-   45.6894,
-   6.6739
-  ],
-  "roads": [
-   "D902"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-20",
-   "typical_close": "11-10",
-   "spread_days": 18,
-   "note": null
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 39,
-   "hairpins": 19,
-   "difficulty": 2,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 65
-  },
-  "scenic": 5,
-  "highlights": [
-   "Lac de Roselend"
-  ],
-  "verify_url": "https://www.inforoute73.fr/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "grimsel",
-  "name": "Grimselpass",
-  "countries": [
-   "CH"
-  ],
-  "region": "bernese",
-  "summit_m": 2164,
-  "coord": [
-   46.5614,
-   8.3378
-  ],
-  "roads": [
-   "Route 6"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-25",
-   "typical_close": "11-05",
-   "spread_days": 18,
-   "note": null
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 38,
-   "hairpins": 26,
-   "difficulty": 3,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 60
-  },
-  "scenic": 5,
-  "highlights": [
-   "Reservoirs and granite slabs",
-   "Forms the classic three-pass loop with Furka and Susten"
-  ],
-  "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "susten",
-  "name": "Sustenpass",
-  "countries": [
-   "CH"
-  ],
-  "region": "bernese",
-  "summit_m": 2224,
-  "coord": [
-   46.7264,
-   8.4497
-  ],
-  "roads": [
-   "Route 11"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-01",
-   "typical_close": "10-25",
-   "spread_days": 18,
-   "note": null
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 45,
-   "hairpins": 30,
-   "difficulty": 2,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 70
-  },
-  "scenic": 5,
-  "highlights": [
-   "Best-engineered of the three; wide, flowing, built for driving"
-  ],
-  "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "galibier",
-  "name": "Col du Galibier",
-  "countries": [
-   "FR"
-  ],
-  "region": "dauphine",
-  "summit_m": 2642,
-  "coord": [
-   45.0639,
-   6.4078
-  ],
-  "roads": [
-   "D902"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-01",
-   "typical_close": "10-20",
-   "spread_days": 21,
-   "note": "Opens with the Lautaret already clear; the tunnel below the summit is an alternative in poor weather."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 35,
-   "hairpins": 21,
-   "difficulty": 3,
-   "width": "two_lane_narrow",
-   "surface": "paved",
-   "typical_minutes": 60
-  },
-  "scenic": 5,
-  "highlights": [
-   "Pairs naturally with Lautaret and Croix de Fer"
-  ],
-  "verify_url": "https://www.inforoute73.fr/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "lautaret",
-  "name": "Col du Lautaret",
-  "countries": [
-   "FR"
-  ],
-  "region": "dauphine",
-  "summit_m": 2058,
-  "coord": [
-   45.0342,
-   6.4047
-  ],
-  "roads": [
-   "D1091"
-  ],
-  "season": {
-   "year_round": true,
-   "typical_open": null,
-   "typical_close": null,
-   "spread_days": 0,
-   "note": "Kept open through winter as a main route, but closes temporarily in heavy snow or avalanche risk."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 28,
-   "hairpins": 8,
-   "difficulty": 2,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 40
-  },
-  "scenic": 4,
-  "highlights": [
-   "Alpine botanical garden at the summit"
-  ],
-  "verify_url": "https://www.bison-fute.gouv.fr/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "tre_cime",
-  "name": "Tre Cime di Lavaredo toll road",
-  "countries": [
-   "IT"
-  ],
-  "region": "dolomites",
-  "summit_m": 2320,
-  "coord": [
-   46.6153,
-   12.2953
-  ],
-  "roads": [
-   "SP49"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-25",
-   "typical_close": "10-25",
-   "spread_days": 14,
-   "note": "Dead-end toll road to the Auronzo hut, not a through-pass. Car parks fill by mid-morning in August."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": true,
-   "vehicle_limits": "Access can be capped once the summit car park is full."
-  },
-  "toll": {
-   "type": "road_toll",
-   "band": "20_50",
-   "note": "Per car, one way. Verify the current tariff before travelling."
-  },
-  "drive": {
-   "length_km": 7,
-   "hairpins": 9,
-   "difficulty": 2,
-   "width": "two_lane_narrow",
-   "surface": "paved",
-   "typical_minutes": 20
-  },
-  "scenic": 5,
-  "highlights": [
-   "The Dolomites' signature view, at a price"
-  ],
-  "verify_url": "https://www.dolomiti.it/",
-  "confidence": "medium",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "bernina",
-  "name": "Berninapass / Passo del Bernina",
-  "countries": [
-   "CH"
-  ],
-  "region": "engadine",
-  "summit_m": 2328,
-  "coord": [
-   46.4106,
-   10.0217
-  ],
-  "roads": [
-   "Route 29"
-  ],
-  "season": {
-   "year_round": true,
-   "typical_open": null,
-   "typical_close": null,
-   "spread_days": 0,
-   "note": "Kept open all year; brief closures in storms."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 34,
-   "hairpins": 12,
-   "difficulty": 2,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 50
-  },
-  "scenic": 5,
-  "highlights": [
-   "Runs beside the UNESCO-listed Bernina railway",
-   "Lago Bianco at the summit"
-  ],
-  "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "julier",
-  "name": "Julierpass",
-  "countries": [
-   "CH"
-  ],
-  "region": "engadine",
-  "summit_m": 2284,
-  "coord": [
-   46.4719,
-   9.7242
-  ],
-  "roads": [
-   "Route 3"
-  ],
-  "season": {
-   "year_round": true,
-   "typical_open": null,
-   "typical_close": null,
-   "spread_days": 0,
-   "note": "Main winter access to the Engadine, kept open."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 37,
-   "hairpins": 14,
-   "difficulty": 2,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 50
-  },
-  "scenic": 4,
-  "highlights": [],
-  "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "klausen",
-  "name": "Klausenpass",
-  "countries": [
-   "CH"
-  ],
-  "region": "glarus",
-  "summit_m": 1948,
-  "coord": [
-   46.8703,
-   8.8617
-  ],
-  "roads": [
-   "Route 17"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-20",
-   "typical_close": "10-31",
-   "spread_days": 18,
-   "note": null
-  },
-  "access": {
-   "night_closure": {
-    "from": "22:00",
-    "to": "05:00"
-   },
-   "timed_or_booked": false,
-   "vehicle_limits": "Night closure has applied in some seasons — verify for your dates."
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 46,
-   "hairpins": 22,
-   "difficulty": 3,
-   "width": "two_lane_narrow",
-   "surface": "paved",
-   "typical_minutes": 75
-  },
-  "scenic": 4,
-  "highlights": [],
-  "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
-  "confidence": "medium",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "furka",
-  "name": "Furkapass",
-  "countries": [
-   "CH"
-  ],
-  "region": "gotthard",
-  "summit_m": 2429,
-  "coord": [
-   46.5725,
-   8.4153
-  ],
-  "roads": [
-   "Route 19"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-01",
-   "typical_close": "10-20",
-   "spread_days": 18,
-   "note": "Closes early in bad autumns. Car-train through the Furka base tunnel is the winter alternative."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": "Swiss motorway vignette not required on the pass road itself."
-  },
-  "drive": {
-   "length_km": 31,
-   "hairpins": 24,
-   "difficulty": 3,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 55
-  },
-  "scenic": 5,
-  "highlights": [
-   "Rhône glacier and the Hotel Belvédère hairpin",
-   "Chains naturally with Grimsel and Susten"
-  ],
-  "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "gotthard_tremola",
-  "name": "Gotthardpass (Tremola)",
-  "countries": [
-   "CH"
-  ],
-  "region": "gotthard",
-  "summit_m": 2106,
-  "coord": [
-   46.5558,
-   8.5658
-  ],
-  "roads": [
-   "Route 2",
-   "Tremola"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-25",
-   "typical_close": "10-31",
-   "spread_days": 18,
-   "note": "The cobbled Tremola on the south ramp is the point; the modern road parallels it."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": "Cobbles are slow and rough — not for low or stiffly sprung cars in a hurry."
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 26,
-   "hairpins": 37,
-   "difficulty": 3,
-   "width": "two_lane_narrow",
-   "surface": "cobbled_sections",
-   "typical_minutes": 55
-  },
-  "scenic": 5,
-  "highlights": [
-   "Longest cobbled road in Switzerland, a protected monument"
-  ],
-  "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "nufenen",
-  "name": "Nufenenpass / Passo della Novena",
-  "countries": [
-   "CH"
-  ],
-  "region": "gotthard",
-  "summit_m": 2478,
-  "coord": [
-   46.4775,
-   8.3872
-  ],
-  "roads": [
-   "Route 19"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-05",
-   "typical_close": "10-20",
-   "spread_days": 18,
-   "note": "Highest paved pass entirely within Switzerland."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 37,
-   "hairpins": 15,
-   "difficulty": 3,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 60
-  },
-  "scenic": 4,
-  "highlights": [
-   "Drops into Italian-speaking Valle Bedretto"
-  ],
-  "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "san_bernardino",
-  "name": "Passo del San Bernardino",
-  "countries": [
-   "CH"
-  ],
-  "region": "graubunden",
-  "summit_m": 2066,
-  "coord": [
-   46.4936,
-   9.1714
-  ],
-  "roads": [
-   "Route 13 old"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-20",
-   "typical_close": "11-10",
-   "spread_days": 18,
-   "note": "The motorway tunnel beneath is open all year; the pass road is the scenic option."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": "Tunnel route requires the Swiss motorway vignette."
-  },
-  "drive": {
-   "length_km": 28,
-   "hairpins": 20,
-   "difficulty": 2,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 45
-  },
-  "scenic": 4,
-  "highlights": [],
-  "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "splugen",
-  "name": "Splügenpass / Passo dello Spluga",
-  "countries": [
-   "CH",
-   "IT"
-  ],
-  "region": "graubunden",
-  "summit_m": 2115,
-  "coord": [
-   46.5061,
-   9.3308
-  ],
-  "roads": [
-   "Route 13",
-   "SS36"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-15",
-   "typical_close": "11-15",
-   "spread_days": 21,
-   "note": null
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": "Italian side is very narrow with tight galleries; avoid with anything wide."
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 30,
-   "hairpins": 37,
-   "difficulty": 4,
-   "width": "single_track_sections",
-   "surface": "paved",
-   "typical_minutes": 60
-  },
-  "scenic": 5,
-  "highlights": [
-   "Cardinello gorge galleries on the Italian ramp"
-  ],
-  "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "grossglockner",
-  "name": "Grossglockner Hochalpenstrasse",
-  "countries": [
-   "AT"
-  ],
-  "region": "hohe_tauern",
-  "summit_m": 2504,
-  "coord": [
-   47.0839,
-   12.8386
-  ],
-  "roads": [
-   "B107"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-01",
-   "typical_close": "11-01",
-   "spread_days": 14,
-   "note": "Hochtor summit 2,504 m; the Edelweissspitze spur reaches 2,571 m."
-  },
-  "access": {
-   "night_closure": {
-    "from": "20:00",
-    "to": "05:00"
-   },
-   "timed_or_booked": false,
-   "vehicle_limits": "Gated road with seasonal opening hours that shorten in spring and autumn."
-  },
-  "toll": {
-   "type": "road_toll",
-   "band": "20_50",
-   "note": "Per car, day ticket. Verify the current tariff."
-  },
-  "drive": {
-   "length_km": 48,
-   "hairpins": 36,
-   "difficulty": 2,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 90
-  },
-  "scenic": 5,
-  "highlights": [
-   "Franz-Josefs-Höhe glacier viewpoint spur",
-   "Immaculate surface, built as a tourist road"
-  ],
-  "verify_url": "https://www.grossglockner.at/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "mangart",
-  "name": "Mangartska cesta (Mangart saddle road)",
-  "countries": [
-   "SI"
-  ],
-  "region": "julian",
-  "summit_m": 2072,
-  "coord": [
-   46.4419,
-   13.6472
-  ],
-  "roads": [
-   "Mangartska cesta"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-01",
-   "typical_close": "10-15",
-   "spread_days": 21,
-   "note": "Highest road in Slovenia. A dead-end spur to the saddle, not a through route."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": "Very narrow with unlit single-track tunnels and long drops. No motorhomes or trailers."
-  },
-  "toll": {
-   "type": "road_toll",
-   "band": "under_20",
-   "note": "Per car. Verify the current tariff."
-  },
-  "drive": {
-   "length_km": 12,
-   "hairpins": 18,
-   "difficulty": 5,
-   "width": "single_track_sections",
-   "surface": "paved",
-   "typical_minutes": 35
-  },
-  "scenic": 5,
-  "highlights": [
-   "Five rock tunnels cut into the face",
-   "Views over the Triglav range and into Italy"
-  ],
-  "verify_url": "https://www.promet.si/",
-  "confidence": "medium",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "predel",
-  "name": "Predel / Passo del Predil",
-  "countries": [
-   "SI",
-   "IT"
-  ],
-  "region": "julian",
-  "summit_m": 1156,
-  "coord": [
-   46.4111,
-   13.5769
-  ],
-  "roads": [
-   "Route 203",
-   "SS54"
-  ],
-  "season": {
-   "year_round": true,
-   "typical_open": null,
-   "typical_close": null,
-   "spread_days": 0,
-   "note": "Low border crossing, kept open; brief closures in heavy snow."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 16,
-   "hairpins": 11,
-   "difficulty": 2,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 25
-  },
-  "scenic": 4,
-  "highlights": [
-   "Lago del Predil on the Italian side",
-   "Natural pairing with the Mangart spur"
-  ],
-  "verify_url": "https://www.promet.si/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "soriska",
-  "name": "Soriška planina",
-  "countries": [
-   "SI"
-  ],
-  "region": "julian",
-  "summit_m": 1277,
-  "coord": [
-   46.2308,
-   14.0378
-  ],
-  "roads": [
-   "Route 403"
-  ],
-  "season": {
-   "year_round": true,
-   "typical_open": null,
-   "typical_close": null,
-   "spread_days": 0,
-   "note": "Kept open, but a genuine winter road — snow tyres required in season."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 18,
-   "hairpins": 12,
-   "difficulty": 2,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 30
-  },
-  "scenic": 4,
-  "highlights": [
-   "Quiet link from Bohinj towards the Soča valley"
-  ],
-  "verify_url": "https://www.promet.si/",
-  "confidence": "medium",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "vrsic",
-  "name": "Vršič",
-  "countries": [
-   "SI"
-  ],
-  "region": "julian",
-  "summit_m": 1611,
-  "coord": [
-   46.4331,
-   13.7478
-  ],
-  "roads": [
-   "Route 206"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-01",
-   "typical_close": "11-10",
-   "spread_days": 21,
-   "note": "Highest road pass in Slovenia."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": "Cobbled hairpins; slow going."
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": "Slovenian motorway vignette not needed for the pass road."
-  },
-  "drive": {
-   "length_km": 25,
-   "hairpins": 50,
-   "difficulty": 3,
-   "width": "two_lane_narrow",
-   "surface": "cobbled_sections",
-   "typical_minutes": 60
-  },
-  "scenic": 5,
-  "highlights": [
-   "50 numbered hairpins, many cobbled",
-   "Russian chapel on the north ramp"
-  ],
-  "verify_url": "https://www.promet.si/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "solcava",
-  "name": "Solčavska panoramska cesta",
-  "countries": [
-   "SI"
-  ],
-  "region": "kamnik_savinja",
-  "summit_m": 1200,
-  "coord": [
-   46.4033,
-   14.6708
-  ],
-  "roads": [
-   "Panoramska cesta"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "04-15",
-   "typical_close": "11-15",
-   "spread_days": 21,
-   "note": "Panoramic ridge road above the Logar valley rather than a pass."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": "Narrow, with steep unguarded sections."
-  },
-  "toll": {
-   "type": "road_toll",
-   "band": "under_20",
-   "note": "Small charge on the Logar valley section in season."
-  },
-  "drive": {
-   "length_km": 37,
-   "hairpins": 14,
-   "difficulty": 3,
-   "width": "two_lane_narrow",
-   "surface": "paved",
-   "typical_minutes": 70
-  },
-  "scenic": 5,
-  "highlights": [
-   "Ridge-top farms looking across to the Kamnik–Savinja Alps"
-  ],
-  "verify_url": "https://www.solcavsko.info/",
-  "confidence": "medium",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "korensko",
-  "name": "Korensko sedlo / Wurzenpass",
-  "countries": [
-   "SI",
-   "AT"
-  ],
-  "region": "karawanks",
-  "summit_m": 1073,
-  "coord": [
-   46.5156,
-   13.7481
-  ],
-  "roads": [
-   "Route 201",
-   "B109"
-  ],
-  "season": {
-   "year_round": true,
-   "typical_open": null,
-   "typical_close": null,
-   "spread_days": 0,
-   "note": null
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": "Sustained 18% on the Austrian side; caravans prohibited in places. Winter tyres or chains in snow."
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 9,
-   "hairpins": 6,
-   "difficulty": 3,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 15
-  },
-  "scenic": 3,
-  "highlights": [
-   "Quick link between the Gail valley and Kranjska Gora"
-  ],
-  "verify_url": "https://www.promet.si/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "ljubelj",
-  "name": "Ljubelj / Loiblpass",
-  "countries": [
-   "SI",
-   "AT"
-  ],
-  "region": "karawanks",
-  "summit_m": 1367,
-  "coord": [
-   46.4325,
-   14.2611
-  ],
-  "roads": [
-   "Route 101",
-   "B91"
-  ],
-  "season": {
-   "year_round": true,
-   "typical_open": null,
-   "typical_close": null,
-   "spread_days": 0,
-   "note": "The road tunnel below the pass is the year-round route. The old pass road over the top is seasonal and gated."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": "Austrian ramp reaches gradients around 18%."
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 14,
-   "hairpins": 9,
-   "difficulty": 3,
-   "width": "two_lane_narrow",
-   "surface": "paved",
-   "typical_minutes": 25
-  },
-  "scenic": 3,
-  "highlights": [],
-  "verify_url": "https://www.promet.si/",
-  "confidence": "medium",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "bonette",
-  "name": "Col de la Bonette",
-  "countries": [
-   "FR"
-  ],
-  "region": "maritime",
-  "summit_m": 2715,
-  "coord": [
-   44.3217,
-   6.8064
-  ],
-  "roads": [
-   "D64",
-   "D2205"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-01",
-   "typical_close": "10-31",
-   "spread_days": 21,
-   "note": "The Cime loop above the col reaches 2,802 m and is the marketing claim; the pass itself is 2,715 m."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 57,
-   "hairpins": 38,
-   "difficulty": 3,
-   "width": "two_lane_narrow",
-   "surface": "paved",
-   "typical_minutes": 95
-  },
-  "scenic": 5,
-  "highlights": [
-   "Barren high plateau, unlike anything further north",
-   "Military ruins near the summit"
-  ],
-  "verify_url": "https://www.inforoute06.fr/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "silvretta",
-  "name": "Silvretta Hochalpenstrasse (Bielerhöhe)",
-  "countries": [
-   "AT"
-  ],
-  "region": "montafon",
-  "summit_m": 2032,
-  "coord": [
-   46.9147,
-   10.0917
-  ],
-  "roads": [
-   "L188"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-01",
-   "typical_close": "10-31",
-   "spread_days": 18,
-   "note": null
-  },
-  "access": {
-   "night_closure": {
-    "from": "22:00",
-    "to": "05:30"
-   },
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "road_toll",
-   "band": "under_20",
-   "note": "Per car, day ticket."
-  },
-  "drive": {
-   "length_km": 22,
-   "hairpins": 34,
-   "difficulty": 2,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 45
-  },
-  "scenic": 4,
-  "highlights": [
-   "Silvretta reservoir at the top"
-  ],
-  "verify_url": "https://www.silvretta-bielerhoehe.at/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "gavia",
-  "name": "Passo Gavia",
-  "countries": [
-   "IT"
-  ],
-  "region": "ortler",
-  "summit_m": 2621,
-  "coord": [
-   46.3428,
-   10.4931
-  ],
-  "roads": [
-   "SS300"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-01",
-   "typical_close": "10-20",
-   "spread_days": 21,
-   "note": null
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": "Long single-track sections with no barrier. Not for nervous drivers or wide vehicles."
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 25,
-   "hairpins": 18,
-   "difficulty": 5,
-   "width": "single_track_sections",
-   "surface": "paved",
-   "typical_minutes": 55
-  },
-  "scenic": 5,
-  "highlights": [
-   "Lago Bianco below the summit",
-   "The wildest of the big Italian passes"
-  ],
-  "verify_url": "https://www.stradeanas.it/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "stelvio",
-  "name": "Passo dello Stelvio",
-  "alt_names": [
-   "Stilfser Joch"
-  ],
-  "countries": [
-   "IT"
-  ],
-  "region": "ortler",
-  "summit_m": 2757,
-  "coord": [
-   46.5286,
-   10.4534
-  ],
-  "roads": [
-   "SS38"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-25",
-   "typical_close": "11-05",
-   "spread_days": 14,
-   "note": "Late openings in heavy-snow years; can shut for days after autumn storms."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": "Caravans and trailers strongly discouraged; buses restricted."
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 49,
-   "hairpins": 88,
-   "difficulty": 4,
-   "width": "two_lane_narrow",
-   "surface": "paved",
-   "typical_minutes": 95
-  },
-  "scenic": 5,
-  "highlights": [
-   "48 numbered hairpins on the Prato north ramp",
-   "Umbrail link into Switzerland"
-  ],
-  "verify_url": "https://www.stelviopark.bz.it/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "umbrail",
-  "name": "Umbrailpass / Giogo di Santa Maria",
-  "countries": [
-   "CH",
-   "IT"
-  ],
-  "region": "ortler",
-  "summit_m": 2501,
-  "coord": [
-   46.5447,
-   10.4308
-  ],
-  "roads": [
-   "Route 28",
-   "SS301"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-01",
-   "typical_close": "10-31",
-   "spread_days": 18,
-   "note": "Highest paved pass in Switzerland. Joins the Stelvio road just below the summit."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 14,
-   "hairpins": 34,
-   "difficulty": 3,
-   "width": "two_lane_narrow",
-   "surface": "paved",
-   "typical_minutes": 30
-  },
-  "scenic": 4,
-  "highlights": [
-   "Turns Stelvio into a loop rather than an out-and-back"
-  ],
-  "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "timmelsjoch",
-  "name": "Timmelsjoch / Passo del Rombo",
-  "countries": [
-   "AT",
-   "IT"
-  ],
-  "region": "otztal",
-  "summit_m": 2474,
-  "coord": [
-   46.9089,
-   11.0967
-  ],
-  "roads": [
-   "B186",
-   "SS44bis"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-25",
-   "typical_close": "10-25",
-   "spread_days": 18,
-   "note": null
-  },
-  "access": {
-   "night_closure": {
-    "from": "20:00",
-    "to": "07:00"
-   },
-   "timed_or_booked": false,
-   "vehicle_limits": "Austrian side is a toll road; Italian side is free. No vehicles over 3.5 t."
-  },
-  "toll": {
-   "type": "road_toll",
-   "band": "under_20",
-   "note": "Austrian side only, per car."
-  },
-  "drive": {
-   "length_km": 54,
-   "hairpins": 28,
-   "difficulty": 3,
-   "width": "two_lane_narrow",
-   "surface": "paved",
-   "typical_minutes": 85
-  },
-  "scenic": 5,
-  "highlights": [
-   "Architectural viewing stations along the road",
-   "Drops into South Tyrol at Moso"
-  ],
-  "verify_url": "https://www.timmelsjoch.com/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "finestre",
-  "name": "Colle delle Finestre",
-  "countries": [
-   "IT"
-  ],
-  "region": "piedmont",
-  "summit_m": 2178,
-  "coord": [
-   45.0656,
-   7.0556
-  ],
-  "roads": [
-   "SP172"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-01",
-   "typical_close": "10-15",
-   "spread_days": 21,
-   "note": null
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": "Roughly 8 km of gravel on the upper north ramp."
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 19,
-   "hairpins": 45,
-   "difficulty": 4,
-   "width": "two_lane_narrow",
-   "surface": "gravel_sections",
-   "typical_minutes": 50
-  },
-  "scenic": 4,
-  "highlights": [
-   "Ruler-straight gravel switchbacks above the treeline"
-  ],
-  "verify_url": "https://www.cittametropolitana.torino.it/",
-  "confidence": "medium",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "agnel",
-  "name": "Colle dell'Agnello / Col Agnel",
-  "countries": [
-   "FR",
-   "IT"
-  ],
-  "region": "queyras",
-  "summit_m": 2744,
-  "coord": [
-   44.6844,
-   6.9786
-  ],
-  "roads": [
-   "D205T",
-   "SP251"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-10",
-   "typical_close": "10-15",
-   "spread_days": 21,
-   "note": "One of the highest border crossings in the Alps; both sides must clear before it opens."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": "Narrow and steep on the Italian side; not for large vehicles."
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 42,
-   "hairpins": 24,
-   "difficulty": 4,
-   "width": "single_track_sections",
-   "surface": "paved",
-   "typical_minutes": 80
-  },
-  "scenic": 5,
-  "highlights": [],
-  "verify_url": "https://www.route.hautes-alpes.fr/",
-  "confidence": "medium",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "izoard",
-  "name": "Col d'Izoard",
-  "countries": [
-   "FR"
-  ],
-  "region": "queyras",
-  "summit_m": 2360,
-  "coord": [
-   44.8203,
-   6.7347
-  ],
-  "roads": [
-   "D902"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-25",
-   "typical_close": "10-31",
-   "spread_days": 18,
-   "note": null
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 31,
-   "hairpins": 17,
-   "difficulty": 3,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 55
-  },
-  "scenic": 5,
-  "highlights": [
-   "Casse Déserte rock pinnacles on the south ramp"
-  ],
-  "verify_url": "https://www.route.hautes-alpes.fr/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "iseran",
-  "name": "Col de l'Iseran",
-  "countries": [
-   "FR"
-  ],
-  "region": "vanoise",
-  "summit_m": 2764,
-  "coord": [
-   45.4175,
-   7.0308
-  ],
-  "roads": [
-   "D902"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-20",
-   "typical_close": "10-15",
-   "spread_days": 18,
-   "note": "Highest paved through-pass in the Alps. Late June openings are normal; early snow can shut it in September."
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": "Unsuitable for large motorhomes on the Bonneval ramp."
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 48,
-   "hairpins": 31,
-   "difficulty": 3,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 80
-  },
-  "scenic": 5,
-  "highlights": [
-   "Bonneval-sur-Arc on the eastern ramp",
-   "Long open alpage above 2,400 m"
-  ],
-  "verify_url": "https://www.savoie-route.fr/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "mont_cenis",
-  "name": "Col du Mont-Cenis / Colle del Moncenisio",
-  "countries": [
-   "FR",
-   "IT"
-  ],
-  "region": "vanoise",
-  "summit_m": 2083,
-  "coord": [
-   45.2519,
-   6.9036
-  ],
-  "roads": [
-   "D1006",
-   "SS25"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "05-10",
-   "typical_close": "11-15",
-   "spread_days": 21,
-   "note": null
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 41,
-   "hairpins": 18,
-   "difficulty": 2,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 65
-  },
-  "scenic": 4,
-  "highlights": [
-   "Large reservoir on the plateau"
-  ],
-  "verify_url": "https://www.inforoute73.fr/",
-  "confidence": "medium",
-  "last_checked": "2026-09-21"
- },
- {
-  "id": "petit_st_bernard",
-  "name": "Col du Petit-Saint-Bernard",
-  "countries": [
-   "FR",
-   "IT"
-  ],
-  "region": "vanoise",
-  "summit_m": 2188,
-  "coord": [
-   45.6803,
-   6.8842
-  ],
-  "roads": [
-   "D1090",
-   "SS26"
-  ],
-  "season": {
-   "year_round": false,
-   "typical_open": "06-01",
-   "typical_close": "10-25",
-   "spread_days": 18,
-   "note": null
-  },
-  "access": {
-   "night_closure": null,
-   "timed_or_booked": false,
-   "vehicle_limits": null
-  },
-  "toll": {
-   "type": "none",
-   "band": "free",
-   "note": null
-  },
-  "drive": {
-   "length_km": 48,
-   "hairpins": 22,
-   "difficulty": 2,
-   "width": "two_lane",
-   "surface": "paved",
-   "typical_minutes": 75
-  },
-  "scenic": 4,
-  "highlights": [
-   "Links Bourg-Saint-Maurice to La Thuile and the Aosta valley"
-  ],
-  "verify_url": "https://www.inforoute73.fr/",
-  "confidence": "high",
-  "last_checked": "2026-09-21"
- }
+  {
+    "id": "roselend",
+    "name": "Cormet de Roselend",
+    "countries": [
+      "FR"
+    ],
+    "region": "beaufortain",
+    "summit_m": 1968,
+    "coord": [
+      45.6894,
+      6.6739
+    ],
+    "roads": [
+      "D902"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-20",
+      "typical_close": "11-10",
+      "spread_days": 18,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 39,
+      "hairpins": 19,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 65
+    },
+    "scenic": 5,
+    "highlights": [
+      "Lac de Roselend"
+    ],
+    "verify_url": "https://www.inforoute73.fr/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "grimsel",
+    "name": "Grimselpass",
+    "countries": [
+      "CH"
+    ],
+    "region": "bernese",
+    "summit_m": 2164,
+    "coord": [
+      46.5614,
+      8.3378
+    ],
+    "roads": [
+      "Route 6"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-25",
+      "typical_close": "11-05",
+      "spread_days": 18,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 38,
+      "hairpins": 26,
+      "difficulty": 3,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 60
+    },
+    "scenic": 5,
+    "highlights": [
+      "Reservoirs and granite slabs",
+      "Forms the classic three-pass loop with Furka and Susten"
+    ],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "susten",
+    "name": "Sustenpass",
+    "countries": [
+      "CH"
+    ],
+    "region": "bernese",
+    "summit_m": 2224,
+    "coord": [
+      46.7264,
+      8.4497
+    ],
+    "roads": [
+      "Route 11"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-01",
+      "typical_close": "10-25",
+      "spread_days": 18,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 45,
+      "hairpins": 30,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 70
+    },
+    "scenic": 5,
+    "highlights": [
+      "Best-engineered of the three; wide, flowing, built for driving"
+    ],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "galibier",
+    "name": "Col du Galibier",
+    "countries": [
+      "FR"
+    ],
+    "region": "dauphine",
+    "summit_m": 2642,
+    "coord": [
+      45.0639,
+      6.4078
+    ],
+    "roads": [
+      "D902"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-01",
+      "typical_close": "10-20",
+      "spread_days": 21,
+      "note": "Opens with the Lautaret already clear; the tunnel below the summit is an alternative in poor weather."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 35,
+      "hairpins": 21,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": 60
+    },
+    "scenic": 5,
+    "highlights": [
+      "Pairs naturally with Lautaret and Croix de Fer"
+    ],
+    "verify_url": "https://www.inforoute73.fr/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "lautaret",
+    "name": "Col du Lautaret",
+    "countries": [
+      "FR"
+    ],
+    "region": "dauphine",
+    "summit_m": 2058,
+    "coord": [
+      45.0342,
+      6.4047
+    ],
+    "roads": [
+      "D1091"
+    ],
+    "season": {
+      "year_round": true,
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Kept open through winter as a main route, but closes temporarily in heavy snow or avalanche risk."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 28,
+      "hairpins": 8,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 40
+    },
+    "scenic": 4,
+    "highlights": [
+      "Alpine botanical garden at the summit"
+    ],
+    "verify_url": "https://www.bison-fute.gouv.fr/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "tre_cime",
+    "name": "Tre Cime di Lavaredo toll road",
+    "countries": [
+      "IT"
+    ],
+    "region": "dolomites",
+    "summit_m": 2320,
+    "coord": [
+      46.6153,
+      12.2953
+    ],
+    "roads": [
+      "SP49"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-25",
+      "typical_close": "10-25",
+      "spread_days": 14,
+      "note": "Dead-end toll road to the Auronzo hut, not a through-pass. Car parks fill by mid-morning in August."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": true,
+      "vehicle_limits": "Access can be capped once the summit car park is full."
+    },
+    "toll": {
+      "type": "road_toll",
+      "band": "20_50",
+      "note": "Per car, one way. Verify the current tariff before travelling."
+    },
+    "drive": {
+      "length_km": 7,
+      "hairpins": 9,
+      "difficulty": 2,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": 20
+    },
+    "scenic": 5,
+    "highlights": [
+      "The Dolomites' signature view, at a price"
+    ],
+    "verify_url": "https://www.dolomiti.it/",
+    "confidence": "medium",
+    "last_checked": "2026-09-21",
+    "alt_names": [
+      "Rifugio Auronzo · Tre Cime"
+    ]
+  },
+  {
+    "id": "bernina",
+    "name": "Berninapass / Passo del Bernina",
+    "countries": [
+      "CH"
+    ],
+    "region": "engadine",
+    "summit_m": 2328,
+    "coord": [
+      46.4106,
+      10.0217
+    ],
+    "roads": [
+      "Route 29"
+    ],
+    "season": {
+      "year_round": true,
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Kept open all year; brief closures in storms."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 34,
+      "hairpins": 12,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 50
+    },
+    "scenic": 5,
+    "highlights": [
+      "Runs beside the UNESCO-listed Bernina railway",
+      "Lago Bianco at the summit"
+    ],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "julier",
+    "name": "Julierpass",
+    "countries": [
+      "CH"
+    ],
+    "region": "engadine",
+    "summit_m": 2284,
+    "coord": [
+      46.4719,
+      9.7242
+    ],
+    "roads": [
+      "Route 3"
+    ],
+    "season": {
+      "year_round": true,
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Main winter access to the Engadine, kept open."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 37,
+      "hairpins": 14,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 50
+    },
+    "scenic": 4,
+    "highlights": [],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "klausen",
+    "name": "Klausenpass",
+    "countries": [
+      "CH"
+    ],
+    "region": "glarus",
+    "summit_m": 1948,
+    "coord": [
+      46.8703,
+      8.8617
+    ],
+    "roads": [
+      "Route 17"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-20",
+      "typical_close": "10-31",
+      "spread_days": 18,
+      "note": null
+    },
+    "access": {
+      "night_closure": {
+        "from": "22:00",
+        "to": "05:00"
+      },
+      "timed_or_booked": false,
+      "vehicle_limits": "Night closure has applied in some seasons — verify for your dates."
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 46,
+      "hairpins": 22,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": 75
+    },
+    "scenic": 4,
+    "highlights": [],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "medium",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "furka",
+    "name": "Furkapass",
+    "countries": [
+      "CH"
+    ],
+    "region": "gotthard",
+    "summit_m": 2429,
+    "coord": [
+      46.5725,
+      8.4153
+    ],
+    "roads": [
+      "Route 19"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-01",
+      "typical_close": "10-20",
+      "spread_days": 18,
+      "note": "Closes early in bad autumns. Car-train through the Furka base tunnel is the winter alternative."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": "Swiss motorway vignette not required on the pass road itself."
+    },
+    "drive": {
+      "length_km": 31,
+      "hairpins": 24,
+      "difficulty": 3,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 55
+    },
+    "scenic": 5,
+    "highlights": [
+      "Rhône glacier and the Hotel Belvédère hairpin",
+      "Chains naturally with Grimsel and Susten"
+    ],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "gotthard_tremola",
+    "name": "Gotthardpass (Tremola)",
+    "countries": [
+      "CH"
+    ],
+    "region": "gotthard",
+    "summit_m": 2106,
+    "coord": [
+      46.5558,
+      8.5658
+    ],
+    "roads": [
+      "Route 2",
+      "Tremola"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-25",
+      "typical_close": "10-31",
+      "spread_days": 18,
+      "note": "The cobbled Tremola on the south ramp is the point; the modern road parallels it."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": "Cobbles are slow and rough — not for low or stiffly sprung cars in a hurry."
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 26,
+      "hairpins": 37,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "cobbled_sections",
+      "typical_minutes": 55
+    },
+    "scenic": 5,
+    "highlights": [
+      "Longest cobbled road in Switzerland, a protected monument"
+    ],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "nufenen",
+    "name": "Nufenenpass / Passo della Novena",
+    "countries": [
+      "CH"
+    ],
+    "region": "gotthard",
+    "summit_m": 2478,
+    "coord": [
+      46.4775,
+      8.3872
+    ],
+    "roads": [
+      "Route 19"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-05",
+      "typical_close": "10-20",
+      "spread_days": 18,
+      "note": "Highest paved pass entirely within Switzerland."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 37,
+      "hairpins": 15,
+      "difficulty": 3,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 60
+    },
+    "scenic": 4,
+    "highlights": [
+      "Drops into Italian-speaking Valle Bedretto"
+    ],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "san_bernardino",
+    "name": "Passo del San Bernardino",
+    "countries": [
+      "CH"
+    ],
+    "region": "graubunden",
+    "summit_m": 2066,
+    "coord": [
+      46.4936,
+      9.1714
+    ],
+    "roads": [
+      "Route 13 old"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-20",
+      "typical_close": "11-10",
+      "spread_days": 18,
+      "note": "The motorway tunnel beneath is open all year; the pass road is the scenic option."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": "Tunnel route requires the Swiss motorway vignette."
+    },
+    "drive": {
+      "length_km": 28,
+      "hairpins": 20,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 45
+    },
+    "scenic": 4,
+    "highlights": [],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "splugen",
+    "name": "Splügenpass / Passo dello Spluga",
+    "countries": [
+      "CH",
+      "IT"
+    ],
+    "region": "graubunden",
+    "summit_m": 2115,
+    "coord": [
+      46.5061,
+      9.3308
+    ],
+    "roads": [
+      "Route 13",
+      "SS36"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-15",
+      "typical_close": "11-15",
+      "spread_days": 21,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": "Italian side is very narrow with tight galleries; avoid with anything wide."
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 30,
+      "hairpins": 37,
+      "difficulty": 4,
+      "width": "single_track_sections",
+      "surface": "paved",
+      "typical_minutes": 60
+    },
+    "scenic": 5,
+    "highlights": [
+      "Cardinello gorge galleries on the Italian ramp"
+    ],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "grossglockner",
+    "name": "Grossglockner Hochalpenstrasse",
+    "countries": [
+      "AT"
+    ],
+    "region": "hohe_tauern",
+    "summit_m": 2504,
+    "coord": [
+      47.0839,
+      12.8386
+    ],
+    "roads": [
+      "B107"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-01",
+      "typical_close": "11-01",
+      "spread_days": 14,
+      "note": "Hochtor summit 2,504 m; the Edelweissspitze spur reaches 2,571 m."
+    },
+    "access": {
+      "night_closure": {
+        "from": "20:00",
+        "to": "05:00"
+      },
+      "timed_or_booked": false,
+      "vehicle_limits": "Gated road with seasonal opening hours that shorten in spring and autumn."
+    },
+    "toll": {
+      "type": "road_toll",
+      "band": "20_50",
+      "note": "Per car, day ticket. Verify the current tariff."
+    },
+    "drive": {
+      "length_km": 48,
+      "hairpins": 36,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 90
+    },
+    "scenic": 5,
+    "highlights": [
+      "Franz-Josefs-Höhe glacier viewpoint spur",
+      "Immaculate surface, built as a tourist road"
+    ],
+    "verify_url": "https://www.grossglockner.at/",
+    "confidence": "high",
+    "last_checked": "2026-09-21",
+    "alt_names": [
+      "Edelweissspitze",
+      "Fuscher Törl",
+      "Hochtor tunnel"
+    ]
+  },
+  {
+    "id": "mangart",
+    "name": "Mangartska cesta (Mangart saddle road)",
+    "countries": [
+      "SI"
+    ],
+    "region": "julian",
+    "summit_m": 2072,
+    "coord": [
+      46.4419,
+      13.6472
+    ],
+    "roads": [
+      "Mangartska cesta"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-01",
+      "typical_close": "10-15",
+      "spread_days": 21,
+      "note": "Highest road in Slovenia. A dead-end spur to the saddle, not a through route."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": "Very narrow with unlit single-track tunnels and long drops. No motorhomes or trailers."
+    },
+    "toll": {
+      "type": "road_toll",
+      "band": "under_20",
+      "note": "Per car. Verify the current tariff."
+    },
+    "drive": {
+      "length_km": 12,
+      "hairpins": 18,
+      "difficulty": 5,
+      "width": "single_track_sections",
+      "surface": "paved",
+      "typical_minutes": 35
+    },
+    "scenic": 5,
+    "highlights": [
+      "Five rock tunnels cut into the face",
+      "Views over the Triglav range and into Italy"
+    ],
+    "verify_url": "https://www.promet.si/",
+    "confidence": "medium",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "predel",
+    "name": "Predel / Passo del Predil",
+    "countries": [
+      "SI",
+      "IT"
+    ],
+    "region": "julian",
+    "summit_m": 1156,
+    "coord": [
+      46.4111,
+      13.5769
+    ],
+    "roads": [
+      "Route 203",
+      "SS54"
+    ],
+    "season": {
+      "year_round": true,
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Low border crossing, kept open; brief closures in heavy snow."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 16,
+      "hairpins": 11,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 25
+    },
+    "scenic": 4,
+    "highlights": [
+      "Lago del Predil on the Italian side",
+      "Natural pairing with the Mangart spur"
+    ],
+    "verify_url": "https://www.promet.si/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "soriska",
+    "name": "Soriška planina",
+    "countries": [
+      "SI"
+    ],
+    "region": "julian",
+    "summit_m": 1277,
+    "coord": [
+      46.2308,
+      14.0378
+    ],
+    "roads": [
+      "Route 403"
+    ],
+    "season": {
+      "year_round": true,
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Kept open, but a genuine winter road — snow tyres required in season."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 18,
+      "hairpins": 12,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 30
+    },
+    "scenic": 4,
+    "highlights": [
+      "Quiet link from Bohinj towards the Soča valley"
+    ],
+    "verify_url": "https://www.promet.si/",
+    "confidence": "medium",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "vrsic",
+    "name": "Vršič",
+    "countries": [
+      "SI"
+    ],
+    "region": "julian",
+    "summit_m": 1611,
+    "coord": [
+      46.4331,
+      13.7478
+    ],
+    "roads": [
+      "Route 206"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-01",
+      "typical_close": "11-10",
+      "spread_days": 21,
+      "note": "Highest road pass in Slovenia."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": "Cobbled hairpins; slow going."
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": "Slovenian motorway vignette not needed for the pass road."
+    },
+    "drive": {
+      "length_km": 25,
+      "hairpins": 50,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "cobbled_sections",
+      "typical_minutes": 60
+    },
+    "scenic": 5,
+    "highlights": [
+      "50 numbered hairpins, many cobbled",
+      "Russian chapel on the north ramp"
+    ],
+    "verify_url": "https://www.promet.si/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "solcava",
+    "name": "Solčavska panoramska cesta",
+    "countries": [
+      "SI"
+    ],
+    "region": "kamnik_savinja",
+    "summit_m": 1200,
+    "coord": [
+      46.4033,
+      14.6708
+    ],
+    "roads": [
+      "Panoramska cesta"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "04-15",
+      "typical_close": "11-15",
+      "spread_days": 21,
+      "note": "Panoramic ridge road above the Logar valley rather than a pass."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": "Narrow, with steep unguarded sections."
+    },
+    "toll": {
+      "type": "road_toll",
+      "band": "under_20",
+      "note": "Small charge on the Logar valley section in season."
+    },
+    "drive": {
+      "length_km": 37,
+      "hairpins": 14,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": 70
+    },
+    "scenic": 5,
+    "highlights": [
+      "Ridge-top farms looking across to the Kamnik–Savinja Alps"
+    ],
+    "verify_url": "https://www.solcavsko.info/",
+    "confidence": "medium",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "korensko",
+    "name": "Korensko sedlo / Wurzenpass",
+    "countries": [
+      "SI",
+      "AT"
+    ],
+    "region": "karawanks",
+    "summit_m": 1073,
+    "coord": [
+      46.5156,
+      13.7481
+    ],
+    "roads": [
+      "Route 201",
+      "B109"
+    ],
+    "season": {
+      "year_round": true,
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": "Sustained 18% on the Austrian side; caravans prohibited in places. Winter tyres or chains in snow."
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 9,
+      "hairpins": 6,
+      "difficulty": 3,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 15
+    },
+    "scenic": 3,
+    "highlights": [
+      "Quick link between the Gail valley and Kranjska Gora"
+    ],
+    "verify_url": "https://www.promet.si/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "ljubelj",
+    "name": "Ljubelj / Loiblpass",
+    "countries": [
+      "SI",
+      "AT"
+    ],
+    "region": "karawanks",
+    "summit_m": 1367,
+    "coord": [
+      46.4325,
+      14.2611
+    ],
+    "roads": [
+      "Route 101",
+      "B91"
+    ],
+    "season": {
+      "year_round": true,
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "The road tunnel below the pass is the year-round route. The old pass road over the top is seasonal and gated."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": "Austrian ramp reaches gradients around 18%."
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 14,
+      "hairpins": 9,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": 25
+    },
+    "scenic": 3,
+    "highlights": [],
+    "verify_url": "https://www.promet.si/",
+    "confidence": "medium",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "bonette",
+    "name": "Col de la Bonette",
+    "countries": [
+      "FR"
+    ],
+    "region": "maritime",
+    "summit_m": 2715,
+    "coord": [
+      44.3217,
+      6.8064
+    ],
+    "roads": [
+      "D64",
+      "D2205"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-01",
+      "typical_close": "10-31",
+      "spread_days": 21,
+      "note": "The Cime loop above the col reaches 2,802 m and is the marketing claim; the pass itself is 2,715 m."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 57,
+      "hairpins": 38,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": 95
+    },
+    "scenic": 5,
+    "highlights": [
+      "Barren high plateau, unlike anything further north",
+      "Military ruins near the summit"
+    ],
+    "verify_url": "https://www.inforoute06.fr/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "silvretta",
+    "name": "Silvretta Hochalpenstrasse (Bielerhöhe)",
+    "countries": [
+      "AT"
+    ],
+    "region": "montafon",
+    "summit_m": 2032,
+    "coord": [
+      46.9147,
+      10.0917
+    ],
+    "roads": [
+      "L188"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-01",
+      "typical_close": "10-31",
+      "spread_days": 18,
+      "note": null
+    },
+    "access": {
+      "night_closure": {
+        "from": "22:00",
+        "to": "05:30"
+      },
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "road_toll",
+      "band": "under_20",
+      "note": "Per car, day ticket."
+    },
+    "drive": {
+      "length_km": 22,
+      "hairpins": 34,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 45
+    },
+    "scenic": 4,
+    "highlights": [
+      "Silvretta reservoir at the top"
+    ],
+    "verify_url": "https://www.silvretta-bielerhoehe.at/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "gavia",
+    "name": "Passo Gavia",
+    "countries": [
+      "IT"
+    ],
+    "region": "ortler",
+    "summit_m": 2621,
+    "coord": [
+      46.3428,
+      10.4931
+    ],
+    "roads": [
+      "SS300"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-01",
+      "typical_close": "10-20",
+      "spread_days": 21,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": "Long single-track sections with no barrier. Not for nervous drivers or wide vehicles."
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 25,
+      "hairpins": 18,
+      "difficulty": 5,
+      "width": "single_track_sections",
+      "surface": "paved",
+      "typical_minutes": 55
+    },
+    "scenic": 5,
+    "highlights": [
+      "Lago Bianco below the summit",
+      "The wildest of the big Italian passes"
+    ],
+    "verify_url": "https://www.stradeanas.it/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "stelvio",
+    "name": "Passo dello Stelvio",
+    "alt_names": [
+      "Stilfser Joch"
+    ],
+    "countries": [
+      "IT"
+    ],
+    "region": "ortler",
+    "summit_m": 2757,
+    "coord": [
+      46.5286,
+      10.4534
+    ],
+    "roads": [
+      "SS38"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-25",
+      "typical_close": "11-05",
+      "spread_days": 14,
+      "note": "Late openings in heavy-snow years; can shut for days after autumn storms."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": "Caravans and trailers strongly discouraged; buses restricted."
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 49,
+      "hairpins": 88,
+      "difficulty": 4,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": 95
+    },
+    "scenic": 5,
+    "highlights": [
+      "48 numbered hairpins on the Prato north ramp",
+      "Umbrail link into Switzerland"
+    ],
+    "verify_url": "https://www.stelviopark.bz.it/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "umbrail",
+    "name": "Umbrailpass / Giogo di Santa Maria",
+    "countries": [
+      "CH",
+      "IT"
+    ],
+    "region": "ortler",
+    "summit_m": 2501,
+    "coord": [
+      46.5447,
+      10.4308
+    ],
+    "roads": [
+      "Route 28",
+      "SS301"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-01",
+      "typical_close": "10-31",
+      "spread_days": 18,
+      "note": "Highest paved pass in Switzerland. Joins the Stelvio road just below the summit."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 14,
+      "hairpins": 34,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": 30
+    },
+    "scenic": 4,
+    "highlights": [
+      "Turns Stelvio into a loop rather than an out-and-back"
+    ],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "timmelsjoch",
+    "name": "Timmelsjoch / Passo del Rombo",
+    "countries": [
+      "AT",
+      "IT"
+    ],
+    "region": "otztal",
+    "summit_m": 2474,
+    "coord": [
+      46.9089,
+      11.0967
+    ],
+    "roads": [
+      "B186",
+      "SS44bis"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-25",
+      "typical_close": "10-25",
+      "spread_days": 18,
+      "note": null
+    },
+    "access": {
+      "night_closure": {
+        "from": "20:00",
+        "to": "07:00"
+      },
+      "timed_or_booked": false,
+      "vehicle_limits": "Austrian side is a toll road; Italian side is free. No vehicles over 3.5 t."
+    },
+    "toll": {
+      "type": "road_toll",
+      "band": "under_20",
+      "note": "Austrian side only, per car."
+    },
+    "drive": {
+      "length_km": 54,
+      "hairpins": 28,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": 85
+    },
+    "scenic": 5,
+    "highlights": [
+      "Architectural viewing stations along the road",
+      "Drops into South Tyrol at Moso"
+    ],
+    "verify_url": "https://www.timmelsjoch.com/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "finestre",
+    "name": "Colle delle Finestre",
+    "countries": [
+      "IT"
+    ],
+    "region": "piedmont",
+    "summit_m": 2178,
+    "coord": [
+      45.0656,
+      7.0556
+    ],
+    "roads": [
+      "SP172"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-01",
+      "typical_close": "10-15",
+      "spread_days": 21,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": "Roughly 8 km of gravel on the upper north ramp."
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 19,
+      "hairpins": 45,
+      "difficulty": 4,
+      "width": "two_lane_narrow",
+      "surface": "gravel_sections",
+      "typical_minutes": 50
+    },
+    "scenic": 4,
+    "highlights": [
+      "Ruler-straight gravel switchbacks above the treeline"
+    ],
+    "verify_url": "https://www.cittametropolitana.torino.it/",
+    "confidence": "medium",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "agnel",
+    "name": "Colle dell'Agnello / Col Agnel",
+    "countries": [
+      "FR",
+      "IT"
+    ],
+    "region": "queyras",
+    "summit_m": 2744,
+    "coord": [
+      44.6844,
+      6.9786
+    ],
+    "roads": [
+      "D205T",
+      "SP251"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-10",
+      "typical_close": "10-15",
+      "spread_days": 21,
+      "note": "One of the highest border crossings in the Alps; both sides must clear before it opens."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": "Narrow and steep on the Italian side; not for large vehicles."
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 42,
+      "hairpins": 24,
+      "difficulty": 4,
+      "width": "single_track_sections",
+      "surface": "paved",
+      "typical_minutes": 80
+    },
+    "scenic": 5,
+    "highlights": [],
+    "verify_url": "https://www.route.hautes-alpes.fr/",
+    "confidence": "medium",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "izoard",
+    "name": "Col d'Izoard",
+    "countries": [
+      "FR"
+    ],
+    "region": "queyras",
+    "summit_m": 2360,
+    "coord": [
+      44.8203,
+      6.7347
+    ],
+    "roads": [
+      "D902"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-25",
+      "typical_close": "10-31",
+      "spread_days": 18,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 31,
+      "hairpins": 17,
+      "difficulty": 3,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 55
+    },
+    "scenic": 5,
+    "highlights": [
+      "Casse Déserte rock pinnacles on the south ramp"
+    ],
+    "verify_url": "https://www.route.hautes-alpes.fr/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "iseran",
+    "name": "Col de l'Iseran",
+    "countries": [
+      "FR"
+    ],
+    "region": "vanoise",
+    "summit_m": 2764,
+    "coord": [
+      45.4175,
+      7.0308
+    ],
+    "roads": [
+      "D902"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-20",
+      "typical_close": "10-15",
+      "spread_days": 18,
+      "note": "Highest paved through-pass in the Alps. Late June openings are normal; early snow can shut it in September."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": "Unsuitable for large motorhomes on the Bonneval ramp."
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 48,
+      "hairpins": 31,
+      "difficulty": 3,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 80
+    },
+    "scenic": 5,
+    "highlights": [
+      "Bonneval-sur-Arc on the eastern ramp",
+      "Long open alpage above 2,400 m"
+    ],
+    "verify_url": "https://www.savoie-route.fr/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "mont_cenis",
+    "name": "Col du Mont-Cenis / Colle del Moncenisio",
+    "countries": [
+      "FR",
+      "IT"
+    ],
+    "region": "vanoise",
+    "summit_m": 2083,
+    "coord": [
+      45.2519,
+      6.9036
+    ],
+    "roads": [
+      "D1006",
+      "SS25"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "05-10",
+      "typical_close": "11-15",
+      "spread_days": 21,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 41,
+      "hairpins": 18,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 65
+    },
+    "scenic": 4,
+    "highlights": [
+      "Large reservoir on the plateau"
+    ],
+    "verify_url": "https://www.inforoute73.fr/",
+    "confidence": "medium",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "petit_st_bernard",
+    "name": "Col du Petit-Saint-Bernard",
+    "countries": [
+      "FR",
+      "IT"
+    ],
+    "region": "vanoise",
+    "summit_m": 2188,
+    "coord": [
+      45.6803,
+      6.8842
+    ],
+    "roads": [
+      "D1090",
+      "SS26"
+    ],
+    "season": {
+      "year_round": false,
+      "typical_open": "06-01",
+      "typical_close": "10-25",
+      "spread_days": 18,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": 48,
+      "hairpins": 22,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": 75
+    },
+    "scenic": 4,
+    "highlights": [
+      "Links Bourg-Saint-Maurice to La Thuile and the Aosta valley"
+    ],
+    "verify_url": "https://www.inforoute73.fr/",
+    "confidence": "high",
+    "last_checked": "2026-09-21"
+  },
+  {
+    "id": "brenner",
+    "name": "Brenner Pass",
+    "countries": [
+      "AT"
+    ],
+    "region": "tirol",
+    "summit_m": 1370,
+    "coord": [
+      47.005,
+      11.506
+    ],
+    "roads": [
+      "SS12"
+    ],
+    "season": {
+      "year_round": true,
+      "clearance": "open",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 1,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 2,
+    "highlights": [
+      "Lowest of the main Alpine crossings at 1,370 m, and busy with freight all day."
+    ],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "fernpass",
+    "name": "Fernpass",
+    "countries": [
+      "AT"
+    ],
+    "region": "tirol",
+    "summit_m": 1216,
+    "coord": [
+      47.362,
+      10.828
+    ],
+    "roads": [
+      "B179"
+    ],
+    "season": {
+      "year_round": true,
+      "clearance": "open",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 3,
+    "highlights": [
+      "Busy but genuinely scenic, with the Fernsteinsee turning an improbable green below the road."
+    ],
+    "verify_url": "https://www.tirol.gv.at/verkehr/",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "hahntennjoch",
+    "name": "Hahntennjoch",
+    "countries": [
+      "AT"
+    ],
+    "region": "tirol",
+    "summit_m": 1894,
+    "coord": [
+      47.313,
+      10.624
+    ],
+    "roads": [
+      "L21"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "winter",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Shut through the winter; the reopening date moves from year to year."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 4,
+    "highlights": [],
+    "verify_url": "https://www.tirol.gv.at/verkehr/",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "norbertshohe",
+    "name": "Norbertshöhe",
+    "countries": [
+      "AT"
+    ],
+    "region": "tirol",
+    "summit_m": 1405,
+    "coord": [
+      46.9,
+      10.503
+    ],
+    "roads": [],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 3,
+    "highlights": [],
+    "verify_url": "https://www.tirol.gv.at/verkehr/",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "reschenpass",
+    "name": "Reschenpass",
+    "countries": [
+      "IT"
+    ],
+    "region": "vinschgau",
+    "summit_m": 1504,
+    "coord": [
+      46.838,
+      10.505
+    ],
+    "roads": [
+      "SS40"
+    ],
+    "season": {
+      "year_round": true,
+      "clearance": "open",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 1,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 3,
+    "highlights": [
+      "Gentle border crossing at 1,504 m — you are in Italy, but everyone still speaks German."
+    ],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "jaufenpass",
+    "name": "Jaufenpass",
+    "countries": [
+      "IT"
+    ],
+    "region": "south_tyrol",
+    "summit_m": 2094,
+    "coord": [
+      46.838,
+      11.313
+    ],
+    "roads": [
+      "SS44"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "winter",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Shut through the winter; the reopening date moves from year to year."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 3,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 4,
+    "highlights": [
+      "Twenty hairpins with almost no traffic — quiet, fast and consistently underrated."
+    ],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "mendola",
+    "name": "Passo della Mendola",
+    "countries": [
+      "IT"
+    ],
+    "region": "south_tyrol",
+    "summit_m": 1363,
+    "coord": [
+      46.418,
+      11.198
+    ],
+    "roads": [],
+    "season": {
+      "year_round": true,
+      "clearance": "open",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 3,
+    "highlights": [
+      "Long, smooth switchbacks dropping off the ridge into Bolzano."
+    ],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "palade",
+    "name": "Passo delle Palade",
+    "countries": [
+      "IT"
+    ],
+    "region": "south_tyrol",
+    "summit_m": 1518,
+    "coord": [
+      46.585,
+      11.132
+    ],
+    "roads": [],
+    "season": {
+      "year_round": true,
+      "clearance": "open",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": null
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 3,
+    "highlights": [],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "sella",
+    "name": "Passo Sella",
+    "countries": [
+      "IT"
+    ],
+    "region": "dolomites",
+    "summit_m": 2240,
+    "coord": [
+      46.51,
+      11.762
+    ],
+    "roads": [
+      "SS242"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "winter",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Shut through the winter; the reopening date moves from year to year."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 3,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 5,
+    "highlights": [
+      "The Sella massif rises straight off the road here and the Langkofel fills the mirror on the way down."
+    ],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "gardena",
+    "name": "Passo Gardena",
+    "countries": [
+      "IT"
+    ],
+    "region": "dolomites",
+    "summit_m": 2121,
+    "coord": [
+      46.546,
+      11.808
+    ],
+    "roads": [
+      "SS243"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 3,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 5,
+    "highlights": [
+      "Grassy saddle between Val Gardena and Val Badia, and the quietest of the Sellaronda four."
+    ],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "pordoi",
+    "name": "Passo Pordoi",
+    "countries": [
+      "IT"
+    ],
+    "region": "dolomites",
+    "summit_m": 2239,
+    "coord": [
+      46.488,
+      11.813
+    ],
+    "roads": [
+      "SS48"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 3,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 5,
+    "highlights": [],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "campolongo",
+    "name": "Passo Campolongo",
+    "countries": [
+      "IT"
+    ],
+    "region": "dolomites",
+    "summit_m": 1875,
+    "coord": [
+      46.499,
+      11.868
+    ],
+    "roads": [
+      "SS244"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 4,
+    "highlights": [
+      "Short, gentle link from Corvara to Arabba and the easiest of the four Sellaronda passes."
+    ],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "falzarego",
+    "name": "Passo Falzarego",
+    "countries": [
+      "IT"
+    ],
+    "region": "dolomites",
+    "summit_m": 2105,
+    "coord": [
+      46.519,
+      12.008
+    ],
+    "roads": [
+      "SS48"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 3,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 5,
+    "highlights": [
+      "Wide, fast and busy; the Lagazuoi cable car climbs from the summit car park to a WWI tunnel complex in the rock."
+    ],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "valparola",
+    "name": "Passo Valparola",
+    "countries": [
+      "IT"
+    ],
+    "region": "dolomites",
+    "summit_m": 2192,
+    "coord": [
+      46.529,
+      11.994
+    ],
+    "roads": [
+      "SP24"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 5,
+    "highlights": [],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "giau",
+    "name": "Passo Giau",
+    "countries": [
+      "IT"
+    ],
+    "region": "dolomites",
+    "summit_m": 2236,
+    "coord": [
+      46.482,
+      12.055
+    ],
+    "roads": [
+      "SP638"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 4,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 5,
+    "highlights": [
+      "Twenty-nine hairpins, wide open and almost empty — the finest single pass in the Dolomites."
+    ],
+    "verify_url": "https://www.veneto.info/",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "fedaia",
+    "name": "Passo Fedaia",
+    "countries": [
+      "IT"
+    ],
+    "region": "dolomites",
+    "summit_m": 2057,
+    "coord": [
+      46.457,
+      11.878
+    ],
+    "roads": [
+      "SS641"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 4,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 5,
+    "highlights": [
+      "Runs along the dam under the Marmolada glacier; the western ramp is the steepest thing on the trip."
+    ],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "costalunga",
+    "name": "Passo di Costalunga",
+    "countries": [
+      "IT"
+    ],
+    "region": "dolomites",
+    "summit_m": 1745,
+    "coord": [
+      46.409,
+      11.596
+    ],
+    "roads": [
+      "SS241"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 4,
+    "highlights": [
+      "Lago di Carezza sits just below the summit, green and absurdly photogenic in morning light."
+    ],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "tonale",
+    "name": "Passo del Tonale",
+    "countries": [
+      "IT"
+    ],
+    "region": "adamello",
+    "summit_m": 1883,
+    "coord": [
+      46.259,
+      10.585
+    ],
+    "roads": [
+      "SS42"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 3,
+    "highlights": [
+      "Broad, open saddle at 1,883 m — wide and fast after the Gavia's single track."
+    ],
+    "verify_url": "https://www.stradeanas.it/",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "foscagno",
+    "name": "Passo di Foscagno",
+    "countries": [
+      "IT"
+    ],
+    "region": "livigno",
+    "summit_m": 2291,
+    "coord": [
+      46.483,
+      10.194
+    ],
+    "roads": [
+      "SS301"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 3,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 3,
+    "highlights": [],
+    "verify_url": "https://www.livigno.eu/en",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "eira",
+    "name": "Passo d'Eira",
+    "countries": [
+      "IT"
+    ],
+    "region": "livigno",
+    "summit_m": 2208,
+    "coord": [
+      46.495,
+      10.163
+    ],
+    "roads": [
+      "SS301"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 3,
+    "highlights": [],
+    "verify_url": "https://www.livigno.eu/en",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "forcola",
+    "name": "Forcola di Livigno",
+    "countries": [
+      "CH"
+    ],
+    "region": "livigno",
+    "summit_m": 2315,
+    "coord": [
+      46.437,
+      10.072
+    ],
+    "roads": [],
+    "season": {
+      "year_round": false,
+      "clearance": "winter",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Shut through the winter; the reopening date moves from year to year."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 4,
+    "highlights": [],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "ofenpass",
+    "name": "Ofenpass / Pass dal Fuorn",
+    "alt_names": [
+      "Ofenpass",
+      "Pass dal Fuorn"
+    ],
+    "countries": [
+      "CH"
+    ],
+    "region": "engadine",
+    "summit_m": 2149,
+    "coord": [
+      46.629,
+      10.291
+    ],
+    "roads": [
+      "Route 28"
+    ],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 4,
+    "highlights": [],
+    "verify_url": "https://www.tcs.ch/en/travel-camping/travel-advice/alpine-passes.php",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "staller",
+    "name": "Staller Sattel",
+    "countries": [
+      "AT"
+    ],
+    "region": "hohe_tauern",
+    "summit_m": 2052,
+    "coord": [
+      46.917,
+      12.22
+    ],
+    "roads": [],
+    "season": {
+      "year_round": false,
+      "clearance": "winter",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Shut through the winter; the reopening date moves from year to year."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "none",
+      "band": "free",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 3,
+      "width": "two_lane_narrow",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 4,
+    "highlights": [],
+    "verify_url": "https://www.suedtirol.info/en/information/mobility",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  },
+  {
+    "id": "rossfeld",
+    "name": "Rossfeld Panoramastrasse",
+    "countries": [
+      "DE"
+    ],
+    "region": "berchtesgaden",
+    "summit_m": 1570,
+    "coord": [
+      47.626,
+      13.07
+    ],
+    "roads": [],
+    "season": {
+      "year_round": false,
+      "clearance": "storm",
+      "typical_open": null,
+      "typical_close": null,
+      "spread_days": 0,
+      "note": "Cleared rather than closed for the season, but heavy snow shuts it for a day or two."
+    },
+    "access": {
+      "night_closure": null,
+      "timed_or_booked": false,
+      "vehicle_limits": null
+    },
+    "toll": {
+      "type": "road_toll",
+      "band": "under_20",
+      "note": null
+    },
+    "drive": {
+      "length_km": null,
+      "hairpins": null,
+      "difficulty": 2,
+      "width": "two_lane",
+      "surface": "paved",
+      "typical_minutes": null
+    },
+    "scenic": 4,
+    "highlights": [
+      "Loop road running along the German–Austrian ridge with the Salzburg basin laid out below."
+    ],
+    "verify_url": "https://www.rossfeldpanoramastrasse.de/",
+    "confidence": "medium",
+    "last_checked": "2026-09-24"
+  }
 ]

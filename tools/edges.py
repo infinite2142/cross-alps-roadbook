@@ -84,13 +84,27 @@ def slug(name):
     return re.sub(r"[^a-z0-9]+", "_", x).strip("_")
 
 
+def catkey(s):
+    """Mirror of `catKey` in index.html. A GEO waypoint and the catalogue record
+    for the same pass must collapse to one node here exactly as they do on the
+    page, or the matrix carries both — two nodes on one summit, half the edges
+    keyed to a name the generator no longer uses."""
+    x = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()
+    x = re.sub(r"\b(passo|pass|col|colle|de|del|dello|della|di|du|le|la)\b", " ", x)
+    return re.sub(r"[^a-z0-9]+", "", x)
+
+
 def load_nodes():
     """[(id, name, (lat, lon), kind)] — passes first, then places."""
     nodes, seen = [], set()
+    catnames = set()
 
     for p in json.load(open(PASSES, encoding="utf-8")):
         nodes.append((p["id"], p["name"], tuple(p["coord"]), "pass"))
         seen.add(p["id"])
+        for n in [p["name"]] + p.get("alt_names", []):
+            catnames.add(catkey(n))
+        catnames.add(catkey(p["id"].replace("_", " ")))
 
     if os.path.exists(PLACES):
         for q in json.load(open(PLACES, encoding="utf-8")):
@@ -101,6 +115,8 @@ def load_nodes():
         src = "data/places.json"
     else:
         for name, coord in read_geo().items():
+            if catkey(name) in catnames:
+                continue          # the catalogue record is the canonical node
             sid = "geo_" + slug(name)
             if sid in seen:
                 continue
