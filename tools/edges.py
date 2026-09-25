@@ -106,23 +106,34 @@ def load_nodes():
             catnames.add(catkey(n))
         catnames.add(catkey(p["id"].replace("_", " ")))
 
+    # GEO and places.json are both place sources and neither supersedes the
+    # other yet: GEO holds the waypoints the five authored trips drive through
+    # and still feeds the roadbook itself, places.json holds the towns added
+    # for the generator. Reading places.json *instead of* GEO, which is what
+    # this did, would have silently dropped every base the authored trips use.
+    for name, coord in read_geo().items():
+        if catkey(name) in catnames:
+            continue              # the catalogue record is the canonical node
+        sid = "geo_" + slug(name)
+        if sid in seen:
+            continue
+        nodes.append((sid, name, coord, "geo"))
+        seen.add(sid)
+        catnames.add(catkey(name))
+
+    src = "index.html GEO (transitional)"
     if os.path.exists(PLACES):
+        added = 0
         for q in json.load(open(PLACES, encoding="utf-8")):
-            if q["id"] in seen:
+            if not q.get("coord") or q["id"] in seen:
                 continue
+            if catkey(q["name"]) in catnames:
+                continue          # already here under its GEO or catalogue name
             nodes.append((q["id"], q["name"], tuple(q["coord"]), q.get("kind", "place")))
             seen.add(q["id"])
-        src = "data/places.json"
-    else:
-        for name, coord in read_geo().items():
-            if catkey(name) in catnames:
-                continue          # the catalogue record is the canonical node
-            sid = "geo_" + slug(name)
-            if sid in seen:
-                continue
-            nodes.append((sid, name, coord, "geo"))
-            seen.add(sid)
-        src = "index.html GEO (transitional)"
+            catnames.add(catkey(q["name"]))
+            added += 1
+        src += f" + data/places.json ({added})"
 
     return nodes, src
 

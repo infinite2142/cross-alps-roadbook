@@ -1,0 +1,1164 @@
+[
+  {
+    "id": "bourg_st_maurice",
+    "name": "Bourg-Saint-Maurice",
+    "query": "Bourg-Saint-Maurice, Savoie",
+    "cc": "FR",
+    "region": "tarentaise",
+    "serves": [
+      "iseran",
+      "petit_st_bernard",
+      "roselend"
+    ],
+    "kind": "place",
+    "coord": [
+      45.61861,
+      6.76953
+    ],
+    "alt": 827,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "val_disere",
+    "name": "Val-d'Isère",
+    "query": "Val-d'Isère, Savoie",
+    "cc": "FR",
+    "region": "tarentaise",
+    "serves": [
+      "iseran"
+    ],
+    "kind": "place",
+    "coord": [
+      45.44956,
+      6.97874
+    ],
+    "alt": 1828,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "beaufort",
+    "name": "Beaufort",
+    "query": "Beaufort, Savoie",
+    "cc": "FR",
+    "region": "beaufortain",
+    "serves": [
+      "roselend"
+    ],
+    "kind": "place",
+    "coord": [
+      45.71715,
+      6.57447
+    ],
+    "alt": 744,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "moutiers",
+    "name": "Moûtiers",
+    "query": "Moûtiers, Savoie",
+    "cc": "FR",
+    "region": "tarentaise",
+    "serves": [
+      "roselend"
+    ],
+    "kind": "place",
+    "coord": [
+      45.48499,
+      6.53401
+    ],
+    "alt": 483,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "bourg_doisans",
+    "name": "Le Bourg-d'Oisans",
+    "query": "Le Bourg-d'Oisans, Isère",
+    "cc": "FR",
+    "region": "oisans",
+    "serves": [
+      "lautaret",
+      "galibier"
+    ],
+    "kind": "place",
+    "coord": [
+      45.05471,
+      6.03066
+    ],
+    "alt": 724,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "modane",
+    "name": "Modane",
+    "query": "Modane, Savoie",
+    "cc": "FR",
+    "region": "maurienne",
+    "serves": [
+      "mont_cenis",
+      "galibier"
+    ],
+    "kind": "place",
+    "coord": [
+      45.20154,
+      6.67282
+    ],
+    "alt": 1071,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "lanslebourg",
+    "name": "Lanslebourg-Mont-Cenis",
+    "query": "Lanslebourg-Mont-Cenis, Savoie",
+    "cc": "FR",
+    "region": "maurienne",
+    "serves": [
+      "mont_cenis",
+      "iseran"
+    ],
+    "kind": "place",
+    "coord": [
+      45.28526,
+      6.87665
+    ],
+    "alt": 1402,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "st_michel_maurienne",
+    "name": "Saint-Michel-de-Maurienne",
+    "query": "Saint-Michel-de-Maurienne, Savoie",
+    "cc": "FR",
+    "region": "maurienne",
+    "serves": [
+      "galibier"
+    ],
+    "kind": "place",
+    "coord": [
+      45.21788,
+      6.47508
+    ],
+    "alt": 743,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "valloire",
+    "name": "Valloire",
+    "query": "Valloire, Savoie",
+    "cc": "FR",
+    "region": "maurienne",
+    "serves": [
+      "galibier"
+    ],
+    "kind": "place",
+    "coord": [
+      45.165,
+      6.42964
+    ],
+    "alt": 1406,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "briancon",
+    "name": "Briançon",
+    "query": "Briançon, Hautes-Alpes",
+    "cc": "FR",
+    "region": "briauconnais",
+    "serves": [
+      "galibier",
+      "lautaret",
+      "izoard"
+    ],
+    "kind": "place",
+    "coord": [
+      44.8984,
+      6.64363
+    ],
+    "alt": 1324,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "monetier",
+    "name": "Le Monêtier-les-Bains",
+    "query": "Le Monêtier-les-Bains, Hautes-Alpes",
+    "cc": "FR",
+    "region": "briauconnais",
+    "serves": [
+      "lautaret",
+      "galibier"
+    ],
+    "kind": "place",
+    "coord": [
+      44.97609,
+      6.50988
+    ],
+    "alt": 1489,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "guillestre",
+    "name": "Guillestre",
+    "query": "Guillestre, Hautes-Alpes",
+    "cc": "FR",
+    "region": "queyras",
+    "serves": [
+      "izoard",
+      "agnel"
+    ],
+    "kind": "place",
+    "coord": [
+      44.65978,
+      6.64939
+    ],
+    "alt": 1011,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "chateau_queyras",
+    "name": "Château-Ville-Vieille",
+    "query": "Château-Ville-Vieille, Hautes-Alpes",
+    "cc": "FR",
+    "region": "queyras",
+    "serves": [
+      "agnel",
+      "izoard"
+    ],
+    "kind": "place",
+    "coord": [
+      44.76246,
+      6.81146
+    ],
+    "alt": 1473,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "barcelonnette",
+    "name": "Barcelonnette",
+    "query": "Barcelonnette, Alpes-de-Haute-Provence",
+    "cc": "FR",
+    "region": "ubaye",
+    "serves": [
+      "bonette"
+    ],
+    "kind": "place",
+    "coord": [
+      44.3862,
+      6.65136
+    ],
+    "alt": 1139,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "jausiers",
+    "name": "Jausiers",
+    "query": "Jausiers, Alpes-de-Haute-Provence",
+    "cc": "FR",
+    "region": "ubaye",
+    "serves": [
+      "bonette"
+    ],
+    "kind": "place",
+    "coord": [
+      44.41943,
+      6.73401
+    ],
+    "alt": 1231,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "st_etienne_tinee",
+    "name": "Saint-Étienne-de-Tinée",
+    "query": "Saint-Étienne-de-Tinée, Alpes-Maritimes",
+    "cc": "FR",
+    "region": "tinee",
+    "serves": [
+      "bonette"
+    ],
+    "kind": "place",
+    "coord": [
+      44.2564,
+      6.92492
+    ],
+    "alt": 1156,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "susa",
+    "name": "Susa",
+    "query": "Susa, Torino",
+    "cc": "IT",
+    "region": "susa_valley",
+    "serves": [
+      "finestre",
+      "mont_cenis"
+    ],
+    "kind": "place",
+    "coord": [
+      45.13838,
+      7.04934
+    ],
+    "alt": 507,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "oulx",
+    "name": "Oulx",
+    "query": "Oulx, Torino",
+    "cc": "IT",
+    "region": "susa_valley",
+    "serves": [
+      "finestre",
+      "mont_cenis"
+    ],
+    "kind": "place",
+    "coord": [
+      45.03305,
+      6.83251
+    ],
+    "alt": 1083,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "sestriere",
+    "name": "Sestriere",
+    "query": "Sestriere, Torino",
+    "cc": "IT",
+    "region": "susa_valley",
+    "serves": [
+      "finestre"
+    ],
+    "kind": "place",
+    "coord": [
+      44.95845,
+      6.87869
+    ],
+    "alt": 2049,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "bardonecchia",
+    "name": "Bardonecchia",
+    "query": "Bardonecchia, Torino",
+    "cc": "IT",
+    "region": "susa_valley",
+    "serves": [
+      "mont_cenis"
+    ],
+    "kind": "place",
+    "coord": [
+      45.07834,
+      6.7032
+    ],
+    "alt": 1300,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "casteldelfino",
+    "name": "Casteldelfino",
+    "query": "Casteldelfino, Cuneo",
+    "cc": "IT",
+    "region": "varaita",
+    "serves": [
+      "agnel"
+    ],
+    "kind": "place",
+    "coord": [
+      44.58964,
+      7.07032
+    ],
+    "alt": 1314,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "andermatt",
+    "name": "Andermatt",
+    "query": "Andermatt, Uri",
+    "cc": "CH",
+    "region": "gotthard",
+    "serves": [
+      "furka",
+      "gotthard_tremola",
+      "susten"
+    ],
+    "kind": "place",
+    "coord": [
+      46.63405,
+      8.59481
+    ],
+    "alt": 1444,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "realp",
+    "name": "Realp",
+    "query": "Realp, Uri",
+    "cc": "CH",
+    "region": "gotthard",
+    "serves": [
+      "furka"
+    ],
+    "kind": "place",
+    "coord": [
+      46.59885,
+      8.50205
+    ],
+    "alt": 1553,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "gletsch",
+    "name": "Gletsch",
+    "query": "Gletsch, Obergoms, Valais",
+    "cc": "CH",
+    "region": "goms",
+    "serves": [
+      "furka",
+      "grimsel"
+    ],
+    "kind": "place",
+    "coord": [
+      46.56214,
+      8.36151
+    ],
+    "alt": 1764,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "ulrichen",
+    "name": "Ulrichen",
+    "query": "Ulrichen, Obergoms, Valais",
+    "cc": "CH",
+    "region": "goms",
+    "serves": [
+      "nufenen",
+      "furka"
+    ],
+    "kind": "place",
+    "coord": [
+      46.50656,
+      8.30497
+    ],
+    "alt": 1351,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "muenster_vs",
+    "name": "Münster",
+    "query": "Münster, Goms, Valais",
+    "cc": "CH",
+    "region": "goms",
+    "serves": [
+      "nufenen",
+      "grimsel"
+    ],
+    "kind": "place",
+    "coord": [
+      46.48707,
+      8.26322
+    ],
+    "alt": 1385,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "meiringen",
+    "name": "Meiringen",
+    "query": "Meiringen, Bern",
+    "cc": "CH",
+    "region": "haslital",
+    "serves": [
+      "grimsel",
+      "susten"
+    ],
+    "kind": "place",
+    "coord": [
+      46.72855,
+      8.18709
+    ],
+    "alt": 598,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "innertkirchen",
+    "name": "Innertkirchen",
+    "query": "Innertkirchen, Bern",
+    "cc": "CH",
+    "region": "haslital",
+    "serves": [
+      "grimsel",
+      "susten"
+    ],
+    "kind": "place",
+    "coord": [
+      46.70538,
+      8.22863
+    ],
+    "alt": 626,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "wassen",
+    "name": "Wassen",
+    "query": "Wassen, Uri",
+    "cc": "CH",
+    "region": "gotthard",
+    "serves": [
+      "susten",
+      "klausen"
+    ],
+    "kind": "place",
+    "coord": [
+      46.70685,
+      8.59958
+    ],
+    "alt": 915,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "altdorf",
+    "name": "Altdorf",
+    "query": "Altdorf, Uri",
+    "cc": "CH",
+    "region": "urnerland",
+    "serves": [
+      "klausen"
+    ],
+    "kind": "place",
+    "coord": [
+      46.88207,
+      8.64139
+    ],
+    "alt": 455,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "linthal",
+    "name": "Linthal",
+    "query": "Linthal, Glarus",
+    "cc": "CH",
+    "region": "glarus",
+    "serves": [
+      "klausen"
+    ],
+    "kind": "place",
+    "coord": [
+      46.91899,
+      8.99714
+    ],
+    "alt": 662,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "airolo",
+    "name": "Airolo",
+    "query": "Airolo, Ticino",
+    "cc": "CH",
+    "region": "ticino",
+    "serves": [
+      "gotthard_tremola",
+      "nufenen"
+    ],
+    "kind": "place",
+    "coord": [
+      46.52903,
+      8.6086
+    ],
+    "alt": 1176,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "splugen_village",
+    "name": "Splügen",
+    "query": "Splügen, Graubünden",
+    "cc": "CH",
+    "region": "rheinwald",
+    "serves": [
+      "splugen",
+      "san_bernardino"
+    ],
+    "kind": "place",
+    "coord": [
+      46.55307,
+      9.32341
+    ],
+    "alt": 1467,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "thusis",
+    "name": "Thusis",
+    "query": "Thusis, Graubünden",
+    "cc": "CH",
+    "region": "rheinwald",
+    "serves": [
+      "splugen",
+      "san_bernardino"
+    ],
+    "kind": "place",
+    "coord": [
+      46.69724,
+      9.43908
+    ],
+    "alt": 726,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "mesocco",
+    "name": "Mesocco",
+    "query": "Mesocco, Graubünden",
+    "cc": "CH",
+    "region": "mesolcina",
+    "serves": [
+      "san_bernardino"
+    ],
+    "kind": "place",
+    "coord": [
+      46.39217,
+      9.23252
+    ],
+    "alt": 794,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "chiavenna",
+    "name": "Chiavenna",
+    "query": "Chiavenna, Sondrio",
+    "cc": "IT",
+    "region": "chiavenna",
+    "serves": [
+      "splugen"
+    ],
+    "kind": "place",
+    "coord": [
+      46.32007,
+      9.40074
+    ],
+    "alt": 327,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "galtuer",
+    "name": "Galtür",
+    "query": "Galtür, Tirol",
+    "cc": "AT",
+    "region": "paznaun",
+    "serves": [
+      "silvretta"
+    ],
+    "kind": "place",
+    "coord": [
+      46.96817,
+      10.18653
+    ],
+    "alt": 1586,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "ischgl",
+    "name": "Ischgl",
+    "query": "Ischgl, Tirol",
+    "cc": "AT",
+    "region": "paznaun",
+    "serves": [
+      "silvretta"
+    ],
+    "kind": "place",
+    "coord": [
+      47.01202,
+      10.29132
+    ],
+    "alt": 1368,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "partenen",
+    "name": "Partenen",
+    "query": "Partenen, Gaschurn, Vorarlberg",
+    "cc": "AT",
+    "region": "montafon",
+    "serves": [
+      "silvretta"
+    ],
+    "kind": "place",
+    "coord": [
+      46.96898,
+      10.06066
+    ],
+    "alt": 1041,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "schruns",
+    "name": "Schruns",
+    "query": "Schruns, Vorarlberg",
+    "cc": "AT",
+    "region": "montafon",
+    "serves": [
+      "silvretta"
+    ],
+    "kind": "place",
+    "coord": [
+      47.08021,
+      9.91971
+    ],
+    "alt": 693,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "kranjska_gora",
+    "name": "Kranjska Gora",
+    "query": "Kranjska Gora",
+    "cc": "SI",
+    "region": "gorenjska",
+    "serves": [
+      "vrsic",
+      "korensko"
+    ],
+    "kind": "place",
+    "coord": [
+      46.48513,
+      13.7844
+    ],
+    "alt": 808,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "bovec",
+    "name": "Bovec",
+    "query": "Bovec",
+    "cc": "SI",
+    "region": "posocje",
+    "serves": [
+      "vrsic",
+      "mangart",
+      "predel"
+    ],
+    "kind": "place",
+    "coord": [
+      46.33858,
+      13.55242
+    ],
+    "alt": 479,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "trenta",
+    "name": "Trenta",
+    "query": "Trenta, Bovec",
+    "cc": "SI",
+    "region": "posocje",
+    "serves": [
+      "vrsic"
+    ],
+    "kind": "place",
+    "coord": [
+      46.38081,
+      13.75184
+    ],
+    "alt": 629,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "log_pod_mangartom",
+    "name": "Log pod Mangartom",
+    "query": "Log pod Mangartom",
+    "cc": "SI",
+    "region": "posocje",
+    "serves": [
+      "mangart",
+      "predel"
+    ],
+    "kind": "place",
+    "coord": [
+      46.40669,
+      13.60361
+    ],
+    "alt": 655,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "bohinjska_bistrica",
+    "name": "Bohinjska Bistrica",
+    "query": "Bohinjska Bistrica",
+    "cc": "SI",
+    "region": "gorenjska",
+    "serves": [
+      "soriska"
+    ],
+    "kind": "place",
+    "coord": [
+      46.27237,
+      13.95388
+    ],
+    "alt": 513,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "tolmin",
+    "name": "Tolmin",
+    "query": "Tolmin",
+    "cc": "SI",
+    "region": "posocje",
+    "serves": [
+      "soriska"
+    ],
+    "kind": "place",
+    "coord": [
+      46.18292,
+      13.73334
+    ],
+    "alt": 197,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "bled",
+    "name": "Bled",
+    "query": "Bled",
+    "cc": "SI",
+    "region": "gorenjska",
+    "serves": [
+      "korensko",
+      "vrsic"
+    ],
+    "kind": "place",
+    "coord": [
+      46.36842,
+      14.11006
+    ],
+    "alt": 492,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "trzic",
+    "name": "Tržič",
+    "query": "Tržič",
+    "cc": "SI",
+    "region": "gorenjska",
+    "serves": [
+      "ljubelj"
+    ],
+    "kind": "place",
+    "coord": [
+      46.36367,
+      14.30954
+    ],
+    "alt": 522,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "solcava_village",
+    "name": "Solčava",
+    "query": "Solčava",
+    "cc": "SI",
+    "region": "savinjska",
+    "serves": [
+      "solcava"
+    ],
+    "kind": "place",
+    "coord": [
+      46.41956,
+      14.69202
+    ],
+    "alt": 647,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "luce",
+    "name": "Luče",
+    "query": "Luče",
+    "cc": "SI",
+    "region": "savinjska",
+    "serves": [
+      "solcava"
+    ],
+    "kind": "place",
+    "coord": [
+      45.92089,
+      14.7315
+    ],
+    "alt": 325,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "tarvisio",
+    "name": "Tarvisio",
+    "query": "Tarvisio, Udine",
+    "cc": "IT",
+    "region": "tarvisiano",
+    "serves": [
+      "predel",
+      "korensko"
+    ],
+    "kind": "place",
+    "coord": [
+      46.50526,
+      13.57837
+    ],
+    "alt": 759,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "villach",
+    "name": "Villach",
+    "query": "Villach, Kärnten",
+    "cc": "AT",
+    "region": "carinthia",
+    "serves": [
+      "korensko",
+      "ljubelj"
+    ],
+    "kind": "place",
+    "coord": [
+      46.61673,
+      13.85003
+    ],
+    "alt": 505,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "ferlach",
+    "name": "Ferlach",
+    "query": "Ferlach, Kärnten",
+    "cc": "AT",
+    "region": "carinthia",
+    "serves": [
+      "ljubelj"
+    ],
+    "kind": "place",
+    "coord": [
+      46.52653,
+      14.30062
+    ],
+    "alt": 459,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "selva_gardena",
+    "name": "Selva di Val Gardena",
+    "query": "Selva di Val Gardena, Bolzano",
+    "cc": "IT",
+    "region": "dolomites",
+    "serves": [
+      "sella",
+      "gardena"
+    ],
+    "kind": "place",
+    "coord": [
+      46.55519,
+      11.7601
+    ],
+    "alt": 1571,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "colfosco",
+    "name": "Colfosco",
+    "query": "Colfosco, Corvara in Badia, Bolzano",
+    "cc": "IT",
+    "region": "dolomites",
+    "serves": [
+      "gardena",
+      "campolongo"
+    ],
+    "kind": "place",
+    "coord": [
+      46.55438,
+      11.85485
+    ],
+    "alt": 1659,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "la_villa",
+    "name": "La Villa",
+    "query": "La Villa, Badia, Bolzano",
+    "cc": "IT",
+    "region": "dolomites",
+    "serves": [
+      "valparola",
+      "gardena"
+    ],
+    "kind": "place",
+    "coord": [
+      46.58175,
+      11.89703
+    ],
+    "alt": 1500,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "san_cassiano",
+    "name": "San Cassiano",
+    "query": "San Cassiano, Badia, Bolzano",
+    "cc": "IT",
+    "region": "dolomites",
+    "serves": [
+      "valparola",
+      "falzarego"
+    ],
+    "kind": "place",
+    "coord": [
+      46.57114,
+      11.93209
+    ],
+    "alt": 1542,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "pieve_livinallongo",
+    "name": "Pieve di Livinallongo",
+    "query": "Livinallongo del Col di Lana, Belluno",
+    "cc": "IT",
+    "region": "dolomites",
+    "serves": [
+      "falzarego",
+      "fedaia",
+      "campolongo"
+    ],
+    "kind": "place",
+    "coord": [
+      46.48251,
+      11.95405
+    ],
+    "alt": 1547,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "alleghe",
+    "name": "Alleghe",
+    "query": "Alleghe, Belluno",
+    "cc": "IT",
+    "region": "dolomites",
+    "serves": [
+      "fedaia",
+      "giau"
+    ],
+    "kind": "place",
+    "coord": [
+      46.40664,
+      12.02146
+    ],
+    "alt": 987,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "selva_cadore",
+    "name": "Selva di Cadore",
+    "query": "Selva di Cadore, Belluno",
+    "cc": "IT",
+    "region": "dolomites",
+    "serves": [
+      "giau"
+    ],
+    "kind": "place",
+    "coord": [
+      46.45139,
+      12.03452
+    ],
+    "alt": 1336,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "san_vito_cadore",
+    "name": "San Vito di Cadore",
+    "query": "San Vito di Cadore, Belluno",
+    "cc": "IT",
+    "region": "dolomites",
+    "serves": [
+      "giau",
+      "tre_cime"
+    ],
+    "kind": "place",
+    "coord": [
+      46.45897,
+      12.20574
+    ],
+    "alt": 994,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "auronzo_cadore",
+    "name": "Auronzo di Cadore",
+    "query": "Auronzo di Cadore, Belluno",
+    "cc": "IT",
+    "region": "dolomites",
+    "serves": [
+      "tre_cime"
+    ],
+    "kind": "place",
+    "coord": [
+      46.55116,
+      12.44304
+    ],
+    "alt": 868,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "vigo_fassa",
+    "name": "Vigo di Fassa",
+    "query": "Vigo di Fassa, Trento",
+    "cc": "IT",
+    "region": "fassa",
+    "serves": [
+      "costalunga",
+      "sella"
+    ],
+    "kind": "place",
+    "coord": [
+      46.4204,
+      11.67261
+    ],
+    "alt": 1406,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "moena",
+    "name": "Moena",
+    "query": "Moena, Trento",
+    "cc": "IT",
+    "region": "fassa",
+    "serves": [
+      "costalunga",
+      "fedaia"
+    ],
+    "kind": "place",
+    "coord": [
+      46.37694,
+      11.65927
+    ],
+    "alt": 1187,
+    "geo_src": "settlement"
+  },
+  {
+    "id": "predazzo",
+    "name": "Predazzo",
+    "query": "Predazzo, Trento",
+    "cc": "IT",
+    "region": "fiemme",
+    "serves": [
+      "costalunga"
+    ],
+    "kind": "place",
+    "coord": [
+      46.31236,
+      11.60269
+    ],
+    "alt": 1019,
+    "geo_src": "boundary"
+  },
+  {
+    "id": "cavalese",
+    "name": "Cavalese",
+    "query": "Cavalese, Trento",
+    "cc": "IT",
+    "region": "fiemme",
+    "serves": [
+      "costalunga"
+    ],
+    "kind": "place",
+    "coord": [
+      46.29119,
+      11.46047
+    ],
+    "alt": 1001,
+    "geo_src": "boundary"
+  }
+]
