@@ -3038,9 +3038,17 @@ function generate(opts){
   });
 
   const BEAM=opts.beam||140;
+  /* How deep the search may go, which is the most passes a route can hold.
+     This was a flat 12 and the planner never overrode it, so a nine-day trip
+     came back with the same twelve passes as a four-day one: the budget went
+     from 1,680 minutes to 3,360 and the answer moved by six kilometres. The
+     ceiling has to be the trip, not a constant. Four a day is well clear of
+     what the time budget will actually allow — the budget is still the real
+     limit, this only stops the search stopping first. */
+  const maxPasses=Math.min(opts.maxPasses||4*days, usable.length);
   let frontier=[{ids:[start.id],passes:[],km:0,min:0}];
   const done=[];
-  for(let depth=0; depth<Math.min(opts.maxPasses||12, usable.length); depth++){
+  for(let depth=0; depth<maxPasses; depth++){
     const next=[];
     frontier.forEach(st=>{
       const last=st.ids[st.ids.length-1];
@@ -3092,25 +3100,103 @@ function splitDays(ids,budget,days){
     const e=edgeOf(ids[i],ids[i+1]); if(!e) return null;
     legs.push({km:e[0],min:correctMin(e[0],e[1])});
   }
-  const total=legs.reduce((a,l)=>a+l.min,0);
-  /* Filling each day to the brim and letting the remainder fall into the last
-     one gave a 766 km day beside a 68 km one. Aim at an even share instead and
-     break on whichever side of the target is closer — the budget is still the
-     ceiling, it is just no longer also the target. */
-  const target=days ? total/days : budget;
-  const maxCuts=days ? days-1 : Infinity;
-  const out=[]; let cur=[ids[0]],min=0,km=0;
-  for(let i=0;i<legs.length;i++){
-    const over=min+legs[i].min;
-    const cutsLeft=maxCuts-out.length;
-    /* Break before this leg if stopping here lands closer to an even share
-       than carrying on would, or if carrying on would break the ceiling. */
-    const closerToStop = min>0 && Math.abs(min-target) <= Math.abs(over-target);
-    const cut = cutsLeft>0 && cur.length>1 && (over>budget || (days && closerToStop));
-    if(cut){ out.push({ids:cur,km,min}); cur=[ids[i]]; min=0; km=0; }
-    cur.push(ids[i+1]); min+=legs[i].min; km+=legs[i].km;
+  /* No day count asked for: fill to the budget and stop. */
+  if(!days){
+    const out=[]; let cur=[ids[0]],min=0,km=0;
+    for(let i=0;i<legs.length;i++){
+      if(cur.length>1 && min+legs[i].min>budget){ out.push({ids:cur,km,min}); cur=[ids[i]]; min=0; km=0; }
+      cur.push(ids[i+1]); min+=legs[i].min; km+=legs[i].km;
+    }
+    out.push({ids:cur,km,min});
+    return out;
   }
-  out.push({ids:cur,km,min});
+
+  /* A fixed number of days is a partition problem, not a forward pass. The
+     old walk aimed each break at an even share and spent its cuts as it met
+     them, so on a long route it ran out early and tipped the remainder into
+     the last day. That day then failed the budget check and the whole route
+     was dropped — at six nights the search was finding twenty-eight-pass
+     routes and 2,519 of 3,635 died here, which is why more nights bought no
+     more passes.
+
+     Minimise the longest day instead: binary-search the smallest ceiling a
+     greedy packing can meet in `days` groups or fewer, then split the longest
+     groups until there are exactly `days` of them. O(legs · log total), which
+     is cheaper than what it replaces. */
+  if(legs.length<days) return null;          // fewer roads than nights asked for
+
+  const packs=cap=>{
+    const g=[]; let cur=0,n=0;
+    for(const l of legs){
+      if(n>0 && cur+l.min>cap){ g.push(n); cur=0; n=0; }
+      cur+=l.min; n++;
+    }
+    g.push(n); return g;
+  };
+  let lo=Math.ceil(legs.reduce((a,l)=>Math.max(a,l.min),0));
+  let hi=Math.ceil(legs.reduce((a,l)=>a+l.min,0));
+  while(lo<hi){
+    const mid=Math.floor((lo+hi)/2);
+    if(packs(mid).length<=days) hi=mid; else lo=mid+1;
+  }
+  const sizes=packs(lo);
+
+  const spanMin=(at,n)=>{ let s=0; for(let k=0;k<n;k++) s+=legs[at+k].min; return s; };
+  while(sizes.length<days){
+    const offs=[]; let o=0;
+    for(const n of sizes){ offs.push(o); o+=n; }
+    /* Split whichever day is longest and still has two roads in it. */
+    let bi=-1,bm=-1;
+    sizes.forEach((n,i)=>{ if(n>=2){ const m=spanMin(offs[i],n); if(m>bm){ bm=m; bi=i; } } });
+    if(bi<0) return null;                    // every day is a single road
+    const at=sizes[bi], st=offs[bi], tot=spanMin(st,at);
+    let cut=1,bd=Infinity,run=0;
+    for(let k=0;k<at-1;k++){
+      run+=legs[st+k].min;
+      const dif=Math.abs(run-(tot-run));
+      if(dif<bd){ bd=dif; cut=k+1; }
+    }
+    sizes.splice(bi,1,cut,at-cut);
+  }
+
+  /* Break the day where somebody can sleep. The partition above knows only
+     minutes, so a boundary lands wherever the arithmetic falls — often on a
+     summit. placeNights can shift a night a short way, and past that the whole
+     route is discarded; at six nights that was still killing 796 candidates,
+     including the richest ones, because more days means more boundaries and
+     more chances for one to land badly.
+
+     Crossing a pass in the middle of a day costs nothing — a pass only needs a
+     town if the day ends on it. So nudge each boundary to the nearest waypoint
+     that is not a pass, as long as neither neighbouring day breaks the ceiling
+     by doing so. A boundary that cannot move is left where it was. */
+  const bounds=[]; { let o=0; for(let i=0;i<sizes.length-1;i++){ o+=sizes[i]; bounds.push(o); } }
+  const span=(a,b)=>{ let s=0; for(let k=a;k<b;k++) s+=legs[k].min; return s; };
+  const ceil=budget*1.15;
+  for(let i=0;i<bounds.length;i++){
+    const at=bounds[i], node=NODES[ids[at]];
+    if(!node || node.kind!=='pass') continue;
+    const lo2=i?bounds[i-1]:0, hi2=(i+1<bounds.length)?bounds[i+1]:legs.length;
+    for(const dlt of [-1,1,-2,2,-3,3]){
+      const nb=at+dlt;
+      if(nb<=lo2 || nb>=hi2) continue;
+      const n2=NODES[ids[nb]];
+      if(!n2 || n2.kind==='pass') continue;
+      if(span(lo2,nb)>ceil || span(nb,hi2)>ceil) continue;
+      bounds[i]=nb; break;
+    }
+  }
+  { let prev=0;
+    for(let i=0;i<bounds.length;i++){ sizes[i]=bounds[i]-prev; prev=bounds[i]; }
+    sizes[sizes.length-1]=legs.length-prev; }
+
+  const out=[]; let idx=0;
+  for(const n of sizes){
+    let km=0,min=0;
+    for(let k=0;k<n;k++){ km+=legs[idx+k].km; min+=legs[idx+k].min; }
+    out.push({ids:ids.slice(idx,idx+n+1),km,min});
+    idx+=n;
+  }
   return out;
 }
 
@@ -3438,12 +3524,27 @@ function paintPace(){
     if(ok){ sel.value=ok.value; }
   }
 }
+/* This said the missing passes "have no town near enough to end a day", which
+   reads as a claim about the Alps and is not one. Briançon is twenty minutes
+   from the Galibier. What is missing is the town in *our* data: the place list
+   is still only what the five authored trips drive through, so the nearest bed
+   the planner knows about is Brescia, three and a half hours away.
+
+   It also implied a pass needs a town to be crossed at all. It does not —
+   crossing one mid-morning costs nothing. Only ending a day on one is a
+   problem, and that is the constraint worth naming, because it is also what
+   stops a longer trip holding more passes. */
 function paintReach(){
   const el=document.getElementById('plReach'); if(!el) return;
-  const r=reachSummary();
-  el.textContent='Routes reach '+r.near+' of the '+r.total+' catalogue passes. The rest — France, '
-    +'Slovenia and most of Switzerland — have no town near enough to end a day, so nothing is '
-    +'offered over them rather than putting a night on a summit.';
+  /* PLACE_NODES, not BASE_NODES: the first is what a night is actually placed
+     in, the second only what the two dropdowns offer. Quoting the dropdown
+     count here would be a number that does not match the sentence around it. */
+  const r=reachSummary(), beds=PLACE_NODES().length;
+  el.textContent='Routes reach '+r.near+' of the '+r.total+' catalogue passes. Crossing a pass '
+    +'costs nothing — it is ending the day that needs a bed, and the only places this can put '
+    +'you are the '+beds+' the five authored trips run through. Nothing to sleep in yet across France, '
+    +'Slovenia or western Switzerland, and not always something between two Dolomites passes '
+    +'either, which is what limits a long trip more than the hours you choose.';
 }
 
 function plannerOpts(){
